@@ -42,6 +42,7 @@
   environment:
     VAULT_ADDR: "{{ item.vault.url }}"
     VAULT_TOKEN: "{{ item.vault.root_token }}"
+  ignore_errors: yes
 
 # Deletes crypto materials
 - name: Delete Crypto material 
