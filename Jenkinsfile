@@ -257,7 +257,7 @@ spec:
     REGION="eu-west-1"
     VAULT_URL="http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002"
     VAULT_PORT="20002"
-    secret_path="secretsv2/sai"
+    secret_path="secretsv2/"
     GIT_BRANCH="bes-thr"
     EMAIL="sai.kumar.bommakanti@accenture.com"
     PUBLIC_IPS='["52.51.240.218","34.255.126.99"]' //# List of all public IP addresses of each availability zone from all organizations in the same k8s cluster
