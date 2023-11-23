@@ -305,10 +305,8 @@ spec:
             sh "echo 'Prepare Network files...'"
             withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GITHUB_PASS', usernameVariable: 'GITHUB_USER')]) {
                 sh "git clone --branch $GIT_BRANCH https://$GITHUB_USER:$GITHUB_PASS@$GITREPO"
-                sh "rm -rf bevel/build/networkfiles-inprogress/"
                 sh "mkdir -p bevel/build"
-                sh "mkdir -p /home/user/bevel/build/besu_genesis"
-                sh "touch bevel/build/besu_genesis"
+                sh "cat /home/jenkins/besu/genesis/"
                 sh "cp -rp bevel-3/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
             }
             if ( params.NETWORK == "besu" ) {
