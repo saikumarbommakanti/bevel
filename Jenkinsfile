@@ -329,7 +329,7 @@ spec:
                   sed -i  "s|aws_access_key|$AWSACCESS|g" bevel/build/network-besu.yaml
                   sed -i  "s|aws_secret_key|$AWSSECRET|g" bevel/build/network-besu.yaml
                   sed -i  "s|EXTERNAL_URL_SUFFIX|$EXTERNALURLSUFFIX|g" bevel/build/network-besu.yaml
-                  sed -i  "s|/home/user/bevel/build/besu_genesis/|bevel/build/|g" bevel/build/network-besu.yaml
+                  sed -i  "s|/home/user/bevel/build/besu_genesis/|bevel/build/besu_genesis|g" bevel/build/network-besu.yaml
                   cat bevel/build/network-besu.yaml
                 """             
               }   
