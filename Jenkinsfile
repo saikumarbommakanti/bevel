@@ -307,6 +307,7 @@ spec:
                 sh "git clone --branch $GIT_BRANCH https://$GITHUB_USER:$GITHUB_PASS@$GITREPO"
                 sh "rm -rf bevel/build/networkfiles-inprogress/"
                 sh "mkdir -p bevel/build"
+                sh "mkdir -p /home/user/bevel/build/besu_genesis"
                 sh "touch bevel/build/besu_genesis"
                 sh "cp -rp bevel-3/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
             }
@@ -330,7 +331,6 @@ spec:
                   sed -i  "s|aws_access_key|$AWSACCESS|g" bevel/build/network-besu.yaml
                   sed -i  "s|aws_secret_key|$AWSSECRET|g" bevel/build/network-besu.yaml
                   sed -i  "s|EXTERNAL_URL_SUFFIX|$EXTERNALURLSUFFIX|g" bevel/build/network-besu.yaml
-                  sed -i  "s|/home/user/bevel/build/besu_genesis/|bevel/build/besu_genesis|g" bevel/build/network-besu.yaml
                   cat bevel/build/network-besu.yaml
                 """             
               }   
