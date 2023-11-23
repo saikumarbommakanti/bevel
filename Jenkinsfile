@@ -307,6 +307,7 @@ spec:
                 sh "git clone --branch $GIT_BRANCH https://$GITHUB_USER:$GITHUB_PASS@$GITREPO"
                 sh "rm -rf bevel/build/networkfiles-inprogress/"
                 sh "mkdir -p bevel/build"
+                sh "touch bevel/build/besu_genesis"
                 sh "cp -rp bevel-3/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
             }
             if ( params.NETWORK == "besu" ) {
