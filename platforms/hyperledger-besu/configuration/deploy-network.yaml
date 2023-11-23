@@ -132,7 +132,7 @@
     # This role generates the genesis.json
     - name: "Generate genesis file"
       include_role:
-        name: create/genesis
+        name: create/genesis/{{network.config.consensus}}
       vars:
         build_path: "./build"
       when: 
