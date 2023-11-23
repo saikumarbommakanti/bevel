@@ -88,7 +88,7 @@ network:
   organizations:
     # Specification for the 1st organization. Each organization should map to a VPC and a separate k8s cluster for production deployments
     - organization:
-      name: supplychain
+      name: chainsupply
       type: validator
       # Provide the url suffix that will be added in DNS recordset. Must be different for different clusters
       external_url_suffix: test.besu.blockchaincloudpoc.com
@@ -187,7 +187,7 @@ network:
             port: 9545          # Specify the port that Prometheus will use to collect metrics for this node. 
 
     - organization:
-      name: carrier
+      name: carri1
       type: member
       # Provide the url suffix that will be added in DNS recordset. Must be different for different clusters
       external_url_suffix: test.besu.blockchaincloudpoc.com

@@ -33,7 +33,7 @@
   loop: "{{ services.peers is defined | ternary( services.peers, services.validators) }}"
   loop_control:
     loop_var: peer
-  ignore_errors: yes
+  ignore_errors: yesku  
 
 # Delete vault auth path
 - name: Delete vault-auth path
