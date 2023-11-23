@@ -307,7 +307,7 @@ spec:
                 sh "git clone --branch $GIT_BRANCH https://$GITHUB_USER:$GITHUB_PASS@$GITREPO"
                 sh "rm -rf bevel/build/networkfiles-inprogress/"
                 sh "mkdir -p bevel/build"
-                sh "cp -rp bevel-2/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
+                sh "cp -rp bevel-3/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
             }
             if ( params.NETWORK == "besu" ) {
               withCredentials([usernamePassword(credentialsId: 'AWS_CRED', passwordVariable: 'AWSSECRET', usernameVariable: 'AWSACCESS'), usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GITHUB_PASS', usernameVariable: 'GITHUB_USER'), string(credentialsId: 'vault_root_token', variable: 'VAULT_TOKEN'), file(credentialsId: 'DEMO_KUBE_CONFIG', variable: 'KUBECONFIGFILE')]) {
@@ -342,9 +342,9 @@ spec:
         script {
           container("ansible") {
             if ( params.NETWORK == "besu" && params.ACTION == "deploy" ) {
-                sh "ansible-playbook bevel-2/platforms/shared/configuration/site.yaml -e @bevel/build/network-besu.yaml"
+                sh "ansible-playbook bevel-3/platforms/shared/configuration/site.yaml -e @bevel/build/network-besu.yaml"
             } else if ( params.NETWORK == "besu" && params.ACTION == "reset" ) {
-                sh "ansible-playbook bevel-2/platforms/shared/configuration/site.yaml -e @bevel/build/network-besu.yaml -e 'reset=true' "
+                sh "ansible-playbook bevel-3/platforms/shared/configuration/site.yaml -e @bevel/build/network-besu.yaml -e 'reset=true' "
             } else if ( params.NETWORK == "besu" && params.ACTION == "addmemberorg" ) {
                 sh "ansible-playbook bevel/platforms/shared/configuration/add-new-organization.yaml - @${env.BESU_ADD_MEMBER_ORG_NETWORK_FILE}"
             } else if ( params.NETWORK == "besu" && params.ACTION == "addvalidatornode" ) {
