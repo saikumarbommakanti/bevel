@@ -306,7 +306,6 @@ spec:
             withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GITHUB_PASS', usernameVariable: 'GITHUB_USER')]) {
                 sh "git clone --branch $GIT_BRANCH https://$GITHUB_USER:$GITHUB_PASS@$GITREPO"
                 sh "mkdir -p bevel/build"
-                sh "cat /home/jenkins/besu/genesis/"
                 sh "cp -rp bevel-3/platforms/hyperledger-besu/configuration/samples/network-besu.yaml bevel/build/network-besu.yaml"
             }
             if ( params.NETWORK == "besu" ) {
