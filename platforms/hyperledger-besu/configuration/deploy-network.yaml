@@ -25,109 +25,109 @@
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:
-    # Delete build directory
-    - name: Remove build directory
-      file:
-        path: "./build"
-        state: absent
+    # # Delete build directory
+    # - name: Remove build directory
+    #   file:
+    #     path: "./build"
+    #     state: absent
 
-    # Create namespaces
-    - name: "Create namespace"
-      include_role:
-        name: create/namespace
-      vars:
-        component_ns: "{{ org.name | lower }}-bes"
-        organisation: "{{ org.name | lower }}"
-        kubernetes: "{{ org.k8s }}"
-        gitops: "{{ org.gitops }}"
-      loop: "{{ network['organizations'] }}"
-      loop_control:
-        loop_var: org
+    # # Create namespaces
+    # - name: "Create namespace"
+    #   include_role:
+    #     name: create/namespace
+    #   vars:
+    #     component_ns: "{{ org.name | lower }}-bes"
+    #     organisation: "{{ org.name | lower }}"
+    #     kubernetes: "{{ org.k8s }}"
+    #     gitops: "{{ org.gitops }}"
+    #   loop: "{{ network['organizations'] }}"
+    #   loop_control:
+    #     loop_var: org
 
-    # Create Storageclass
-    - name: Create Storage Class
-      include_role:
-        name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
-      vars:
-        org_name: "{{ org.name | lower }}"
-        cloudProvider: "{{ org.cloud_provider | lower }}"
-        sc_name: "{{ org_name }}-{{ cloudProvider }}-storageclass"
-        component_ns: "{{ org.name | lower }}-bes"
-        kubernetes: "{{ org.k8s }}"
-        region: "{{ org.k8s.region | default('eu-west-1') }}"
-        git_dir: "{{ org.gitops.release_dir }}"
-        charts_dir: "platforms/shared/charts"
-        platform_suffix: "bes"
-      loop: "{{ network['organizations'] }}"
-      loop_control:
-        loop_var: org
+    # # Create Storageclass
+    # - name: Create Storage Class
+    #   include_role:
+    #     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
+    #   vars:
+    #     org_name: "{{ org.name | lower }}"
+    #     cloudProvider: "{{ org.cloud_provider | lower }}"
+    #     sc_name: "{{ org_name }}-{{ cloudProvider }}-storageclass"
+    #     component_ns: "{{ org.name | lower }}-bes"
+    #     kubernetes: "{{ org.k8s }}"
+    #     region: "{{ org.k8s.region | default('eu-west-1') }}"
+    #     git_dir: "{{ org.gitops.release_dir }}"
+    #     charts_dir: "platforms/shared/charts"
+    #     platform_suffix: "bes"
+    #   loop: "{{ network['organizations'] }}"
+    #   loop_control:
+    #     loop_var: org
 
-    # Setup script for Vault and OS Package Manager
-    - name: Setup script for Vault and OS Package Manager
-      include_role:
-        name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/scripts"
-      vars:
-        namespace: "{{ org.name | lower }}-bes"
-        network_type: "{{ network.type | lower }}"
-        kubernetes: "{{ org.k8s }}"
-      loop: "{{ network['organizations'] }}"
-      loop_control:
-        loop_var: org
+    # # Setup script for Vault and OS Package Manager
+    # - name: Setup script for Vault and OS Package Manager
+    #   include_role:
+    #     name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/scripts"
+    #   vars:
+    #     namespace: "{{ org.name | lower }}-bes"
+    #     network_type: "{{ network.type | lower }}"
+    #     kubernetes: "{{ org.k8s }}"
+    #   loop: "{{ network['organizations'] }}"
+    #   loop_control:
+    #     loop_var: org
 
-    # Setup Vault-Kubernetes accesses and Regcred for docker registry
-    - name: "Setup vault"
-      include_role:
-        name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/vault_kubernetes"
-      vars:
-        policy_type: "besu"
-        name: "{{ org.name | lower }}"
-        component_ns: "{{ org.name | lower }}-bes"
-        component_name: "{{ org.name | lower }}-vaultk8s-job"
-        component_auth: "besu{{ org.name | lower }}"
-        component_type: "{{ org.type | lower }}"
-        kubernetes: "{{ org.k8s }}"
-        vault: "{{ org.vault }}"
-        gitops: "{{ org.gitops }}"
-      loop: "{{ network['organizations'] }}"
-      loop_control:
-        loop_var: org
+    # # Setup Vault-Kubernetes accesses and Regcred for docker registry
+    # - name: "Setup vault"
+    #   include_role:
+    #     name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/vault_kubernetes"
+    #   vars:
+    #     policy_type: "besu"
+    #     name: "{{ org.name | lower }}"
+    #     component_ns: "{{ org.name | lower }}-bes"
+    #     component_name: "{{ org.name | lower }}-vaultk8s-job"
+    #     component_auth: "besu{{ org.name | lower }}"
+    #     component_type: "{{ org.type | lower }}"
+    #     kubernetes: "{{ org.k8s }}"
+    #     vault: "{{ org.vault }}"
+    #     gitops: "{{ org.gitops }}"
+    #   loop: "{{ network['organizations'] }}"
+    #   loop_control:
+    #     loop_var: org
 
-    # Generate Ambassador certificate for nodes. These certificates are used for tm tls as well
-    - name: "Create ambassador certificates for Nodes"
-      include_role:
-        name: create/certificates/ambassador
-      vars:
-        root_subject: "{{ network.config.subject }}"
-        cert_subject: "{{ network.config.subject | regex_replace(',', '/') }}"
-        services: "{{ org.services }}"
-        organisation: "{{ org.name | lower }}"
-        component_ns: "{{ org.name | lower }}-bes"
-        component_name: "{{ org.name | lower }}"
-        kubernetes: "{{ org.k8s }}"
-        vault: "{{ org.vault }}"
-        charts_dir: "{{ org.gitops.chart_source }}"
-        gitops: "{{ org.gitops }}"
-        values_dir: "{{ playbook_dir }}/../../../{{org.gitops.release_dir}}/{{ org.name | lower }}"
-      loop: "{{ network['organizations']}}"
-      loop_control:
-        loop_var: org
+    # # Generate Ambassador certificate for nodes. These certificates are used for tm tls as well
+    # - name: "Create ambassador certificates for Nodes"
+    #   include_role:
+    #     name: create/certificates/ambassador
+    #   vars:
+    #     root_subject: "{{ network.config.subject }}"
+    #     cert_subject: "{{ network.config.subject | regex_replace(',', '/') }}"
+    #     services: "{{ org.services }}"
+    #     organisation: "{{ org.name | lower }}"
+    #     component_ns: "{{ org.name | lower }}-bes"
+    #     component_name: "{{ org.name | lower }}"
+    #     kubernetes: "{{ org.k8s }}"
+    #     vault: "{{ org.vault }}"
+    #     charts_dir: "{{ org.gitops.chart_source }}"
+    #     gitops: "{{ org.gitops }}"
+    #     values_dir: "{{ playbook_dir }}/../../../{{org.gitops.release_dir}}/{{ org.name | lower }}"
+    #   loop: "{{ network['organizations']}}"
+    #   loop_control:
+    #     loop_var: org
 
-    # This role generates key pair and nodeaddress for all orgs of the network
-    - name: "Generate crypto for the network nodes"
-      include_role:
-        name: create/crypto/node
-      vars:
-        build_path: "{{ playbook_dir }}/build"
-        organisation: "{{ org.name | lower }}"
-        organisation_ns: "{{ org.name | lower }}-bes"
-        kubernetes: "{{ org.k8s }}"
-        vault: "{{ org.vault }}"
-        charts_dir: "{{ org.gitops.chart_source }}"
-        gitops: "{{ org.gitops }}"
-        values_dir: "{{ playbook_dir }}/../../../{{org.gitops.release_dir}}/{{ org.name | lower }}"
-      loop: "{{ network['organizations'] }}"
-      loop_control:
-        loop_var: org
+    # # This role generates key pair and nodeaddress for all orgs of the network
+    # - name: "Generate crypto for the network nodes"
+    #   include_role:
+    #     name: create/crypto/node
+    #   vars:
+    #     build_path: "{{ playbook_dir }}/build"
+    #     organisation: "{{ org.name | lower }}"
+    #     organisation_ns: "{{ org.name | lower }}-bes"
+    #     kubernetes: "{{ org.k8s }}"
+    #     vault: "{{ org.vault }}"
+    #     charts_dir: "{{ org.gitops.chart_source }}"
+    #     gitops: "{{ org.gitops }}"
+    #     values_dir: "{{ playbook_dir }}/../../../{{org.gitops.release_dir}}/{{ org.name | lower }}"
+    #   loop: "{{ network['organizations'] }}"
+    #   loop_control:
+    #     loop_var: org
 
     # This role generates the genesis.json
     - name: "Generate genesis file"
