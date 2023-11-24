@@ -145,7 +145,7 @@
     dest: "{{ network.config.genesis }}"
   vars:
     genesis: "{{ lookup('file', '{{ build_path }}/crypto/newGenesis.json') | b64encode }}"
-  ignore_errors: "yes"
+  ignore_errors: yes
 
 # This tasks copy the genesis to the vault
 - name: Copy the crypto material to Vault

@@ -13,8 +13,8 @@
     echo "$( {{ bin_install_dir }}/besu/besu-{{ network.version }}/besu rlp encode --from={{ build_path }}/toEncode.json {{ argument }} )" > {{ build_path }}/extraData
     awk 'NR == 1' {{ build_path }}/extraData > {{ build_path }}/extraData_format
     jq '.extraData = $newVal' --arg newVal $(cat {{ build_path }}/extraData_format) << cat {{ build_path }}/crypto/genesis.json > {{ build_path }}/crypto/newGenesis.json
-  # when:
-  #   - network.config.consensus in ["ibft", "qbft", "ethash"]
+  when:
+    - network.config.consensus in ["ibft", "qbft", "ethash"]
 
 # Creates the rlp encoded string and add it to extraData field in newGenesis.json
 - name: Create the new genesis file with information for validator nodes    
