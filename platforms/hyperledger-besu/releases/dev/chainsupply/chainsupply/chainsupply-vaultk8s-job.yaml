@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: chainsupply-vaultk8s-job
+  namespace: chainsupply-bes
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: chainsupply-vaultk8s-job
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/shared/charts/vault-k8s-mgmt
+    sourceRef:
+      kind: GitRepository
+      name: flux-env-type
+      namespace: flux-env-type
+  values:
+    metadata:
+      name: chainsupply-vaultk8s-job
+      namespace: chainsupply-bes
+      images:
+        alpineutils: ghcr.io/hyperledger/alpine-utils:1.0
+        pullPolicy: IfNotPresent
+
+    vault:
+      role: vault-role
+      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
+      authpath: besuchainsupply
+      policy: vault-crypto-chainsupply-bes-chainsupply-ro
+      policydata: "{\n  \"policy\": \"path \\\"secretsv2/data/chainsupply-bes/crypto/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\", \\\"create\\\", \\\"update\\\"]\n  }\n  path \\\"secretsv2/data/chainsupply-bes/smartContracts/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\"]\n  }\"\n}"
+      secret_path: chainsupply
+      imagesecretname: regcred
+
+    k8s:
+      kubernetes_url: https://300125A3D09FFA0A178EC3522C96BBB8.gr7.eu-west-1.eks.amazonaws.com
+    
+    rbac:
+      create: True
+
+    serviceAccount:
+      create: True
+      name: vault-auth
