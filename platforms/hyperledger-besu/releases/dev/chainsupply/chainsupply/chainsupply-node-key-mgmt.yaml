@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: chainsupply-node-key-mgmt
+  namespace: chainsupply-bes
+  annotations:
+    flux.weave.works/automated: "false"
+spec:
+  releaseName: chainsupply-node-key-mgmt
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-besu/charts/besu-node-key-mgmt
+    sourceRef:
+      kind: GitRepository
+      name: flux-env-type
+      namespace: flux-env-type
+  values:
+    metadata:
+      name: chainsupply-node-key-mgmt
+      namespace: chainsupply-bes
+    image:
+      besucontainer: hyperledger/besu:22.10.2
+    vault:
+      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
+      secretengine: secretsv2
+      authpath: besuchainsupply
+      type: hashicorp
+      role: vault-role
+    organisation:
+      namespace: chainsupply-bes
+      nodes:
+        - name: validator1
+        - name: validator2
+        - name: validator3
+        - name: validator4
