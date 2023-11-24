@@ -245,7 +245,7 @@ spec:
       image: jenkins/inbound-agent:4.11.2-4
       command: ["sh","-x","/usr/local/bin/jenkins-agent"] 
     - name: ansible
-      image: ghcr.io/hyperledger/bevel-build:jdk8-0.12.0.0
+      image: ghcr.io/hyperledger/bevel-build:jdk8-0.15.0.0
       command: ["sleep","10800"]
 '''
     }
