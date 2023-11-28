@@ -252,6 +252,7 @@ spec:
   }
   environment {
     JAVA_VERSION = "11"
+    INSTALL_DIR = "/opt/openjdk-${JAVA_VERSION}"
     DOCKER_URL="ghcr.io/hyperledger"
     K8SCONTEXT="arn:aws:eks:eu-west-1:895052373684:cluster/bevel-dev-cluster-CLUSTER"
     config_file="/home/jenkins/.kube/config"
