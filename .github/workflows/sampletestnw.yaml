@@ -30,7 +30,7 @@ jobs:
         sudo aptitude install node-gyp
         sudo aptitude install npm
         # install npm and ajv-cli
-        #sudo apt-get install npm
+        sudo apt-get install npm
         npm install -g ajv-cli
         # export the bin path
         export PATH=~/bin:$PATH
