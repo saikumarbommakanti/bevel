@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: carri1-node-key-mgmt
+  namespace: carri1-bes
+  annotations:
+    flux.weave.works/automated: "false"
+spec:
+  releaseName: carri1-node-key-mgmt
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-besu/charts/besu-node-key-mgmt
+    sourceRef:
+      kind: GitRepository
+      name: flux-bsk
+      namespace: flux-bsk
+  values:
+    metadata:
+      name: carri1-node-key-mgmt
+      namespace: carri1-bes
+    image:
+      besucontainer: hyperledger/besu:22.10.2
+    vault:
+      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
+      secretengine: secretsv2
+      authpath: besucarri1
+      type: hashicorp
+      role: vault-role
+    organisation:
+      namespace: carri1-bes
+      nodes:
+        - name: carrier
