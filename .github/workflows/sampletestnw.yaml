@@ -17,14 +17,6 @@ jobs:
   sample-nets-schema-validation:
     runs-on: ubuntu-20.04
     steps:
-    - name: upgrade
-      run: |
-        sudo apt --fix-broken install
-        sudo apt update
-        sudo apt remove nodejs
-        sudo apt remove nodejs-doc
-        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-        sudo apt-get install -y nodejs
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
@@ -32,8 +24,10 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
+        sudo apt install aptitude
+        sudo aptitude install npm
         # install npm and ajv-cli
-        sudo apt-get install npm
+        #sudo apt-get install npm
         npm install -g ajv-cli
         # export the bin path
         export PATH=~/bin:$PATH
