@@ -298,9 +298,8 @@ spec:
                 sh "mkdir -p /home/jenkins/besu"
                 sh "cat $KUBECONFIGFILE > /home/jenkins/.kube/config"
                 sh "chmod 600 /home/jenkins/.kube/config"
-                sh "sudo add-apt-repository ppa:openjdk-r/ppa"
-                sh "sudo apt-get update"
-                sh "sudo apt install openjdk-11-jdk"
+                sh "curl https://download.java.net/java/ga/jdk11/openjdk-11_osx-x64_bin.tar.gz \
+                 | tar -xz "
                 // Add your additional script here
                 // sh """
                 //   #!/bin/bash
