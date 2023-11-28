@@ -19,6 +19,9 @@ jobs:
     steps:
     - name: Install node 16
       run: |
+        sudo apt-get update
+        sudo apt-get clean
+        sudo apt-get autoremove
         curl -s https://deb.nodesource.com/setup_16.x | sudo bash
         sudo apt install nodejs -y
         node -v
