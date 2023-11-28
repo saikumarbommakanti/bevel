@@ -24,8 +24,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        sudo apt install aptitude -y
-        sudo aptitude install npm -y
+        sudo apt-get update
         # install npm and ajv-cli
         #sudo apt-get install npm
         npm install -g ajv-cli
