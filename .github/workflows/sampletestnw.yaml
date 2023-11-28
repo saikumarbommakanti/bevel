@@ -15,17 +15,8 @@ on:
 
 jobs:
   sample-nets-schema-validation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - name: Install node 16
-      run: |
-        sudo apt-get update
-        sudo apt-get clean
-        sudo apt-get autoremove
-        sudo apt-get install -f
-        curl -s https://deb.nodesource.com/setup_16.x | sudo bash
-        sudo apt install nodejs -y
-        node -v
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
@@ -33,14 +24,6 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        sudo apt-get install -y node-agent-base node-aproba node-archy node-cacache \
-        node-chalk node-cli-table3 node-colors node-columnify node-debug \
-        node-emoji-regex node-got node-graceful-fs node-gyp node-https-proxy-agent \
-        node-mkdirp node-ms node-nopt node-normalize-package-data \
-        node-npm-package-arg node-npmlog node-read-package-json node-rimraf \
-        node-semver node-ssri node-string-width node-strip-ansi node-tar \
-        node-validate-npm-package-name node-which node-write-file-atomic
-
         # install npm and ajv-cli
         sudo apt-get install npm
         npm install -g ajv-cli
