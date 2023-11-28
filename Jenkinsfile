@@ -295,6 +295,37 @@ spec:
                 sh "mkdir -p /home/jenkins/besu"
                 sh "cat $KUBECONFIGFILE > /home/jenkins/.kube/config"
                 sh "chmod 600 /home/jenkins/.kube/config"
+                // Add your additional script here
+                sh """
+                  #!/bin/bash
+
+                  # Specify the OpenJDK version
+                  JAVA_VERSION="11"
+
+                  # Specify the download URL for OpenJDK 11 (adjust as needed)
+                  DOWNLOAD_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.9_linux-x64_bin.tar.gz"
+
+                  # Specify the installation directory
+                  INSTALL_DIR="/opt/openjdk-$JAVA_VERSION"
+
+                  # Download and extract OpenJDK
+                  echo "Downloading and installing OpenJDK $JAVA_VERSION..."
+                  mkdir -p "$INSTALL_DIR"
+                  curl -L "$DOWNLOAD_URL" -o openjdk.tar.gz
+                  tar -xf openjdk.tar.gz -C "$INSTALL_DIR" --strip-components=1
+                  rm openjdk.tar.gz
+
+                  # Set JAVA_HOME and update the PATH
+                  export JAVA_HOME="$INSTALL_DIR"
+                  export PATH="$JAVA_HOME/bin:$PATH"
+
+                  # Display Java version
+                  echo "Java installed successfully!"
+                  java -version
+
+                  # Display JAVA_HOME
+                  echo "JAVA_HOME is set to: $JAVA_HOME"
+                """
           }
         }
       }
