@@ -251,6 +251,7 @@ spec:
     }
   }
   environment {
+    JAVA_VERSION = "11"
     DOCKER_URL="ghcr.io/hyperledger"
     K8SCONTEXT="arn:aws:eks:eu-west-1:895052373684:cluster/bevel-dev-cluster-CLUSTER"
     config_file="/home/jenkins/.kube/config"
@@ -295,7 +296,6 @@ spec:
                 sh "mkdir -p /home/jenkins/besu"
                 sh "cat $KUBECONFIGFILE > /home/jenkins/.kube/config"
                 sh "chmod 600 /home/jenkins/.kube/config"
-                def JAVA_VERSION = "11"
                 // Add your additional script here
                 sh """
                   #!/bin/bash
