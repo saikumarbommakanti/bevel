@@ -295,6 +295,7 @@ spec:
                 sh "mkdir -p /home/jenkins/besu"
                 sh "cat $KUBECONFIGFILE > /home/jenkins/.kube/config"
                 sh "chmod 600 /home/jenkins/.kube/config"
+                def JAVA_VERSION = "11"
                 // Add your additional script here
                 sh """
                   #!/bin/bash
