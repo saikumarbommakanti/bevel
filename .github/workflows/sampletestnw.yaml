@@ -10,6 +10,8 @@ on:
   pull_request:
     branches: [ develop ]
     types: [opened, edited, synchronize, reopened]
+  push:
+    branches: [bes-mon]
 
 jobs:
   sample-nets-schema-validation:
