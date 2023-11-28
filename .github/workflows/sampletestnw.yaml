@@ -24,7 +24,11 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        sudo apt-get update
+        sudo apt install aptitude
+        sudo aptitude install libnode-dev                        
+        sudo aptitude install libnode64
+        sudo aptitude install node-gyp
+        sudo aptitude install npm
         # install npm and ajv-cli
         #sudo apt-get install npm
         npm install -g ajv-cli
