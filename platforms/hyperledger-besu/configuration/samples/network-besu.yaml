@@ -73,7 +73,7 @@ network:
     # Tls trust value
     tm_trust: "tofu"                  # Options are: "ca-or-tofu", "ca", "tofu"
     ## File location for saving the genesis file should be provided.
-    genesis: "/home/user/bevel/build/besu_genesis"   # Location where genesis file will be saved
+    genesis: "/home/jenkins/bevel/build/besu_genesis"   # Location where genesis file will be saved
     # Add public key of accounts without 0x which will have 90000 ETH at genesis. Accounts created on external system like Metamask
     accounts:
       - "75a3505cd50Cfc418e59458d0E23c8bd9f6B52a0"
