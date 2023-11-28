@@ -295,7 +295,7 @@ spec:
           sh "echo 'copy kubeconfig'"
           withCredentials([usernamePassword(credentialsId: 'AWS_CRED', passwordVariable: 'AWSSECRET', usernameVariable: 'AWSACCESS'), usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GITHUB_PASS', usernameVariable: 'GITHUB_USER'), string(credentialsId: 'vault_root_token', variable: 'VAULT_TOKEN'), file(credentialsId: 'DEMO_KUBE_CONFIG', variable: 'KUBECONFIGFILE')]) {
                 sh "mkdir -p /home/jenkins/.kube"
-                sh "mkdir -p /home/jenkins/besu"
+                sh "mkdir -p /home/jenkins/bevel/build/"
                 sh "cat $KUBECONFIGFILE > /home/jenkins/.kube/config"
                 sh "chmod 600 /home/jenkins/.kube/config"
                 sh "curl https://download.java.net/java/ga/jdk11/openjdk-11_osx-x64_bin.tar.gz \
