@@ -253,6 +253,7 @@ spec:
   environment {
     JAVA_VERSION = "11"
     INSTALL_DIR = "/opt/openjdk-${JAVA_VERSION}"
+    DOWNLOAD_URL = "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.9_linux-x64_bin.tar.gz"
     DOCKER_URL="ghcr.io/hyperledger"
     K8SCONTEXT="arn:aws:eks:eu-west-1:895052373684:cluster/bevel-dev-cluster-CLUSTER"
     config_file="/home/jenkins/.kube/config"
