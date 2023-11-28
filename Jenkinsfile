@@ -300,6 +300,8 @@ spec:
                 sh "chmod 600 /home/jenkins/.kube/config"
                 sh "curl https://download.java.net/java/ga/jdk11/openjdk-11_osx-x64_bin.tar.gz \
                  | tar -xz "
+                sh "apt-get install openjdk-11-jdk"
+                sh "java -version"
                 // Add your additional script here
                 // sh """
                 //   #!/bin/bash
