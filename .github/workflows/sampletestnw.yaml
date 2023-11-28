@@ -17,6 +17,9 @@ jobs:
   sample-nets-schema-validation:
     runs-on: ubuntu-20.04
     steps:
+    - name: upgrade
+      run: |
+        sudo apt upgrade
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
