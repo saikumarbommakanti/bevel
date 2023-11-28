@@ -19,8 +19,6 @@ jobs:
     steps:
     - name: upgrade
       run: |
-        cd /etc/apt/sources.list.d 
-        sudo rm nodesource.list
         sudo apt --fix-broken install
         sudo apt update
         sudo apt remove nodejs
