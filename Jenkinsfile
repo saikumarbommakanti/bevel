@@ -242,7 +242,7 @@ spec:
   serviceAccountName: jenkins-admin
   containers:
     - name: jnlp
-      image: jenkins/inbound-agent:4.11.2-4
+      image: jenkins/inbound-agent
       command: ["sh","-x","/usr/local/bin/jenkins-agent"] 
     - name: ansible
       image: ghcr.io/hyperledger/bevel-build:jdk8-0.15.0.0
