@@ -4,12 +4,13 @@ Follow these steps to set up Jenkins along with necessary plugins and credential
 1. Install Jenkins
 Download and Extract Jenkins
 
-
 # Download Jenkins Helm chart
 helm pull jenkins/jenkins
 
 # Extract Jenkins chart
+
 tar -xzvf jenkins.tar.gz
+
 Modify Storage Class in values.yaml
 Edit the values.yaml file to set the storage class to awsstorageclass.
 
@@ -24,6 +25,7 @@ master:
 
 # Upgrade and install Jenkins
 helm upgrade --install myjenkins ./jenkins
+
 2. Install Active Choices Plugin
 Install the "Active Choices" plugin in Jenkins. This can be done through the Jenkins web interface.
 
