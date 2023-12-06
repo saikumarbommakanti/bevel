@@ -141,16 +141,16 @@ jobs:
           sed -i  "s|AWS_SECRET_KEY|$AWS_SECRET_ACCESS_KEY|g" build/running-network-quoram.yaml       
           sed -i  "s|DOCKER_URL|$DOCKER_URL|g" build/running-network-quoram.yaml
           sed -i  "s|DOCKER_USERNAME|$GITHUB_USER|g" build/running-network-quoram.yaml
-          sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" build/running-network-quoram.yaml 
-          sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
-          sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
-          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" build/running-network-quoram.yaml
-          sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
-          sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
-          sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
-          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH|g" build/running-network-quoram.yaml
-          cat build/running-network-quoram.yaml
-          ansible-playbook bevel/platforms/shared/configuration/site.yaml -e build/running-network-quoram.yaml
+          # sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" build/running-network-quoram.yaml 
+          # sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
+          # sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
+          # sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" build/running-network-quoram.yaml
+          # sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
+          # sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
+          # sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
+          # sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" build/running-network-quoram.yaml
+          # sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
+          # sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
+          # sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH|g" build/running-network-quoram.yaml
+          # cat build/running-network-quoram.yaml
+          # ansible-playbook bevel/platforms/shared/configuration/site.yaml -e build/running-network-quoram.yaml
