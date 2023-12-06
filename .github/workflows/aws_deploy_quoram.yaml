@@ -118,9 +118,7 @@ jobs:
           git pull origin $GIT_BRANCH
           git push origin $GIT_BRANCH
 
-          mkdir -p build/
-
-          cp "./platforms/quoram/configuration/samples/network-quorum.yaml" "build/running-network-quoram.yaml"
+          cp "./platforms/quorum/configuration/samples/network-quorum.yaml" "build/running-network-quoram.yaml"
           cat "build/running-network-quoram.yaml"
           YAML_FILE="build/running-network-quoram.yaml"
 
