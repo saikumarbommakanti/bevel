@@ -129,7 +129,7 @@ jobs:
           CLUSTER_CONTEXT=""
           CLUSTER_CONFIG="echo $KUBECONFIG"
   
-          echo "${{ PRIVATE_KEY_PATH }}" | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
+          echo "${{ PRIVATE_KEY_PATH }}" | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
 
           sed -i "s/FLUX_SUFFIX_PLACEHOLDER/$ENV_TYPE/g" "$YAML_FILE"
           sed -i "s/INGRESS_CONTROLLER_PLACEHOLDER/$ENV_PROXY/g" "$YAML_FILE"
@@ -148,6 +148,6 @@ jobs:
           sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" "$YAML_FILE"
           sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" "$YAML_FILE"
           sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" "$YAML_FILE"
-          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" "$YAML_FILE"
+          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH|g" "$YAML_FILE"
           cat "$YAML_FILE"
           ansible-playbook bevel/platforms/shared/configuration/site.yaml -e $YAML_FILE
