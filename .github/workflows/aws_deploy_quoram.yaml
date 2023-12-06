@@ -149,8 +149,8 @@ jobs:
           sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
           sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
           sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG2|g" build/running-network-quoram.yaml
-          # sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
-          # sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
+          sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
+          sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
           # sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
           # sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" build/running-network-quoram.yaml
           # sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
