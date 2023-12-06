@@ -1,0 +1,153 @@
+name: Deploy to AWS Cluster
+
+on:
+  push:
+    branches:
+      - quoram2
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+      AWS_REGION_NAME: "${{ secrets.AWS_REGION_NAME }}"
+      AWS_SECURITY_GROUP_ID: "${{ secrets.AWS_SECURITY_GROUP_ID }}"
+      ENCODED_KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"
+      ENCODED_DEVENV_BASTION_PEM: "${{ secrets.ENCODED_DEVENV_BASTION_PEM }}"
+      VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"
+      VAULT_SERVER: "${{ secrets.VAULT_SERVER }}"
+      VAULT_PORT: "${{ secrets.VAULT_PORT }}"
+      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"
+      VAULT_BASTION: "${{ secrets.VAULT_BASTION }}"
+      VAULT_USER: "${{ vars.VAULT_USER }}"
+      CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"
+      GIT_BRANCH: quoram2
+      GITHUB_USERNAME: "${{ secrets.GH_USERNAME }}"
+      GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+      GITHUB_EMAIL_ADDR: "${{ secrets.GH_EMAIL_ADDR }}"
+      PRIVATE_KEY_PATH: "${{ secrets.PRIVATE_KEY }}"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2.4.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
+          aws-region: "${{ env.AWS_REGION_NAME }}"
+
+      - name: Set KUBECONFIG
+        run: |
+          mkdir -p ~/.kube/config/build
+          echo "${{ env.ENCODED_KUBECONFIG }}" | base64 --decode > ~/.kube/config/build/decoded-kubeconfig
+          export KUBECONFIG="~/.kube/config/build/decoded-kubeconfig"
+          # kubectl config view && echo "###############-5"
+          # kubectl config current-context && echo "###############-6"
+          # kubectl version && echo "###############-6"
+          # kubectl get nodes
+
+      - name: Install HashiCorp Vault CLI
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install vault
+
+      - name: Local DNS Mapping
+        run: |
+          sudo bash -c 'echo "127.0.0.1 ${{ env.VAULT_SERVER }}" >> /etc/hosts'
+
+      - name: Add SSH Rule to Security Group
+        run: |
+          curl https://ipv4.icanhazip.com/ > build/localip
+          aws ec2 authorize-security-group-ingress \
+            --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
+            --protocol "tcp" \
+            --port "22" \
+            --cidr "$(cat build/localip)/32" \
+            --region "${{ env.AWS_REGION_NAME }}"
+
+      - name: Create Tunnel
+        run: |
+          mkdir ~/.ssh
+          echo "${{ env.ENCODED_DEVENV_BASTION_PEM }}" | base64 --decode > ~/.ssh/vault.pem
+          chmod 600 ~/.ssh/vault.pem
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan "${{ env.VAULT_BASTION }}" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/vault.pem -f -q -N -L "${{ env.VAULT_PORT }}:${{ env.VAULT_SERVER }}:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
+        continue-on-error: true
+
+      - name: Running vault command
+        run: |
+          vault status
+          vault kv list secretsv2/
+        continue-on-error: true
+
+      - name: Remove SSH Rule from Security Group
+        run: |
+          curl https://ipv4.icanhazip.com/ > build/localip
+          aws ec2 revoke-security-group-ingress \
+            --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
+            --protocol "tcp" \
+            --port "22" \
+            --cidr "$(cat build/localip)/32" \
+            --region "${{ env.AWS_REGION_NAME }}"
+
+      - name: Git Setup
+        run: |
+          git version
+          which git
+          pwd
+          # tree ./
+
+          git remote -v
+
+          git config --list
+
+          echo "1=>" && git branch
+
+          git config --global user.name "saikumarbommakanti"
+          git config --global user.email "saikumarbommakanti@accenture.com"
+          git config --list
+          git push origin quoram
+
+          mkdir -p build/
+
+          cp "./platforms/quoram/configuration/samples/network-quorum.yaml" "build/running-network-quoram.yaml"
+          cat "build/running-network-quoram.yaml"
+          YAML_FILE="build/running-network-quoram.yaml"
+
+          tree build/
+
+          ENV_TYPE="sai"
+          ENV_PROXY="ambassador"
+          CLUSTER_CONTEXT=""
+          CLUSTER_CONFIG="echo $KUBECONFIG"
+  
+          echo "${{ PRIVATE_KEY_PATH }}" | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
+
+          sed -i "s/FLUX_SUFFIX_PLACEHOLDER/$ENV_TYPE/g" "$YAML_FILE"
+          sed -i "s/INGRESS_CONTROLLER_PLACEHOLDER/$ENV_PROXY/g" "$YAML_FILE"
+          
+          sed -i  "s|AWS_ACCESS_KEY|$AWS_ACCESS_KEY_ID|g" "$YAML_FILE"
+          sed -i  "s|AWS_SECRET_KEY|$AWS_SECRET_ACCESS_KEY|g" "$YAML_FILE"       
+          sed -i  "s|DOCKER_URL|$DOCKER_URL|g" "$YAML_FILE"
+          sed -i  "s|DOCKER_USERNAME|$GITHUB_USER|g" "$YAML_FILE"
+          sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" "$YAML_FILE" 
+          sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" "$YAML_FILE" 
+          sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" "$YAML_FILE"
+          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" "$YAML_FILE"
+          sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" "$YAML_FILE"
+          sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" "$YAML_FILE"
+          sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" "$YAML_FILE"
+          sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" "$YAML_FILE"
+          sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" "$YAML_FILE"
+          sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" "$YAML_FILE"
+          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" "$YAML_FILE"
+          cat "$YAML_FILE"
+          ansible-playbook bevel/platforms/shared/configuration/site.yaml -e $YAML_FILE
