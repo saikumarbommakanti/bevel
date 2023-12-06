@@ -126,10 +126,9 @@ jobs:
 
           ENV_TYPE="sai"
           ENV_PROXY="ambassador"
-          CLUSTER_CONTEXT=""
           CLUSTER_CONFIG="echo $KUBECONFIG"
   
-          echo "${{ PRIVATE_KEY_PATH }}" | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
+          echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
 
           sed -i "s/FLUX_SUFFIX_PLACEHOLDER/$ENV_TYPE/g" "$YAML_FILE"
           sed -i "s/INGRESS_CONTROLLER_PLACEHOLDER/$ENV_PROXY/g" "$YAML_FILE"
