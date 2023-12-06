@@ -80,6 +80,7 @@ jobs:
           chmod 600 ~/.ssh/vault.pem
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan "${{ env.VAULT_BASTION }}" >> ~/.ssh/known_hosts
+          echo "ssh=" && which ssh
           ssh -i ~/.ssh/vault.pem -f -q -N -L "${{ env.VAULT_PORT }}:${{ env.VAULT_SERVER }}:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
         continue-on-error: true
 
