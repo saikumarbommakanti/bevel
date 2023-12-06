@@ -131,6 +131,7 @@ jobs:
           ENV_TYPE="sai"
           ENV_PROXY="ambassador"
           CLUSTER_CONFIG="echo $KUBECONFIG"
+          cat $ENCODED_KUBECONFIG
   
           echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
           echo $ENCODED_KUBECONFIG | base64 --decode > ~/decoded_cluster_config && ENCODED_KUBECONFIG="~/decoded_cluster_config"
