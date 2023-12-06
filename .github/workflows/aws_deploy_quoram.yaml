@@ -64,6 +64,7 @@ jobs:
 
       - name: Add SSH Rule to Security Group
         run: |
+          mkdir -p build/
           curl https://ipv4.icanhazip.com/ > build/localip
           aws ec2 authorize-security-group-ingress \
             --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
