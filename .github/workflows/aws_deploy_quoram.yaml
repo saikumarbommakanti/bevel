@@ -158,6 +158,7 @@ jobs:
           sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
           cat build/running-network-quoram.yaml
           pwd
+          ls -al
           ansible-playbook platforms/shared/configuration/site.yaml \
           -i platforms/shared/inventory/ansible_provisioners \
           -e build/running-network-quoram.yaml
