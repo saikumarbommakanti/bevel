@@ -81,7 +81,7 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan "${{ env.VAULT_BASTION }}" >> ~/.ssh/known_hosts
           echo "ssh=" && which ssh
-          ssh -i ~/.ssh/vault.pem  "${{ env.VAULT_PORT }}:${{ env.VAULT_SERVER }}:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
+          ssh -i ~/.ssh/vault.pem  "${{ VAULT_PORT }}:${{ VAULT_SERVER }}:${{ VAULT_PORT }}" "${{ VAULT_USER }}@${{ VAULT_BASTION }}" -v
         continue-on-error: true
 
       - name: Running vault command
