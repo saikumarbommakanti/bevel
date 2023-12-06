@@ -23,7 +23,7 @@ jobs:
       VAULT_PORT: "${{ secrets.VAULT_PORT }}"
       VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"
       VAULT_BASTION: "${{ secrets.VAULT_BASTION }}"
-      VAULT_USER: "${{ vars.VAULT_USER }}"
+      VAULT_USER: "${{ secrets.VAULT_USER }}"
       CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"
       GIT_BRANCH: quoram2
       GITHUB_USERNAME: "${{ secrets.GH_USERNAME }}"
@@ -145,7 +145,7 @@ jobs:
           sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" build/running-network-quoram.yaml 
           sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
           sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
-          #sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" build/running-network-quoram.yaml
+          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" build/running-network-quoram.yaml
           # sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
           # sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
           # sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
