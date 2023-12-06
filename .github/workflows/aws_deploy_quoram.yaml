@@ -161,4 +161,4 @@ jobs:
           ls -al
           ansible-playbook platforms/shared/configuration/site.yaml \
           -i platforms/shared/inventory/ansible_provisioners \
-          -e build/running-network-quoram.yaml
+          -e build/running-network-quoram.yaml -vvv
