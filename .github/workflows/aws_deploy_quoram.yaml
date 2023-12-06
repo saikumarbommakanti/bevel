@@ -133,7 +133,7 @@ jobs:
           CLUSTER_CONFIG="echo $KUBECONFIG"
           #cat $ENCODED_KUBECONFIG
   
-          echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
+          echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
           echo $ENCODED_KUBECONFIG | base64 --decode > ~/decoded_cluster_config && ENCODED_KUBECONFIG2="~/decoded_cluster_config"
           
           cat ~/decoded_cluster_config
@@ -155,6 +155,6 @@ jobs:
           sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" build/running-network-quoram.yaml
           sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
           sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
-          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH|g" build/running-network-quoram.yaml
-          # cat build/running-network-quoram.yaml
-          # ansible-playbook bevel/platforms/shared/configuration/site.yaml -e build/running-network-quoram.yaml
+          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
+          cat build/running-network-quoram.yaml
+          ansible-playbook bevel/platforms/shared/configuration/site.yaml -e build/running-network-quoram.yaml
