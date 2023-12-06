@@ -128,9 +128,9 @@ jobs:
 
           tree build/
 
-          ENV_TYPE="sai"
-          ENV_PROXY="ambassador"
-          CLUSTER_CONFIG="echo $KUBECONFIG"
+          # ENV_TYPE="sai"
+          # ENV_PROXY="ambassador"
+          # CLUSTER_CONFIG="echo $KUBECONFIG"
           #cat $ENCODED_KUBECONFIG
   
           echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
