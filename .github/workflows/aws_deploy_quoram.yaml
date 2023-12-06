@@ -134,7 +134,7 @@ jobs:
           #cat $ENCODED_KUBECONFIG
   
           echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH="~/encoded_private_ssh_key"
-          echo $ENCODED_KUBECONFIG | base64 --decode > ~/decoded_cluster_config && ENCODED_KUBECONFIG="~/decoded_cluster_config"
+          echo $ENCODED_KUBECONFIG | base64 --decode > ~/decoded_cluster_config && ENCODED_KUBECONFIG2="~/decoded_cluster_config"
           
           cat ~/decoded_cluster_config
 
@@ -148,7 +148,7 @@ jobs:
           sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" build/running-network-quoram.yaml 
           sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
           sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
-          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG|g" build/running-network-quoram.yaml
+          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG2|g" build/running-network-quoram.yaml
           # sed -i  "s|VAULT_ADDR|$VAULT_ADDRL|g" build/running-network-quoram.yaml
           # sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
           # sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
