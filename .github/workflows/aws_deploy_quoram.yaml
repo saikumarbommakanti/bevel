@@ -115,7 +115,8 @@ jobs:
           git config --global user.name "saikumarbommakanti"
           git config --global user.email "saikumarbommakanti@accenture.com"
           git config --list
-          git push origin quoram
+          git pull origin $GIT_BRANCH
+          git push origin $GIT_BRANCH
 
           mkdir -p build/
 
