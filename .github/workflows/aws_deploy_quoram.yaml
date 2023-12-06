@@ -83,7 +83,8 @@ jobs:
           echo "ssh=" && which ssh
           cat ~/.ssh/vault.pem
           #ssh -i ~/.ssh/vault.pem "${{ env.VAULT_PORT }}:127.0.0.1:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
-          ssh -i ~/.ssh/vault.pem -f -q -N -L $VAULT_PORT:$VAULT_SERVER:$VAULT_PORT $VAULT_USER@$VAULT_BASTION 
+          #ssh -i ~/.ssh/vault.pem -f -q -N -L $VAULT_PORT:$VAULT_SERVER:$VAULT_PORT $VAULT_USER@$VAULT_BASTION 
+          ssh -i ~/.ssh/vault.pem -f -q -N -L 20002:vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002 dev@2.bastion.dev.aws.blockchaincloudpoc-develop.com
         continue-on-error: true
 
       - name: Running vault command
