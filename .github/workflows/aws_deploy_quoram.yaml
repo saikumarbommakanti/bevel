@@ -30,6 +30,7 @@ jobs:
       GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
       GITHUB_EMAIL_ADDR: "${{ secrets.GH_EMAIL_ADDR }}"
       PRIVATE_KEY_PATH: "${{ secrets.PRIVATE_KEY }}"
+      DOCKER_URL: ghcr.io/hyperledger
 
     steps:
       - name: Checkout Repository
@@ -175,4 +176,4 @@ jobs:
           
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
-          -e @build/running-network-quoram.yaml
+          -e @build/running-network-quoram.yaml -e "reset=true"
