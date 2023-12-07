@@ -91,6 +91,7 @@ jobs:
         run: |
           vault status
           vault kv list secretsv2/
+          vault kv delete sys/auth/quorumcarrier
         continue-on-error: true
 
       - name: Remove SSH Rule from Security Group
@@ -161,6 +162,8 @@ jobs:
           export PATH=$PATH:~/bin
           pip3 install openshift=='0.12.0'
           ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
+
+          
 
       - name: Deploy network
         run: |
