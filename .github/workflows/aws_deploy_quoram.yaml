@@ -155,7 +155,7 @@ jobs:
           sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
           sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
           sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
-          #cat build/running-network-quoram.yaml
+          cat build/running-network-quoram.yaml
           pwd
           ls -al
           mkdir -p ~/bin
