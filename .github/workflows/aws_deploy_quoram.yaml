@@ -81,8 +81,7 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan "${{ env.VAULT_BASTION }}" >> ~/.ssh/known_hosts
           echo "ssh=" && which ssh
-          cat ~/.ssh/vault.pem
-          ssh -i ~/.ssh/vault.pem "${{ env.VAULT_PORT }}:127.0.0.1:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
+          ssh -i ~/.ssh/vault.pem -f -q -N -L "${{ env.VAULT_PORT }}:${{ env.VAULT_SERVER }}:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}"
           #ssh -i ~/.ssh/vault.pem -f -q -N -L $VAULT_PORT:$VAULT_SERVER:$VAULT_PORT $VAULT_USER@$VAULT_BASTION 
           #ssh -i ~/.ssh/vault.pem -f -q -N -L 20002:vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002 dev@2.bastion.dev.aws.blockchaincloudpoc-develop.com
         continue-on-error: true
@@ -123,7 +122,7 @@ jobs:
           git push origin $GIT_BRANCH
 
           cp ./platforms/quorum/configuration/samples/network-quorum.yaml build/running-network-quoram.yaml
-          cat "build/running-network-quoram.yaml"
+          #cat "build/running-network-quoram.yaml"
           YAML_FILE="build/running-network-quoram.yaml"
 
           tree build/
@@ -136,7 +135,7 @@ jobs:
           echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
           echo $ENCODED_KUBECONFIG | base64 --decode > ~/decoded_cluster_config && ENCODED_KUBECONFIG2="~/decoded_cluster_config"
           
-          cat ~/decoded_cluster_config
+          #cat ~/decoded_cluster_config
 
           sed -i "s/FLUX_SUFFIX_PLACEHOLDER/$ENV_TYPE/g" build/running-network-quoram.yaml
           sed -i "s/INGRESS_CONTROLLER_PLACEHOLDER/$ENV_PROXY/g" build/running-network-quoram.yaml
@@ -156,7 +155,7 @@ jobs:
           sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
           sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
           sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
-          cat build/running-network-quoram.yaml
+          #cat build/running-network-quoram.yaml
           pwd
           ls -al
           mkdir -p ~/bin
