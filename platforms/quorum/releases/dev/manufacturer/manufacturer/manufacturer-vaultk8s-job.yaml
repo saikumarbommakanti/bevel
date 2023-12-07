@@ -25,11 +25,11 @@ spec:
 
     vault:
       role: vault-role
-      address: 
+      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
       authpath: quorummanufacturer
       policy: vault-crypto-manufacturer-quo-manufacturer-ro
       policydata: "{\n  \"policy\": \"path \\\"secretsv2/data/manufacturer-quo/crypto/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\", \\\"create\\\", \\\"update\\\"]\n  }\n  path \\\"secretsv2/data/manufacturer-quo/smartContracts/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\"]\n  }\"\n}"
-      secret_path: secretsv2
+      secret_path: manufacturer
       imagesecretname: regcred
 
     k8s:
