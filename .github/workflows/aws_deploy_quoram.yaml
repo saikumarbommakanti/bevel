@@ -175,6 +175,7 @@ jobs:
           localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
           echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
           
+          cat /etc/lsb-release
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
           -e @build/running-network-quoram.yaml -vvv
