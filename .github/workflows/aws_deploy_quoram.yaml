@@ -44,9 +44,9 @@ jobs:
 
       - name: Set KUBECONFIG
         run: |
-          mkdir -p ~/.kube/config/build
-          echo "${{ env.ENCODED_KUBECONFIG }}" | base64 --decode > ~/.kube/config/build/decoded-kubeconfig
-          export KUBECONFIG="~/.kube/config/build/decoded-kubeconfig"
+          mkdir -p /home/runner/.kube/config/build
+          echo "${{ env.ENCODED_KUBECONFIG }}" | base64 --decode > /home/runner/.kube/config/build/decoded-kubeconfig
+          export KUBECONFIG="/home/runner/.kube/config/build/decoded-kubeconfig"
           # kubectl config view && echo "###############-5"
           # kubectl config current-context && echo "###############-6"
           # kubectl version && echo "###############-6"
@@ -133,7 +133,7 @@ jobs:
           #cat $ENCODED_KUBECONFIG
   
           echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
-          ENCODED_KUBECONFIG2="~/.kube/config/build/decoded-kubeconfig"
+          ENCODED_KUBECONFIG2="/home/runner/.kube/config/build/decoded-kubeconfig"
           
           #cat ~/decoded_cluster_config
 
@@ -157,6 +157,7 @@ jobs:
           sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
           cat build/running-network-quoram.yaml
           pwd
+          cat /etc/lsb-release
           ls -al
           mkdir -p ~/bin
           export PATH=$PATH:~/bin
@@ -175,7 +176,6 @@ jobs:
           localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
           echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
           
-          sudo cat /etc/lsb-release
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
           -e @build/running-network-quoram.yaml
