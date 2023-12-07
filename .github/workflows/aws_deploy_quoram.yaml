@@ -177,4 +177,4 @@ jobs:
           
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
-          -e build/running-network-quoram.yaml -vvv
+          -e @build/running-network-quoram.yaml -vvv
