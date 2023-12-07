@@ -162,8 +162,19 @@ jobs:
           export PATH=$PATH:~/bin
           pip3 install openshift=='0.12.0'
           ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
+
+      - name: Deploy network
+        run: |
+          echo "14=>" && tree build
+          # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
+          sudo mkdir -p /etc/ansible
+          sudo touch /etc/ansible/hosts
+          echo "[ansible_provisioners:children]
+          local
+          [local]
+          localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
+          echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
           
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
-          -i platforms/shared/inventory/ansible_provisioners \
           -e build/running-network-quoram.yaml -vvv
