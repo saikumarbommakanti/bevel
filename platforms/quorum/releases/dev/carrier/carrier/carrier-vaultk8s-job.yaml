@@ -25,11 +25,11 @@ spec:
 
     vault:
       role: vault-role
-      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
+      address: 
       authpath: quorumcarrier
       policy: vault-crypto-carrier-quo-carrier-ro
       policydata: "{\n  \"policy\": \"path \\\"secretsv2/data/carrier-quo/crypto/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\", \\\"create\\\", \\\"update\\\"]\n  }\n  path \\\"secretsv2/data/carrier-quo/smartContracts/*\\\" {\n    capabilities = [\\\"read\\\", \\\"list\\\"]\n  }\"\n}"
-      secret_path: carrier
+      secret_path: secretsv2
       imagesecretname: regcred
 
     k8s:
