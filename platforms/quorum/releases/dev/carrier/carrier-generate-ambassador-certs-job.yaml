@@ -25,7 +25,7 @@ spec:
       imagePullSecret: regcred
       pullPolicy: IfNotPresent
     vault:
-      address: 
+      address: http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002
       role: vault-role
       authpath: quorumcarrier
       serviceaccountname: vault-auth
