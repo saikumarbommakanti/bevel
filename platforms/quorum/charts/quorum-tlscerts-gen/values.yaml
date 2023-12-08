@@ -13,7 +13,7 @@
 #############################################################
 # Provide the name of the node
 # Eg. name:
-name: node_1
+name: node-1
 # This section contains the quorum metadata.
 metadata:
   # Provide the namespace for the quorum Certs Generator.
