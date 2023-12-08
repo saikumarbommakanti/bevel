@@ -36,8 +36,8 @@ spec:
       kubernetes_url: https://300125A3D09FFA0A178EC3522C96BBB8.gr7.eu-west-1.eks.amazonaws.com
     
     rbac:
-      create: False
+      create: True
 
     serviceAccount:
-      create: False
+      create: True
       name: vault-auth
