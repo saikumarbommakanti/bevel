@@ -118,17 +118,17 @@
   #     loop_var: org
 
   # Build istanbul binary and place it in the bin directory
-  - name: "Setup istanbul-tools"
-    include_role:
-      name: setup/istanbul
-    loop: "{{ network['organizations'] }}"
-    when: network.config.consensus == 'ibft'
+  # - name: "Setup istanbul-tools"
+  #   include_role:
+  #     name: setup/istanbul
+  #   loop: "{{ network['organizations'] }}"
+  #   when: network.config.consensus == 'ibft'
 
-  # Generate the genesis.json and nodekey/enode for all orgs of the network
-  - name: "Generate genesis and nodekey/enode for the network"
-    include_role:
-      name: create/genesis_nodekey
-    when: network.config.consensus == 'ibft'
+  # # Generate the genesis.json and nodekey/enode for all orgs of the network
+  # - name: "Generate genesis and nodekey/enode for the network"
+  #   include_role:
+  #     name: create/genesis_nodekey
+  #   when: network.config.consensus == 'ibft'
 
   # Generate the crypto material for quorum network based on ibft consensus and store it in vault
   - name: "Generate crypto material for IBFT consensus"
