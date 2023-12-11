@@ -54,6 +54,7 @@ jobs:
           # kubectl config current-context && echo "###############-6"
           # kubectl version && echo "###############-6"
           # kubectl get nodes
+          ansible --version
 
       - name: Install HashiCorp Vault CLI
         run: |
