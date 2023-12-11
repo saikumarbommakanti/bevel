@@ -5,7 +5,7 @@ on:
     branches:
       - quoram2
   workflow_dispatch:
-    paths-ignore:  #Notes (1)
+    paths-ignore:
       - 'docs/**'
       - '**/charts/**'
       - '**/releases/**'
@@ -122,8 +122,8 @@ jobs:
 
           echo "1=>" && git branch
 
-          git config --global user.name "USER_NAME" --> #Notes Update here (2)
-          git config --global user.email "USER@EMAIL"   ,,
+          git config --global user.name "saikumarbommakanti"
+          git config --global user.email "sai.kumar.bommakanti@accenture.com"
           git config --list
           git pull origin $GIT_BRANCH
           git push origin $GIT_BRANCH
