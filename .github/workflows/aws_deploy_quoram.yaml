@@ -126,7 +126,7 @@ jobs:
           git config --global user.email "sai.kumar.bommakanti@accenture.com"
           git config --list
           git pull origin $GIT_BRANCH
-          git push origin $GIT_BRANCH
+          git push origin $GIT_BRANCH -f
 
           cp ./platforms/quorum/configuration/samples/network-quorum.yaml build/running-network-quoram.yaml
           #cat "build/running-network-quoram.yaml"
