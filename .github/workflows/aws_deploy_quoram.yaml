@@ -184,4 +184,4 @@ jobs:
           
           pwd
           ansible-playbook platforms/shared/configuration/site.yaml \
-          -e @build/running-network-quoram.yaml -e "reset=true"
+          -e @build/running-network-quoram.yaml
