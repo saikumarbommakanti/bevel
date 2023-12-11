@@ -5,6 +5,10 @@ on:
     branches:
       - quoram2
   workflow_dispatch:
+    paths-ignore:  #Notes (1)
+      - 'docs/**'
+      - '**/charts/**'
+      - '**/releases/**'
 
 jobs:
   deployment: 
@@ -119,8 +123,8 @@ jobs:
 
           echo "1=>" && git branch
 
-          git config --global user.name "saikumarbommakanti"
-          git config --global user.email "saikumarbommakanti@accenture.com"
+          git config --global user.name "USER_NAME" --> #Notes Update here (2)
+          git config --global user.email "USER@EMAIL"   ,,
           git config --list
           git pull origin $GIT_BRANCH
           git push origin $GIT_BRANCH
@@ -170,7 +174,7 @@ jobs:
       - name: Deploy network
         run: |
           echo "14=>" && tree build
-          # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
+          # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts #Notes (3)
           sudo mkdir -p /etc/ansible
           sudo touch /etc/ansible/hosts
           echo "[ansible_provisioners:children]
