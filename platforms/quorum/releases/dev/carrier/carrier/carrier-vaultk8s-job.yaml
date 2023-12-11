@@ -39,5 +39,5 @@ spec:
       create: False
 
     serviceAccount:
-      create: True
+      create: False
       name: vault-auth
