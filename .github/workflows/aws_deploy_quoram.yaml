@@ -54,6 +54,8 @@ jobs:
           # kubectl config current-context && echo "###############-6"
           # kubectl version && echo "###############-6"
           # kubectl get nodes
+          oc version
+
 
       - name: Install HashiCorp Vault CLI
         run: |
