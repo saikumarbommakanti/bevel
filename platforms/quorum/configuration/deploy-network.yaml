@@ -117,7 +117,7 @@
     loop_control:
       loop_var: org
 
-  Build istanbul binary and place it in the bin directory
+  #Build istanbul binary and place it in the bin directory
   - name: "Setup istanbul-tools"
     include_role:
       name: setup/istanbul
