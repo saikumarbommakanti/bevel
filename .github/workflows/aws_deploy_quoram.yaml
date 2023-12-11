@@ -55,18 +55,11 @@ jobs:
           # kubectl version && echo "###############-6"
           # kubectl get nodes
 
-      - name: Install Python and pip
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install ansible==2.10.7
-
       - name: Install HashiCorp Vault CLI
         run: |
           wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install vault
-          ansible --version
 
       - name: Local DNS Mapping
         run: |
