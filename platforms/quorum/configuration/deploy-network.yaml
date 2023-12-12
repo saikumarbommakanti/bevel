@@ -17,38 +17,38 @@
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:
   # delete build directory
-  # - name: Remove build directory
-  #   file:
-  #     path: "./build"
-  #     state: absent
+  - name: Remove build directory
+    file:
+      path: "./build"
+      state: absent
 
-  # # create namespace
-  # - name: "Create namespace"
-  #   include_role:
-  #     name: create/namespace
-  #   vars:
-  #     component_ns: "{{ item.name | lower }}-quo"
-  #     organisation: "{{ item.name | lower }}"
-  #     kubernetes: "{{ item.k8s }}"
-  #     gitops: "{{ item.gitops }}"
-  #   loop: "{{ network['organizations'] }}"
+  # create namespace
+  - name: "Create namespace"
+    include_role:
+      name: create/namespace
+    vars:
+      component_ns: "{{ item.name | lower }}-quo"
+      organisation: "{{ item.name | lower }}"
+      kubernetes: "{{ item.k8s }}"
+      gitops: "{{ item.gitops }}"
+    loop: "{{ network['organizations'] }}"
   
-  # # Create Storageclass
-  # - name: Create Storage Class
-  #   include_role:
-  #     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
-  #   vars:
-  #     org_name: "{{ org.name | lower }}"
-  #     cloudProvider: "{{ org.cloud_provider | lower }}"
-  #     sc_name: "{{ org_name }}-{{ cloudProvider }}-storageclass"
-  #     region: "{{ org.k8s.region | default('eu-west-1') }}"
-  #     git_dir: "{{ org.gitops.release_dir }}"
-  #     kubernetes: "{{ org.k8s }}"
-  #     charts_dir: "platforms/shared/charts"
-  #     platform_suffix: "quo"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  # Create Storageclass
+  - name: Create Storage Class
+    include_role:
+      name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
+    vars:
+      org_name: "{{ org.name | lower }}"
+      cloudProvider: "{{ org.cloud_provider | lower }}"
+      sc_name: "{{ org_name }}-{{ cloudProvider }}-storageclass"
+      region: "{{ org.k8s.region | default('eu-west-1') }}"
+      git_dir: "{{ org.gitops.release_dir }}"
+      kubernetes: "{{ org.k8s }}"
+      charts_dir: "platforms/shared/charts"
+      platform_suffix: "quo"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
   #Setup script for Vault and OS Package Manager
   - name: "Setup script for Vault and OS Package Manager"
