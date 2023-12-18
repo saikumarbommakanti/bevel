@@ -16,7 +16,7 @@ network:
 
   #Environment section for Kubernetes setup
   env:
-    type: "sadev"              # tag for the environment. Important to run multiple flux on single cluster
+    type: "dev"              # tag for the environment. Important to run multiple flux on single cluster
     proxy: ambassador               # value has to be 'ambassador' as 'haproxy' has not been implemented for Quorum
     proxy_namespace: "ambassador"
     #  These ports are enabled per cluster, so if you have multiple clusters you do not need so many ports
