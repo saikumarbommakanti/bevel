@@ -99,6 +99,18 @@
     check_serviceAccount: false
   when: serviceAccount_data.resources|length > 0 
 
+- name: Print check_clusterRoleBinding # NEW
+  debug:
+    var: check_clusterRoleBinding
+ 
+- name: Print check_serviceAccount # NEW
+  debug:
+    var: check_serviceAccount
+ 
+- name: Stop for 20 seconds
+  pause:
+    seconds: 20
+
 #####################################################################################################################
 # This tasks generate vault_kubernetes helmrelease file
 - name: "Create value file for vault_kubernetes"
@@ -112,8 +124,8 @@
     kubernetes_url: "{{ kubernetes_server_url.stdout }}"
     alpine_image: "ghcr.io/hyperledger/bevel-alpine:latest"
     policydata: "{{ lookup('file', '{{ playbook_dir }}/build/vault-crypto-{{ component_type }}-{{ name }}-ro.hcl') }}"
-    create_serviceAccount: "{{ check_serviceAccount }}"
-    create_clusterRoleBinding: "{{ check_clusterRoleBinding }}"
+    create_serviceAccount: "{{ check_serviceAccount | lower }} "
+    create_clusterRoleBinding: "{{ check_clusterRoleBinding | lower }}"
     values_dir: "{{ playbook_dir }}/../../../{{ gitops.release_dir }}/{{ org_name | default(name) }}"
 
 # Git Push : Pushes the above generated files to git directory 

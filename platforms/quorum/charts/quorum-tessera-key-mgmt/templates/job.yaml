@@ -34,9 +34,11 @@ spec:
         - name: scripts-volume
           configMap:
             name: bevel-vault-script
+            defaultMode: 0777
         - name: package-manager
           configMap:
             name: package-manager
+            defaultMode: 0777
       containers:
         - name:  "tessera-crypto"
           image: "{{ $.Values.image.repository }}"
@@ -58,7 +60,11 @@ spec:
             value: "{{ $.Values.vault.tmprefix }}"
           - name: VAULT_TYPE
             value: "{{ $.Values.vault.type }}"
+<<<<<<< HEAD
+          command: ["/bin/sh", "-c", "mv /scripts /home/","chmod 777 /home/bevel-vault.sh /home/package-manager.sh"]
+=======
           command: ["/bin/bash", "-c"]
+>>>>>>> upstream/develop
           args:
             - |-
               #!/usr/bin/env bash
@@ -70,7 +76,7 @@ spec:
               packages_to_install="jq curl"
               install_packages "$packages_to_install"
 
-              # Calling a function to retrieve the vault token.
+              # Callings a function to retrieve the vault token.
               vaultBevelFunc "init"
               # Generate tessera keys
               export HASHICORP_TOKEN="${VAULT_TOKEN}"

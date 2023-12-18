@@ -34,7 +34,7 @@
     with_items: "{{ network.organizations }}"
     when: network.env.type != 'operator'
 
-  # Prepare ports for Indy
+  #Prepare ports for Indy
   - name: Prepare nodes and clients ports for ambassador
     vars:
       name: "{{ organizationItem.name }}"
