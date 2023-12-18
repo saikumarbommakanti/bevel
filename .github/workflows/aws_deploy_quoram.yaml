@@ -3,7 +3,7 @@ name: Deploy to AWS Cluster
 on:
   push:
     branches:
-      #- quoram4
+      - quoram4
   workflow_run:
     workflows: ["Manual Workflow"]
     types:
