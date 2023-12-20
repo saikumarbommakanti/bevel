@@ -1,0 +1,61 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: maonevalidator2quorum
+  namespace: maone-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: maonevalidator2quorum
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-validator-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-dev
+      namespace: flux-dev
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: maone-quo
+      labels:
+    images:
+      node: quorumengineering/quorum:23.4.0
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    node:
+      name: validator2
+      status: default
+      consensus: ibft
+      subject: O=Validator2,OU=Validator2,L=47.38/8.54/Zurich,C=CH
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      keystore: keystore_1
+      servicetype: ClusterIP
+      lock: false
+      ports:
+        rpc: 8546
+        quorum: 21000
+    vault:
+      address: http://vault.dev.aws.blockchaincloudpoc-develop.com:20001
+      secretprefix: secretsv2/data/maone-quo/crypto/validator2
+      serviceaccountname: vault-auth
+      keyname: quorum
+      role: vault-role
+      authpath: quorummaone
+      type: hashicorp
+    genesis: ewogICJjb25maWciOiB7CiAgICAiY2hhaW5JZCI6IDEwLAogICAgImhvbWVzdGVhZEJsb2NrIjogMCwKICAgICJlaXAxNTBCbG9jayI6IDAsCiAgICAiZWlwMTUwSGFzaCI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLAogICAgImVpcDE1NUJsb2NrIjogMCwKICAgICJlaXAxNThCbG9jayI6IDAsCiAgICAiYnl6YW50aXVtQmxvY2siOiAwLAogICAgImNvbnN0YW50aW5vcGxlQmxvY2siOiAwLAogICAgInBldGVyc2J1cmdCbG9jayI6IDAsCiAgICAiaXN0YW5idWxCbG9jayI6IDAsCiAgICAiaXN0YW5idWwiOiB7CiAgICAgICJlcG9jaCI6IDMwMDAwLAogICAgICAicG9saWN5IjogMCwKICAgICAgImNlaWwyTmJ5M0Jsb2NrIjogMAogICAgfSwKICAgICJ0eG5TaXplTGltaXQiOiAxMjgsCiAgICAicWlwNzE0QmxvY2siOiAwLAogICAgImlzTVBTIjogZmFsc2UsCiAgICAiaXNRdW9ydW0iOiB0cnVlLAogICAgIm1heENvZGVTaXplQ29uZmlnIjogWwogICAgICB7CiAgICAgICAgImJsb2NrIjogMCwKICAgICAgICAic2l6ZSI6IDEyOAogICAgICB9CiAgICBdCiAgfSwKICAibm9uY2UiOiAiMHgwIiwKICAidGltZXN0YW1wIjogIjB4NjU4Mjg5YTciLAogICJleHRyYURhdGEiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwZjg2ZmVhOTQ1YjRkNGRhYjQ2NmIwYTRmYTBhOGIyNDhjZjlkNTA0NWI3Yzg4NTUyOTRkYjhmOGRlMjE3NDZkZDhjZjgxOWVlM2U1YjVkOTEzMzQ5OTk2NTYzYjg0MTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBjMCIsCiAgImdhc0xpbWl0IjogIjB4ZTAwMDAwMDAiLAogICJkaWZmaWN1bHR5IjogIjB4MSIsCiAgIm1peEhhc2giOiAiMHg2Mzc0Njk2MzYxNmMyMDYyNzk3YTYxNmU3NDY5NmU2NTIwNjY2MTc1NmM3NDIwNzQ2ZjZjNjU3MjYxNmU2MzY1IiwKICAiY29pbmJhc2UiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAiYWxsb2MiOiB7CiAgICAiNWI0ZDRkYWI0NjZiMGE0ZmEwYThiMjQ4Y2Y5ZDUwNDViN2M4ODU1MiI6IHsKICAgICAgImJhbGFuY2UiOiAiMHg0NDZjM2IxNWY5OTI2Njg3ZDJjNDA1MzRmZGI1NjQwMDAwMDAwMDAwMDAiCiAgICB9LAogICAgImRiOGY4ZGUyMTc0NmRkOGNmODE5ZWUzZTViNWQ5MTMzNDk5OTY1NjMiOiB7CiAgICAgICJiYWxhbmNlIjogIjB4NDQ2YzNiMTVmOTkyNjY4N2QyYzQwNTM0ZmRiNTY0MDAwMDAwMDAwMDAwIgogICAgfQogIH0sCiAgIm51bWJlciI6ICIweDAiLAogICJnYXNVc2VkIjogIjB4MCIsCiAgInBhcmVudEhhc2giOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgp9
+    staticnodes: [
+    "enode://5dd6a01ec17935f4dc153fa4fb976848651b5762e2eb9be09bfe72cbe5734df4d563c88dfa39c98188a4ba1c09158acbcbfe7d8cb23fa5ce1e95315e37c75015@caone.saikb.dev.aws.blockchaincloudpoc-develop.com:15010?discport=0",
+    "enode://94cfa03aff7e3e6c34e078c83914dc2db1528ad6e8ec5f18416cc2c892f5afb82d5bddb4079a80c26bcd17766948be2b76112a4760d1769c3150bfa8d295d245@validator1.saikb.dev.aws.blockchaincloudpoc-develop.com:15014?discport=0",
+    "enode://9ce90a0ef51fa6dd43ebc0984582e84d88c7383a26f3132a3d14b91183bced6db00d6e587f940fc686ecb3224cee21f2bda1c68a6152fee76cac182b77c9e6ec@maone.saikb.dev.aws.blockchaincloudpoc-develop.com:15020?discport=0",
+    "enode://03402a022513b49fb06dbdcc54bd3b93f946a1c173f41b9816b3964aba06f8e772902dd1184be379d9a59ca9a61391d32fad8bc73ec9bc26fe916f6b3cf7f1f8@validator2.saikb.dev.aws.blockchaincloudpoc-develop.com:15024?discport=0"
+]
+    proxy:
+      provider: "ambassador"
+      external_url: saikb.dev.aws.blockchaincloudpoc-develop.com
+      quorumport: 15024
+    storage:
+      storageclassname: maone-aws-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
