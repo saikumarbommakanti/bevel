@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: maonemaonetessera
+  namespace: maone-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: maonemaonetessera
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-tessera-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-dev
+      namespace: flux-dev
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: maone-quo
+      labels:
+    images:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      tessera: quorumengineering/tessera:hashicorp-23.4.0
+      busybox: busybox
+      mysql: mysql/mysql-server:5.7
+      pullPolicy: IfNotPresent
+    node:
+      name: maone
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      servicetype: ClusterIP
+      ports:
+        tm: 443
+        db: 3306
+      dbname: demodb
+      mysqluser: demouser
+    vault:
+      address: http://vault.dev.aws.blockchaincloudpoc-develop.com:20001
+      secretengine: secretsv2
+      tmsecretpath: maone-quo/crypto/maone/tm
+      secretprefix: secretsv2/data/maone-quo/crypto/maone
+      serviceaccountname: vault-auth
+      keyname: quorum
+      role: vault-role
+      authpath: quorummaone
+      type: hashicorp
+    tessera:
+      dburl: "jdbc:mysql://maone-tessera:3306/demodb"
+      dbusername: demouser
+      url: "https://maone.saikb.dev.aws.blockchaincloudpoc-develop.com:443"
+      clienturl: "http://maone-tessera:8888" #TODO: Enable tls strict for q2t
+      othernodes:
+        - url: https://carrier.test.quorum.blockchaincloudpoc.com
+        - url: https://manufacturer.test.quorum.blockchaincloudpoc.com
+        - url: https://store.test.quorum.blockchaincloudpoc.com
+        - url: https://warehouse.test.quorum.blockchaincloudpoc.com
+      tls: "STRICT"
+      trust: "TOFU"
+    proxy:
+      provider: "ambassador"
+      external_url: maone.saikb.dev.aws.blockchaincloudpoc-develop.com
+      clientport: 8888
+    storage:
+      storageclassname: maone-aws-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
