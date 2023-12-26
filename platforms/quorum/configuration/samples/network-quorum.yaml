@@ -69,7 +69,7 @@ network:
     - organization:
       name: carrier
       unit: Carrier
-      external_url_suffix: saikb.dev.aws.blockchaincloudpoc-develop.com   # This is the url suffix that will be added in DNS recordset. Must be different for different clusters
+      external_url_suffix: "EXTERNAL_URL_SUFFIX"   # This is the url suffix that will be added in DNS recordset. Must be different for different clusters
       cloud_provider: aws   # Options: aws, azure, gcp
       aws:
         access_key: "AWS_ACCESS_KEY"        # AWS Access key, only used when cloud_provider=aws
@@ -139,7 +139,7 @@ network:
     - organization:
       name: manufacturer
       unit: Manufacturer
-      external_url_suffix: saikb.dev.aws.blockchaincloudpoc-develop.com
+      external_url_suffix: "EXTERNAL_URL_SUFFIX"
       cloud_provider: aws   # Options: aws, azure, gcp
       aws:
         access_key: "AWS_ACCESS_KEY"        # AWS Access key, only used when cloud_provider=aws
