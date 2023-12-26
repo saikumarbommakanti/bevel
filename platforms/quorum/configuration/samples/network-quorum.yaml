@@ -59,8 +59,8 @@ network:
       - "https://store.test.quorum.blockchaincloudpoc.com"
       - "https://warehouse.test.quorum.blockchaincloudpoc.com"
 
-    staticnodes: "/home/user/bevel/build/quorum_staticnodes" # Location where staticnodes will be saved
-    genesis: "/home/user/bevel/build/quorum_genesis"   # Location where genesis file will be saved
+    staticnodes: "/home/runner/bevel/build/quorum_staticnodes" # Location where staticnodes will be saved
+    genesis: "/home/runner/bevel/build/quorum_genesis"   # Location where genesis file will be saved
     # NOTE for the above paths, the directories should exist
 
   # Allows specification of one or many organizations that will be connecting to a network.
@@ -69,7 +69,7 @@ network:
     - organization:
       name: carrier
       unit: Carrier
-      external_url_suffix: test.quorum.blockchaincloudpoc.com   # This is the url suffix that will be added in DNS recordset. Must be different for different clusters
+      external_url_suffix: saikb.dev.aws.blockchaincloudpoc-develop.com   # This is the url suffix that will be added in DNS recordset. Must be different for different clusters
       cloud_provider: aws   # Options: aws, azure, gcp
       aws:
         access_key: "AWS_ACCESS_KEY"        # AWS Access key, only used when cloud_provider=aws
@@ -89,7 +89,7 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https" # Option for git over https or ssh
-        git_url: "https://github.com/GIT_USERNAME/bevel.git"         # Gitops https or ssh url for flux value files
+        git_url: "https://github.com/GIT_USERNAME/bevel-3.git"         # Gitops https or ssh url for flux value files
         branch: "GIT_BRANCH"           # Git branch where release is being made
         release_dir: "platforms/quorum/releases/dev" # Relative Path in the Git repo for flux sync per environment.
         chart_source: "platforms/quorum/charts"     # Relative Path where the Helm charts are stored in Git repo
@@ -139,7 +139,7 @@ network:
     - organization:
       name: manufacturer
       unit: Manufacturer
-      external_url_suffix: test.quorum.blockchaincloudpoc.com
+      external_url_suffix: saikb.dev.aws.blockchaincloudpoc-develop.com
       cloud_provider: aws   # Options: aws, azure, gcp
       aws:
         access_key: "AWS_ACCESS_KEY"        # AWS Access key, only used when cloud_provider=aws
