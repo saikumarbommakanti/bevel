@@ -53,7 +53,29 @@ jobs:
           pip install jmespath
           pip install jinja2-time
           pip install ansible
+
+      - name: Set and Use versions
+        run: |
+          echo "versions:" > versions.yaml
+          echo "  - name: kubectl" >> versions.yaml
+          echo "    client: v1.19.8" >> versions.yaml
+          echo "    runner: v1.29.0" >> versions.yaml
           
+          echo "  - name: helm" >> versions.yaml
+          echo "    client: v3.6.2" >> versions.yaml
+          echo "    runner: v3.13.1" >> versions.yaml
+
+          # Repeat the above for other tools
+
+          echo "  - name: openshift" >> versions.yaml
+          echo "    client: 0.13.1" >> versions.yaml
+          echo "    runner: 0.13.2" >> versions.yaml
+
+          cat versions.yaml
+
+          # Use the versions in the runner
+          cat versions.yaml >> $GITHUB_ENV
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -183,7 +205,7 @@ jobs:
           cat build/running-network-quoram.yaml
           mkdir -p ~/bin
           export PATH=$PATH:~/bin
-          pip3 install openshift=='0.12.0'
+          pip3 install openshift=='0.13.0'
           ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
 
       - name: Deploy network
