@@ -34,7 +34,7 @@ network:
   # Please ensure all required images are built and stored in this registry.
   # Do not check-in docker_password.
   docker:
-    url: "${DOCKER_URL}"
+    url: "DOCKER_URL"
     username: "DOCKER_USERNAME"
     password: "DOCKER_PASSWORD"
 
