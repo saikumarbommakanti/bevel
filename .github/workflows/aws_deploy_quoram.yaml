@@ -65,6 +65,7 @@ jobs:
           echo "openjdk_version=1.8.0_392" >> $GITHUB_ENV
           echo "jinja_version=3.1.2" >> $GITHUB_ENV
           echo "python_version=3.8.10" >> $GITHUB_ENV
+          echo "pip3_version=23.2.1" >> $GITHUB_ENV
           echo "openshift_version=0.13.1" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
