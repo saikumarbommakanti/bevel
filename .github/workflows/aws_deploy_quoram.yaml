@@ -196,7 +196,7 @@ jobs:
           cat build/running-network-quoram.yaml
           mkdir -p ~/bin
           export PATH=$PATH:~/bin
-          pip3 install openshift=='0.13.0'
+          # pip3 install openshift=='0.13.0'
           ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
 
       - name: Deploy network
