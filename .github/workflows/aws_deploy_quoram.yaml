@@ -54,27 +54,19 @@ jobs:
           pip install jinja2-time
           pip install ansible
 
-      - name: Set and Use versions
+      - name: Set versions
         run: |
-          echo "versions:" > versions.yaml
-          echo "  - name: kubectl" >> versions.yaml
-          echo "    client: v1.19.8" >> versions.yaml
-          echo "    runner: v1.29.0" >> versions.yaml
-          
-          echo "  - name: helm" >> versions.yaml
-          echo "    client: v3.6.2" >> versions.yaml
-          echo "    runner: v3.13.1" >> versions.yaml
-
-          # Repeat the above for other tools
-
-          echo "  - name: openshift" >> versions.yaml
-          echo "    client: 0.13.1" >> versions.yaml
-          echo "    runner: 0.13.2" >> versions.yaml
-
-          cat versions.yaml
-
-          # Use the versions in the runner
-          cat versions.yaml >> $GITHUB_ENV
+          echo "kubectl_version=v1.19.8" >> $GITHUB_ENV
+          echo "helm_version=v3.6.2" >> $GITHUB_ENV
+          echo "docker_version=24.0.2" >> $GITHUB_ENV
+          echo "git_version=2.31.1" >> $GITHUB_ENV
+          echo "ansible_version=2.13.11" >> $GITHUB_ENV
+          echo "jq_version=jq-1.6" >> $GITHUB_ENV
+          echo "openjdk_version=1.8.0_392" >> $GITHUB_ENV
+          echo "jinja_version=3.1.2" >> $GITHUB_ENV
+          echo "python_version=3.8.10" >> $GITHUB_ENV
+          echo "pip3_version=23.2.1" >> $GITHUB_ENV
+          echo "openshift_version=0.13.1" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
