@@ -202,6 +202,5 @@ jobs:
           echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
           
           pwd
-          echo "tst"
           ansible-playbook platforms/shared/configuration/site.yaml \
           -e @build/running-network-quoram.yaml -e "reset=true"
