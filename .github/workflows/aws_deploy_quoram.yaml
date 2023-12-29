@@ -82,6 +82,7 @@ jobs:
           mkdir -p build/
           sudo mkdir -p /home/runner/bevel/build/
           pwd
+          ls
           cp ./platforms/quorum/configuration/samples/network-quorum.yaml build/running-network-quoram.yaml
           NETWORK_CONF_FILE="build/running-network-quorum.yaml"
           
