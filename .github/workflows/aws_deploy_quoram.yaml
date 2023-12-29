@@ -200,21 +200,45 @@ jobs:
           pip3 install openshift=='0.13.1'
           ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
 
-      - name: Deploy network
-        run: |
-          export KUBECONFIG="/home/runner/.kube/config/build/decoded-kubeconfig"
-          echo "14=>" && tree build
-          # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts #Notes (3)
-          sudo mkdir -p /etc/ansible
-          sudo mkdir -p /home/runner/bevel/build/ 
-          sudo chmod -R 777 /home/runner/bevel/build/
-          sudo touch /etc/ansible/hosts
-          echo "[ansible_provisioners:children]
-          local
-          [local]
-          localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
-          echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
+      # - name: Deploy network
+      #   run: |
+      #     export KUBECONFIG="/home/runner/.kube/config/build/decoded-kubeconfig"
+      #     echo "14=>" && tree build
+      #     # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts #Notes (3)
+      #     sudo mkdir -p /etc/ansible
+      #     sudo mkdir -p /home/runner/bevel/build/ 
+      #     sudo chmod -R 777 /home/runner/bevel/build/
+      #     sudo touch /etc/ansible/hosts
+      #     echo "[ansible_provisioners:children]
+      #     local
+      #     [local]
+      #     localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
+      #     echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
           
-          pwd
+      #     pwd
+      #     ansible-playbook platforms/shared/configuration/site.yaml \
+      #     -e @build/running-network-quoram.yaml
+      # Deploy BEVEL's QUORUM Platform
+      - name: Deploy BEVEL's QUORUM Platform
+        run: |
+          # Setup Kubernetes configuration
+          mkdir -p /home/runner/.kube/build_config
+          echo "${{ env.KUBECONFIG }}" | base64 --decode > /home/runner/.kube/build_config/kubeconfig
+          export KUBECONFIG="/home/runner/.kube/build_config/kubeconfig"
+          
+          # Configure Git user settings
+          git config --global user.email "${{ env.GIT_EMAIL_ADDR }}"
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+          
+          # Install required tools and Ansible collections
+          mkdir -p ~/bin
+          export PATH=$PATH:~/bin
+          pip3 install openshift=='0.12.0'
+          pip install ansible jmespath jinja2-time
+          ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
+          
+          # Deploy the BEVEL's QUORUM DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
-          -e @build/running-network-quoram.yaml
+            -i platforms/shared/inventory/ansible_provisioners \
+            -e @build/running-network-quoram.yaml" \
+            -e 'ansible_python_interpreter=/usr/bin/python3'
