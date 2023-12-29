@@ -115,7 +115,7 @@ jobs:
           
           # Replace placeholders in the network configuration file
           for placeholder in "${!placeholders[@]}"; do
-            sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
+            sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" build/running-network-quorum.yaml
           done
 
       # Deploy BEVEL's QUORUM Platform
