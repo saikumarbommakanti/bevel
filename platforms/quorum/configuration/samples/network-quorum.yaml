@@ -54,10 +54,10 @@ network:
     #  For "tessera", all participating nodes should be provided
     # In the example (for tessera ) below, the domain name is formed by the https://(peer.name).(org.external_url_suffix):(ambassador default port)
     tm_nodes:
-      - "https://carrier.test.quorum.blockchaincloudpoc.com"
-      - "https://manufacturer.test.quorum.blockchaincloudpoc.com"
-      - "https://store.test.quorum.blockchaincloudpoc.com"
-      - "https://warehouse.test.quorum.blockchaincloudpoc.com"
+      - "https://carrier.EXTERNAL_URL_SUFFIX"
+      - "https://manufacturer.EXTERNAL_URL_SUFFIX"
+      # - "https://store.test.quorum.blockchaincloudpoc.com"
+      # - "https://warehouse.test.quorum.blockchaincloudpoc.com"
 
     staticnodes: "/home/runner/bevel/build/quorum_staticnodes" # Location where staticnodes will be saved
     genesis: "/home/runner/bevel/build/quorum_genesis"   # Location where genesis file will be saved
