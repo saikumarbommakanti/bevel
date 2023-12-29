@@ -99,7 +99,7 @@ jobs:
          
           # Define placeholder values for the network configuration file
           declare -A placeholders=(
-            ["NETWORK_VERSION"]="22.10.2"
+            ["NETWORK_VERSION"]="23.4.0"
             ["FLUX_SUFFIX"]="quorum"
             ["PORT_RANGE_FROM"]=15010
             ["PORT_RANGE_TO"]=15090
