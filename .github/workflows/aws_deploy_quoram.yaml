@@ -100,7 +100,7 @@ jobs:
           # Define placeholder values for the network configuration file
           declare -A placeholders=(
             ["NETWORK_VERSION"]="22.10.2"
-            ["FLUX_SUFFIX"]="besu"
+            ["FLUX_SUFFIX"]="quorum"
             ["PORT_RANGE_FROM"]=15010
             ["PORT_RANGE_TO"]=15090
             ["DOCKER_URL"]="${{ env.DOCKER_URL }}"
