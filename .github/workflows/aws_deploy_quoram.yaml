@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    environment: Bevel-AWS-Deployment
+    # environment: Bevel-AWS-Deployment
     env:
       AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
       AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
