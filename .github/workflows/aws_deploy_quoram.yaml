@@ -81,6 +81,7 @@ jobs:
           # Prepare network configuration file for deployment
           mkdir -p build/
           sudo mkdir -p /home/runner/bevel/build/
+          pwd
           cp ./platforms/quorum/configuration/samples/network-quorum.yaml build/running-network-quoram.yaml
           NETWORK_CONF_FILE="build/running-network-quorum.yaml"
           
