@@ -1,223 +1,121 @@
-name: Deploy to AWS Cluster
+##############################################################################################
+#  Copyright Accenture. All Rights Reserved.
+#
+#  SPDX-License-Identifier: Apache-2.0
+##############################################################################################
 
+##############################################################################################
+# Workflow: Deploy Hyperledger Bevel's QUORUM DLT Platform to an EKS Cluster.
+
+# Prerequisites:
+# 1. An accessible EKS Cluster
+# 2. A Vault instance accessible from GitHub Runner
+# 3. A completed network.yaml file stored in GitHub Secrets
+
+# Workflow Overview:
+# 1. This GitHub Actions workflow automates the seamless deployment of "BEVEL's QUORUM" platform to an EKS cluster.
+# 2. Utilizing secure environment variables, the workflow manages sensitive information related to AWS, Docker, Cluster, Vault, and Git.
+# 3. The workflow dynamically customizes a network configuration file by substituting placeholders with values derived from environment variables.
+# 4. It uses tool Ansible to deploy the platform.
+##############################################################################################
+
+# Name of the workflow
+name: Deploy to EKS Cluster
+
+# Triggers for the workflow
 on:
-  workflow_dispatch:
-    paths-ignore:
-      - 'docs/**'
-      - '**/charts/**'
-      - '**/releases/**'
+  # Trigger the workflow on push events to specified branches
   push:
     branches:
-      - quoram4
+      - <branch_name>
+    # Ignore certain paths to avoid unnecessary triggering
     paths-ignore:
       - 'docs/**'
       - '**/charts/**'
       - '**/releases/**'
+  # Manually trigger the workflow through the GitHub Actions UI
+  workflow_dispatch:
 
+# Jobs to be executed
 jobs:
-  deployment: 
+  deployment:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    environment: Bevel-AWS-Deployment
     env:
-      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-      AWS_REGION_NAME: "${{ secrets.AWS_REGION_NAME }}"
-      AWS_SECURITY_GROUP_ID: "${{ secrets.AWS_SECURITY_GROUP_ID }}"
-      ENCODED_KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"
-      ENCODED_DEVENV_BASTION_PEM: "${{ secrets.ENCODED_DEVENV_BASTION_PEM }}"
-      VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"
-      VAULT_SERVER: "${{ secrets.VAULT_SERVER }}"
-      VAULT_PORT: "${{ secrets.VAULT_PORT }}"
-      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"
-      VAULT_BASTION: "${{ secrets.VAULT_BASTION }}"
-      VAULT_USER: "${{ secrets.VAULT_USER }}"
-      CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"
-      GIT_BRANCH: quoram4
-      GITHUB_USERNAME: "${{ secrets.GH_USERNAME }}"
-      GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
-      GITHUB_EMAIL_ADDR: "${{ secrets.GH_EMAIL_ADDR }}"
-      PRIVATE_KEY_PATH: "${{ secrets.PRIVATE_KEY }}"
-      DOCKER_URL: ghcr.io/hyperledger
-      DOCKER_USERNAME: "${{ secrets.GH_USERNAME }}"
-      DOCKER_PASSWORD: "${{ secrets.GH_TOKEN }}"
+      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
+      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
+      AWS_REGION_NAME: "${{ secrets.AWS_REGION_NAME }}"                           # EKS cluster zone
+      CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"                 # Context name for the EKS cluster
+      KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"                   # Provide Kubernetes configuration file in encoded base64 format
+      DOCKER_URL: "${{ secrets.DOCKER_URL }}"                           # URL of the Docker registry
+      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"                 # Docker registry username
+      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"                 # Docker registry password
+      EXTERNAL_URL_SUFFIX: "${{ secrets.EXTERNAL_URL_SUFFIX }}"         # Suffix for external URLs
+      GIT_USER_NAME: "${{ secrets.GIT_USER_NAME }}"                     # Git username for Git operations
+      GIT_EMAIL_ADDR: "${{ secrets.GIT_EMAIL_ADDR }}"                   # Git email address for Git operations
+      GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"                             # Git token with required permissions for authentication
+      GIT_BRANCH: quoram-2416                            # Git branch to be used in the deployment
+      GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
+      VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
+      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
 
+    # Steps to be executed within the job
     steps:
+      # Checkout the repository code
       - name: Checkout Repository
         uses: actions/checkout@v2.4.0
 
-      - name: cross check work following
-        run: |
-          ls -a
-          cat .github/workflows/aws_deploy_quoram.yaml
-          pip install jmespath
-          pip install jinja2-time
-          pip install ansible
-
-      # - name: Set versions
-      #   run: |
-      #     echo "kubectl_version=v1.19.8" >> $GITHUB_ENV
-      #     echo "helm_version=v3.6.2" >> $GITHUB_ENV
-      #     echo "docker_version=24.0.2" >> $GITHUB_ENV
-      #     echo "git_version=2.31.1" >> $GITHUB_ENV
-      #     echo "ansible_version=2.13.11" >> $GITHUB_ENV
-      #     echo "jq_version=jq-1.6" >> $GITHUB_ENV
-      #     echo "openjdk_version=1.8.0_392" >> $GITHUB_ENV
-      #     echo "jinja_version=3.1.2" >> $GITHUB_ENV
-      #     echo "python_version=3.8.10" >> $GITHUB_ENV
-      #     echo "openshift_version=0.13.1" >> $GITHUB_ENV
-          
-
-      - name: Configure AWS credentials
+      # Configure AWS credentials
+      - name: AWS Setup
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
           aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
           aws-region: "${{ env.AWS_REGION_NAME }}"
 
-      - name: Set KUBECONFIG
+      # Set up BEVEL's QUORUM network configuration file
+      - name: BEVEL's QUORUM Network Configuration file Setup
         run: |
-          mkdir -p /home/runner/.kube/config/build
-          echo "${{ env.ENCODED_KUBECONFIG }}" | base64 --decode > /home/runner/.kube/config/build/decoded-kubeconfig
-          export KUBECONFIG="/home/runner/.kube/config/build/decoded-kubeconfig"
-          # kubectl config view && echo "###############-5"
-          # kubectl config current-context && echo "###############-6"
-          # kubectl version && echo "###############-6"
-          # kubectl get nodes
-          oc version
-
-      - name: Install HashiCorp Vault CLI
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install vault
-
-      # - name: Local DNS Mapping
-      #   run: |
-      #     sudo bash -c 'echo "127.0.0.1 ${{ env.VAULT_SERVER }}" >> /etc/hosts'
-
-      # - name: Add SSH Rule to Security Group
-      #   run: |
-      #     mkdir -p build/
-      #     curl https://ipv4.icanhazip.com/ > build/localip
-      #     aws ec2 authorize-security-group-ingress \
-      #       --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
-      #       --protocol "tcp" \
-      #       --port "22" \
-      #       --cidr "$(cat build/localip)/32" \
-      #       --region "${{ env.AWS_REGION_NAME }}"
-
-      # - name: Set up HashiCorp Vault
-      #   uses: hashicorp/vault-action@v2
-      #   with:
-      #     url: ${{ secrets.VAULT_ADDR }}
-      #     token: ${{ secrets.VAULT_TOKEN }}
-
-      # - name: Create Tunnel
-      #   run: |
-      #     mkdir ~/.ssh
-      #     echo "${{ env.ENCODED_DEVENV_BASTION_PEM }}" | base64 --decode > ~/.ssh/vault.pem
-      #     chmod 600 ~/.ssh/vault.pem
-      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
-      #     ssh-keyscan "${{ env.VAULT_BASTION }}" >> ~/.ssh/known_hosts
-      #     echo "ssh=" && which ssh
-      #     ssh -i ~/.ssh/vault.pem -f -q -N -L "${{ env.VAULT_PORT }}:${{ env.VAULT_SERVER }}:${{ env.VAULT_PORT }}" "${{ env.VAULT_USER }}@${{ env.VAULT_BASTION }}" -v
-      #   continue-on-error: true
-
-      - name: Running vault command
-        run: |
-          vault status
-          vault kv list secretsv2/
-        continue-on-error: true
-
-      # - name: Remove SSH Rule from Security Group
-      #   run: |
-      #     curl https://ipv4.icanhazip.com/ > build/localip
-      #     aws ec2 revoke-security-group-ingress \
-      #       --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
-      #       --protocol "tcp" \
-      #       --port "22" \
-      #       --cidr "$(cat build/localip)/32" \
-      #       --region "${{ env.AWS_REGION_NAME }}"
-
-      - name: Git Setup
-        run: |
-          git version
-          which git
-          pwd
-          # tree ./
-
-          git remote -v
-
-          git config --list
-
-          echo "1=>" && git branch
-
-          git config --global user.name "saikumarbommakanti"
-          git config --global user.email "sai.kumar.bommakanti@accenture.com"
-          git config --list
-          git pull origin $GIT_BRANCH
-          git push origin $GIT_BRANCH
-
+          # Prepare network configuration file for deployment
           mkdir -p build/
-          cp ./platforms/quorum/configuration/samples/network-quorum.yaml build/running-network-quoram.yaml
-          #cat "build/running-network-quoram.yaml"
-          YAML_FILE="build/running-network-quoram.yaml"
-
-          tree build/
-
-          # ENV_TYPE="sai"
-          # ENV_PROXY="ambassador"
-          # CLUSTER_CONFIG="echo $KUBECONFIG"
-          #cat $ENCODED_KUBECONFIG
-  
-          echo $PRIVATE_KEY_PATH | base64 --decode > ~/encoded_private_ssh_key && PRIVATE_KEY_PATH2="~/encoded_private_ssh_key"
-          ENCODED_KUBECONFIG2="/home/runner/.kube/config/build/decoded-kubeconfig"
+          sudo mkdir -p /home/runner/bevel/build/
+          cp "platforms/QUORUM/configuration/samples/workflow/network-proxy-quorum.yaml" "build/network-quorum.yaml"
+          NETWORK_CONF_FILE="build/running-network-quorum.yaml"
           
-          #cat ~/decoded_cluster_config
-
-          #sed -i "s/FLUX_SUFFIX_PLACEHOLDER/$ENV_TYPE/g" build/running-network-quoram.yaml
-          #sed -i "s/INGRESS_CONTROLLER_PLACEHOLDER/$ENV_PROXY/g" build/running-network-quoram.yaml
+          # Decode and store private SSH key
+          echo "${{ env.GIT_PRIVATE_SSH_KEY }}" | base64 --decode > /home/runner/private_ssh_key
           
-          sed -i  "s|AWS_ACCESS_KEY|$AWS_ACCESS_KEY_ID|g" build/running-network-quoram.yaml
-          sed -i  "s|AWS_SECRET_KEY|$AWS_SECRET_ACCESS_KEY|g" build/running-network-quoram.yaml       
-          sed -i  "s|DOCKER_URL|$DOCKER_URL|g" build/running-network-quoram.yaml
-          sed -i  "s|DOCKER_USERNAME|$GITHUB_USER|g" build/running-network-quoram.yaml
-          sed -i  "s|DOCKER_PASSWORD|$GITHUB_PASS|g" build/running-network-quoram.yaml 
-          sed -i  "s|AWS_REGION|$AWS_REGION_NAME|g" build/running-network-quoram.yaml 
-          sed -i  "s|CLUSTER_CONTEXT|$CLUSTER_CONTEXT|g" build/running-network-quoram.yaml
-          sed -i  "s|CLUSTER_CONFIG|$ENCODED_KUBECONFIG2|g" build/running-network-quoram.yaml
-          sed -i  "s|VAULT_ADDR|$VAULT_ADDR|g" build/running-network-quoram.yaml
-          sed -i  "s|VAULT_ROOT_TOKEN|$VAULT_TOKEN|g" build/running-network-quoram.yaml
-          sed -i  "s|GIT_BRANCH|$GIT_BRANCH|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_USERNAME|$GITHUB_USERNAME|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_TOKEN|$GITHUB_TOKEN|g" build/running-network-quoram.yaml
-          sed -i  "s|GITHUB_EMAIL_ADDR|$GITHUB_EMAIL_ADDR|g" build/running-network-quoram.yaml
-          sed -i  "s|PRIVATE_KEY_PATH|$PRIVATE_KEY_PATH2|g" build/running-network-quoram.yaml
-          cat build/running-network-quoram.yaml
-          mkdir -p ~/bin
-          export PATH=$PATH:~/bin
-          pip3 install openshift=='0.13.1'
-          ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
-
-      # - name: Deploy network
-      #   run: |
-      #     export KUBECONFIG="/home/runner/.kube/config/build/decoded-kubeconfig"
-      #     echo "14=>" && tree build
-      #     # echo "1=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts #Notes (3)
-      #     sudo mkdir -p /etc/ansible
-      #     sudo mkdir -p /home/runner/bevel/build/ 
-      #     sudo chmod -R 777 /home/runner/bevel/build/
-      #     sudo touch /etc/ansible/hosts
-      #     echo "[ansible_provisioners:children]
-      #     local
-      #     [local]
-      #     localhost ansible_connection=local" | sudo tee /etc/ansible/hosts
-      #     echo "2=>cat /etc/ansible/hosts" && cat /etc/ansible/hosts
+          # Define placeholder values for the network configuration file
+          declare -A placeholders=(
+            ["NETWORK_VERSION"]="23.4.0"
+            ["FLUX_SUFFIX"]="quorum"
+            ["PORT_RANGE_FROM"]=15010
+            ["PORT_RANGE_TO"]=15043
+            ["DOCKER_URL"]="${{ env.DOCKER_URL }}"
+            ["DOCKER_USERNAME"]="${{ env.DOCKER_USERNAME }}"
+            ["DOCKER_PASSWORD"]="${{ env.DOCKER_PASSWORD }}"
+            ["USER_DIRECTORY"]="$(pwd)"
+            ["EXTERNAL_URL_SUFFIX"]="${{ env.EXTERNAL_URL_SUFFIX }}"
+            ["AWS_ACCESS_KEY"]="${{ env.AWS_ACCESS_KEY_ID }}"
+            ["AWS_SECRET_KEY"]="${{ env.AWS_SECRET_ACCESS_KEY }}"
+            ["CLUSTER_CONTEXT"]="${{ env.CLUSTER_CONTEXT }}"
+            ["CLUSTER_CONFIG"]="/home/runner/.kube/build_config/kubeconfig"
+            ["VAULT_ADDR"]="${{ env.VAULT_ADDR }}"
+            ["VAULT_ROOT_TOKEN"]="${{ env.VAULT_TOKEN }}"
+            ["GIT_USERNAME"]="${{ env.GIT_USER_NAME }}"
+            ["GIT_TOKEN"]="${{ env.GIT_TOKEN }}"
+            ["GIT_EMAIL_ADDR"]="${{ env.GIT_EMAIL_ADDR }}"
+            ["GIT_BRANCH"]="${{ env.GIT_BRANCH }}"
+            ["PRIVATE_KEY_PATH"]="/home/runner/private_ssh_key"
+          )
           
-      #     pwd
-      #     ansible-playbook platforms/shared/configuration/site.yaml \
-      #     -e @build/running-network-quoram.yaml
+          # Replace placeholders in the network configuration file
+          for placeholder in "${!placeholders[@]}"; do
+            sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
+          done
+
       # Deploy BEVEL's QUORUM Platform
       - name: Deploy BEVEL's QUORUM Platform
         run: |
@@ -240,5 +138,5 @@ jobs:
           # Deploy the BEVEL's QUORUM DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
             -i platforms/shared/inventory/ansible_provisioners \
-            -e @build/running-network-quoram.yaml \
+            -e @build/running-network-quoram.yaml" \
             -e 'ansible_python_interpreter=/usr/bin/python3'
