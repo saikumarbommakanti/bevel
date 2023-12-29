@@ -150,5 +150,5 @@ jobs:
           # Deploy the BEVEL's BESU DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
             -i platforms/shared/inventory/ansible_provisioners \
-            -e @build/network-quorum.yaml -e "reset=true"\
+            -e @build/network-quorum.yaml\
             -e 'ansible_python_interpreter=/usr/bin/python3'
