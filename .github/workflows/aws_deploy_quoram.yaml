@@ -27,7 +27,7 @@ on:
   # Trigger the workflow on push events to specified branches
   push:
     branches:
-      - <branch_name>
+      - quoram4
     # Ignore certain paths to avoid unnecessary triggering
     paths-ignore:
       - 'docs/**'
