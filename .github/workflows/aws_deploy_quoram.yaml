@@ -40,6 +40,8 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/hyperledger/bevel-build:latest
     permissions:
       contents: write
     # environment: Bevel-AWS-Deployment
