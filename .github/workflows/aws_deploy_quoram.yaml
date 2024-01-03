@@ -66,12 +66,12 @@ jobs:
     # Steps to be executed within the job
     steps:
       # Checkout the repository code
-      - name: Checkout Repository
-        uses: actions/checkout@v2.4.0
+      # - name: Checkout Repository
+      #   uses: actions/checkout@v2.4.0
       
-      - name: Configure Git
-        run: |
-          git config --global --add safe.directory '*'
+      # - name: Configure Git
+      #   run: |
+      #     git config --global --add safe.directory '*'
 
       # Configure AWS credentials
       - name: AWS Setup
