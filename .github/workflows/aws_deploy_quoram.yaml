@@ -68,6 +68,10 @@ jobs:
       # Checkout the repository code
       - name: Checkout Repository
         uses: actions/checkout@v2.4.0
+      
+      - name: Configure Git
+        run: |
+          git config --global --add safe.directory /__w/bevel/bevel
 
       # Configure AWS credentials
       - name: AWS Setup
