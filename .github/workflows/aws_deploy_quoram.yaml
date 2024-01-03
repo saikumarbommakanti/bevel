@@ -66,13 +66,9 @@ jobs:
     # Steps to be executed within the job
     steps:
       # Checkout the repository code
-      # - name: Checkout Repository
-      #   uses: actions/checkout@v2.4.0
+      - name: Checkout Repository
+        uses: actions/checkout@v2.4.0
       
-      # - name: Configure Git
-      #   run: |
-      #     git config --global --add safe.directory '*'
-
       # Configure AWS credentials
       - name: AWS Setup
         uses: aws-actions/configure-aws-credentials@v2
@@ -81,13 +77,13 @@ jobs:
           aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
           aws-region: "${{ env.AWS_REGION }}"
       
-      # - name: Install HashiCorp Vault CLI
-      #   run: |
-      #     wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-      #     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-      #     sudo apt update && sudo apt install vault
-      #     vault status
-      #     vault kv list secretsv2/
+      - name: Install HashiCorp Vault CLI
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install vault
+          vault status
+          vault kv list secretsv2/
 
       - name: Install Dependencies 
         run: |
