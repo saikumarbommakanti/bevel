@@ -42,32 +42,45 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/hyperledger/bevel-build:latest
+      options: --user root
     permissions:
       contents: write
     # environment: Bevel-AWS-Deployment
-    env:
-      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
-      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
-      AWS_REGION: "${{ secrets.AWS_REGION }}"                           # EKS cluster zone
-      CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"                 # Context name for the EKS cluster
-      KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"                   # Provide Kubernetes configuration file in encoded base64 format
-      DOCKER_URL: "${{ secrets.DOCKER_URL }}"                           # URL of the Docker registry
-      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"                 # Docker registry username
-      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"                 # Docker registry password
-      EXTERNAL_URL_SUFFIX: "${{ secrets.EXTERNAL_URL_SUFFIX }}"         # Suffix for external URLs
-      GIT_USER_NAME: "${{ secrets.GIT_USER_NAME }}"                     # Git username for Git operations
-      GIT_EMAIL_ADDR: "${{ secrets.GIT_EMAIL_ADDR }}"                   # Git email address for Git operations
-      GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"                             # Git token with required permissions for authentication
-      GIT_BRANCH: quoram4                              # Git branch to be used in the deployment
-      GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
-      VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
-      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
+      env:
+        AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
+        AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
+        AWS_REGION: "${{ secrets.AWS_REGION }}"                           # EKS cluster zone
+        CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"                 # Context name for the EKS cluster
+        KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"                   # Provide Kubernetes configuration file in encoded base64 format
+        DOCKER_URL: "${{ secrets.DOCKER_URL }}"                           # URL of the Docker registry
+        DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"                 # Docker registry username
+        DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"                 # Docker registry password
+        EXTERNAL_URL_SUFFIX: "${{ secrets.EXTERNAL_URL_SUFFIX }}"         # Suffix for external URLs
+        GIT_USER_NAME: "${{ secrets.GIT_USER_NAME }}"                     # Git username for Git operations
+        GIT_EMAIL_ADDR: "${{ secrets.GIT_EMAIL_ADDR }}"                   # Git email address for Git operations
+        GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"                             # Git token with required permissions for authentication
+        GIT_BRANCH: quoram4                              # Git branch to be used in the deployment
+        GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
+        VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
+        VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
 
     # Steps to be executed within the job
     steps:
       # Checkout the repository code
       - name: Checkout Repository
         uses: actions/checkout@v2.4.0
+      
+      - name: Configure Git
+        run: |
+          # Set the correct ownership and permissions
+          chown -R $USER:$USER /__w/bevel-3/bevel-3
+          chmod -R 775 /__w/bevel-3/bevel-3
+
+          # Initialize and configure Git
+          git init /__w/bevel-3/bevel-3
+          git -C /__w/bevel-3/bevel-3 remote add origin https://github.com/saikumarbommakanti/bevel-3
+          git -C /__w/bevel-3/bevel-3 config --global user.email "sai.kumar.bommakanti@accenture.com"
+          git -C /__w/bevel-3/bevel-3 config --global user.name "saikumarbommakanti"
       
       # Configure AWS credentials
       - name: AWS Setup
