@@ -71,7 +71,7 @@ jobs:
       
       - name: Configure Git
         run: |
-          git config --global --add safe.directory /__w/bevel/bevel
+          git config --global --add safe.directory '*'
 
       # Configure AWS credentials
       - name: AWS Setup
