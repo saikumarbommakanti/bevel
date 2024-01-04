@@ -21,4 +21,4 @@ jobs:
 
       - name: Run Docker Container
         run: |
-          docker run -it -v $(pwd):/home/bevel/ --network="host" ghcr.io/hyperledger/bevel-build:latest
+          docker run -v $(pwd):/home/bevel/ --network="host" ghcr.io/hyperledger/bevel-build:latest
