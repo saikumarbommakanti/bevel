@@ -25,7 +25,8 @@ jobs:
       GIT_BRANCH: quoram4                              # Git branch to be used in the deployment
       GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
       VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
-      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
+      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"
+      CUSTOM_NETWORK_FILE: "${{ NETWORK_CONF_FILE }}"                         # Token for authentication with Vault
 
     steps:
       - name: Checkout Repository
