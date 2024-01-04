@@ -9,6 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
+      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
+      AWS_REGION: "${{ secrets.AWS_REGION }}"                           # EKS cluster zone
+      CLUSTER_CONTEXT: "${{ secrets.CLUSTER_CONTEXT }}"                 # Context name for the EKS cluster
+      KUBECONFIG: "${{ secrets.ENCODED_KUBECONFIG }}"                   # Provide Kubernetes configuration file in encoded base64 format
+      DOCKER_URL: "${{ secrets.DOCKER_URL }}"                           # URL of the Docker registry
+      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"                 # Docker registry username
+      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"                 # Docker registry password
+      EXTERNAL_URL_SUFFIX: "${{ secrets.EXTERNAL_URL_SUFFIX }}"         # Suffix for external URLs
+      GIT_USER_NAME: "${{ secrets.GIT_USER_NAME }}"                     # Git username for Git operations
+      GIT_EMAIL_ADDR: "${{ secrets.GIT_EMAIL_ADDR }}"                   # Git email address for Git operations
+      GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"                             # Git token with required permissions for authentication
+      GIT_BRANCH: quoram4                              # Git branch to be used in the deployment
+      GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
+      VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
+      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -19,6 +37,48 @@ jobs:
       - name: Change to Build Directory
         run: cd build
 
+      - name: BEVEL's BESU Network Configuration file Setup
+        run: |
+          # Prepare network configuration file for deployment
+          mkdir -p build/
+
+          cp "./platforms/quorum/configuration/samples/network-quorum.yaml" "build/network-quorum.yaml"
+
+          NETWORK_CONF_FILE="build/network-quorum.yaml"
+          
+          # Decode and store private SSH key
+          echo "${{ env.GIT_PRIVATE_SSH_KEY }}" | base64 --decode > /home/runner/private_ssh_key
+          
+          # Define placeholder values for the network configuration file
+          declare -A placeholders=(
+            ["NETWORK_VERSION"]="23.4.0"
+            ["FLUX_SUFFIX"]="quoru"
+            ["PORT_RANGE_FROM"]=15010
+            ["PORT_RANGE_TO"]=15090
+            ["DOCKER_URL"]="${{ env.DOCKER_URL }}"
+            ["DOCKER_USERNAME"]="${{ env.DOCKER_USERNAME }}"
+            ["DOCKER_PASSWORD"]="${{ env.DOCKER_PASSWORD }}"
+            ["USER_DIRECTORY"]="$(pwd)"
+            ["EXTERNAL_URL_SUFFIX"]="${{ env.EXTERNAL_URL_SUFFIX }}"
+            ["AWS_ACCESS_KEY"]="${{ env.AWS_ACCESS_KEY_ID }}"
+            ["AWS_SECRET_KEY"]="${{ env.AWS_SECRET_ACCESS_KEY }}"
+            ["AWS_REGION"]="${{ env.AWS_REGION}}"
+            ["CLUSTER_CONTEXT"]="${{ env.CLUSTER_CONTEXT }}"
+            ["CLUSTER_CONFIG"]="/home/runner/.kube/build_config/kubeconfig"
+            ["VAULT_ADDR"]="${{ env.VAULT_ADDR }}"
+            ["VAULT_ROOT_TOKEN"]="${{ env.VAULT_TOKEN }}"
+            ["GIT_USERNAME"]="${{ env.GIT_USER_NAME }}"
+            ["GIT_TOKEN"]="${{ env.GIT_TOKEN }}"
+            ["GIT_EMAIL_ADDR"]="${{ env.GIT_EMAIL_ADDR }}"
+            ["GIT_BRANCH"]="${{ env.GIT_BRANCH }}"
+            ["PRIVATE_KEY_PATH"]="/home/runner/private_ssh_key"
+          )
+          
+          # Replace placeholders in the network configuration file
+          for placeholder in "${!placeholders[@]}"; do
+            sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
+          done
+
       - name: Run Docker Container
         run: |
-          docker run -v $(pwd):/home/bevel/ --network="host" ghcr.io/hyperledger/bevel-build:latest
+          docker run -v $(pwd):/home/bevel/ --network="host" -e CUSTOM_NETWORK_FILE=${NETWORK_CONF_FILE} ghcr.io/hyperledger/bevel-build:latest
