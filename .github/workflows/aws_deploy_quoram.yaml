@@ -1,15 +1,50 @@
-name: Build Bevel
+##############################################################################################
+#  Copyright Accenture. All Rights Reserved.
+#
+#  SPDX-License-Identifier: Apache-2.0
+##############################################################################################
 
+##############################################################################################
+# Workflow: Deploy Hyperledger Bevel's BESU DLT Platform to an EKS Cluster.
+
+# Prerequisites:
+# 1. An accessible EKS Cluster
+# 2. A Vault instance accessible from GitHub Runner
+# 3. A completed network.yaml file stored in GitHub Secrets
+
+# Workflow Overview:
+# 1. This GitHub Actions workflow automates the seamless deployment of "BEVEL's BESU" platform to an EKS cluster.
+# 2. Utilizing secure environment variables, the workflow manages sensitive information related to AWS, Docker, Cluster, Vault, and Git.
+# 3. The workflow dynamically customizes a network configuration file by substituting placeholders with values derived from environment variables.
+# 4. It uses tool Ansible to deploy the platform.
+##############################################################################################
+
+# Name of the workflow
+name: Deploy to EKS Cluster
+
+# Triggers for the workflow
 on:
+  # Trigger the workflow on push events to specified branches
   push:
     branches:
-      - quoram4
+    - 'quoram4'   #name of the branch
+    # Ignore certain paths to avoid unnecessary triggering
+    paths-ignore:
+      - 'docs/**'
+      - '**/charts/**'
+      - '**/releases/**'
+  # Manually trigger the workflow through the GitHub Actions UI
+  workflow_dispatch:
 
+# Jobs to be executed
 jobs:
-  build:
+  deployment:
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/hyperledger/bevel-build:latest
-
+    permissions:
+      contents: write
+    # environment: Bevel-AWS-Deployment
     env:
       AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"             # AWS Access Key ID
       AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"     # AWS Secret Access Key
@@ -26,26 +61,58 @@ jobs:
       GIT_BRANCH: quoram4                              # Git branch to be used in the deployment
       GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
       VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
-      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"
-      #CUSTOM_NETWORK_FILE: "${{ NETWORK_CONF_FILE }}"                         # Token for authentication with Vault
+      VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
 
+    # Steps to be executed within the job
     steps:
+      # Checkout the repository code
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
 
-      - name: Create Build Directory
-        run: mkdir -p build
+      # Configure AWS credentials
+      - name: AWS Setup
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
+          aws-region: "${{ env.AWS_REGION }}"
+      
+      - name: Install HashiCorp Vault CLI
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install vault
+          vault status
+          vault kv list secretsv2/
+      - name: Install Dependencies 
+        run: |
+      #     sudo apt-get install -y kubectl=v1.19.8 
+      #     # pip install --upgrade pip
+      #     # pip install ansible==2.10.7
+      #     # pip install openshift
+      #     # pip3 install openshift=='0.13.1'
+      #     # oc version --short && echo "###############-8"
+      #     # docker --version && echo "###############-9"
+      #     # git --version  && echo "###############-1"
+      #     # ansible --version  && echo "###############-2"
+      #     # jq --version && echo "###############-3"
+      #     # java -version && echo "###############-4"
+      #     # brew install gnu-sed && echo "###############-5"
+      #     # python --version && echo "###############-10" 
+      #     # pip3 --version && echo "###############-11"
+      #     # # pip3 install openshift && echo "###############-12"
+      #     # pip3 install openshift=='0.13.1' && echo "###############-12"
+      #     # pip3 show openshift && echo "###############-13"
+      #     # lsb_release -a && echo "###############-14"
+      #     # pip show jinja2 && echo "###############-15"
 
-      - name: Change to Build Directory
-        run: cd build
 
+      # Set up BEVEL's BESU network configuration file
       - name: BEVEL's BESU Network Configuration file Setup
         run: |
           # Prepare network configuration file for deployment
           mkdir -p build/
-
           cp "./platforms/quorum/configuration/samples/network-quorum.yaml" "build/network-quorum.yaml"
-
           NETWORK_CONF_FILE="build/network-quorum.yaml"
           
           # Decode and store private SSH key
@@ -80,13 +147,199 @@ jobs:
           for placeholder in "${!placeholders[@]}"; do
             sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
           done
-
-      - name: Deploy network
+      # Deploy BEVEL's BESU Platform
+      - name: Deploy BEVEL's BESU Platform
         run: |
-          echo "14=>" && tree build
-          export KUBECONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"
-
+          # Setup Kubernetes configuration
+          mkdir -p /home/runner/.kube/build_config
+          echo "${{ env.KUBECONFIG }}" | base64 --decode > /home/runner/.kube/build_config/kubeconfig
+          export KUBECONFIG="/home/runner/.kube/build_config/kubeconfig"
+          
+          # Configure Git user settings
+          git config --global user.email "${{ env.GIT_EMAIL_ADDR }}"
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+          
+          # Install required tools and Ansible collections
+          mkdir -p ~/bin
+          export PATH=$PATH:~/bin
+          pip3 install openshift=='0.13.1'
+          pip install ansible jmespath jinja2-time
+          ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
+          
+          # Deploy the BEVEL's BESU DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
             -i platforms/shared/inventory/ansible_provisioners \
             -e @build/network-quorum.yaml \
-            -e 'ansible_python_interpreter=/usr/bin/python3' # -e "reset=true"
+            -e 'ansible_python_interpreter=/usr/bin/python3'
+# jobs:
+#   deployment:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     environment: Bevel-AWS-Deployment
+#     steps:
+#     - name: Checkout Repository
+#       uses: actions/checkout@v2.4.0
+    
+#     - name: Configure AWS credentials and kubectl
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
+#         aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
+#         aws-region: "${{ env.AWS_REGION_NAME }}"
+        
+#     # - name: Get EKS kubeconfig file 
+#     #   run: |
+#     #     aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+#     # #     aws eks --region ${{ env.AWS_REGION }} update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }}
+#     # #     export KUBECONFIG="~/.kube/config"
+        
+
+#     - name: Set KUBECONFIG
+#       run: |
+#         mkdir -p /home/runner/.kube/build_config
+#         echo "${{ env.ENCODED_KUBECONFIG }}" | base64 --decode > /home/runner/.kube/build_config/decoded_kubeconfig
+#         export KUBECONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"
+#         echo "HOME=>$HOME"
+#         echo 'export KUBECONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"' >> $HOME/.bashrc
+#         source $HOME/.bashrc
+#         echo "KUBECONFIG=$KUBECONFIG"
+#         echo "###################################"
+#         kubectl config view && echo "###############-5"
+#         kubectl config current-context && echo "###############-6"
+#         kubectl version && echo "###############-6"
+#         kubectl get nodes
+#         kubectl version
+  
+#     - name: Install HashiCorp Vault CLI
+#       run: |
+#         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+#         echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+#         sudo apt update && sudo apt install vault
+#         vault status
+#         vault kv list secretsv2/
+
+#     # - name: Configure Vault
+#     #   run: |
+#     #     if [ "$VAULT_TYPE" == "public" ]; then
+#     #       echo "Configuring for public vault"
+#     #       export VAULT_KEY=$PUBLIC_VAULT_KEY
+#     #     else
+#     #       echo "Configuring for private vault"
+#     #       export VAULT_KEY=$PRIVATE_VAULT_KEY
+#     #     fi
+
+#     # - name: Local DNS Mapping
+#     #   run: |
+#     #     sudo bash -c 'echo "127.0.0.1 ${{ env.VAULT_SERVER }}" >> /etc/hosts'
+
+#     # - name: Add SSH Rule to Security Group
+#     #   run: |
+#     #     mkdir - p build
+#     #     curl https://ipv4.icanhazip.com/ > build/localip 
+#     #     aws ec2 authorize-security-group-ingress \
+#     #       --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
+#     #       --protocol "tcp" \
+#     #       --port "22" \
+#     #       --cidr "$(cat build/localip)/32" \
+#     #       --region "${{ env.AWS_REGION_NAME }}"
+
+#     # - name: Set up HashiCorp Vault
+#     #   uses: hashicorp/vault-action@v2
+#     #   with:
+#     #     url: ${{ secrets.VAULT_ADDR }}
+#     #     token: ${{ secrets.VAULT_TOKEN }}
+        
+#     - name: Git Setup
+#       run: |
+#         git config --global user.email "${{ env.GITHUB_EMAIL_ADDR }}"
+#         git config --global user.name "${{ env.GITHUB_USER_NAME }}"
+        
+
+#     - name: Network File Setup
+#       run: |
+#         mkdir -p build/BESU/
+#         tree build/BESU/
+
+#         cp "./platforms/hyperledger-besu/configuration/samples/network-besu.yaml" "build/BESU/running-network-besu.yaml"
+  
+#         DOCKER_URL="${{ env.DOCKER_URL }}"
+#         DOCKER_USERNAME="${{ env.DOCKER_USERNAME }}"
+#         DOCKER_PASSWORD="${{ env.DOCKER_PASSWORD }}"
+#         USER_DIRECTORY="$(pwd)"
+#         EXTERNAL_URL_SUFFIX="${{ env.EXTERNAL_URL_SUFFIX }}"
+#         AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
+#         AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
+#         AWS_REGION_NAME="${{ env.AWS_REGION_NAME}}"
+#         CLUSTER_CONTEXT=arn:aws:eks:eu-west-1:895052373684:cluster/bevel-dev-cluster-CLUSTER
+#         CLUSTER_CONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"
+#         VAULT_ADDR="${{ env.VAULT_ADDR }}"
+#         VAULT_ROOT_TOKEN="${{ env.VAULT_TOKEN }}"
+#         GITHUB_USER_NAME="${{ env.GITHUB_USER_NAME }}"
+#         GITHUB_TOKEN="${{ env.GITHUB_TOKEN }}"
+#         GITHUB_TOKEN="${{ secrets.GH_TOKEN }}"
+#         GITHUB_EMAIL_ADDR="${{ env.GITHUB_EMAIL_ADDR }}"
+#         GITHUB_BRANCH="new_feature-2416"
+#         echo "${{ env.GITHUB_PRIVATE_SSH_KEY }}" | base64 --decode > /home/runner/encoded_private_ssh_key && PRIVATE_KEY_PATH="/home/runner/encoded_private_ssh_key"
+
+
+#         YAML_FILE="build/BESU/running-network-besu.yaml"
+        
+        
+#         sed -i "s#DOCKER_URL_PLACEHOLDER#$DOCKER_URL#g" "$YAML_FILE"
+#         sed -i "s#DOCKER_USERNAME_PLACEHOLDER#$DOCKER_USERNAME#g" "$YAML_FILE"
+#         sed -i "s#DOCKER_PASSWORD_PLACEHOLDER#$DOCKER_PASSWORD#g" "$YAML_FILE"
+#         sed -i "s#USER_DIRECTORY_PLACEHOLDER#$USER_DIRECTORY#g" "$YAML_FILE"
+#         sed -i "s#EXTERNAL_URL_SUFFIX_PLACEHOLDER#$EXTERNAL_URL_SUFFIX#g" "$YAML_FILE"
+
+#         sed -i "s#AWS_ACCESS_KEY_ID_PLACEHOLDER#$AWS_ACCESS_KEY_ID#g" "$YAML_FILE"
+#         sed -i "s#AWS_SECRET_ACCESS_KEY_PLACEHOLDER#$AWS_SECRET_ACCESS_KEY#g" "$YAML_FILE"
+#         sed -i "s#AWS_REGION_NAME_PLACEHOLDER#$AWS_REGION_NAME#g" "$YAML_FILE"
+#         sed -i "s#CLUSTER_CONTEXT_PLACEHOLDER#$CLUSTER_CONTEXT#g" "$YAML_FILE"
+#         sed -i "s#CLUSTER_CONFIG_PLACEHOLDER#$CLUSTER_CONFIG#g" "$YAML_FILE"
+
+#         sed -i "s#VAULT_ADDR_PLACEHOLDER#$VAULT_ADDR#g" "$YAML_FILE"
+#         sed -i "s#VAULT_TOKEN_PLACEHOLDER#$VAULT_TOKEN#g" "$YAML_FILE"
+#         sed -i "s#GITHUB_USER_NAME_PLACEHOLDER#$GITHUB_USER_NAME#g" "$YAML_FILE"
+#         sed -i "s#GITHUB_EMAIL_ADDR_PLACEHOLDER#$GITHUB_EMAIL_ADDR#g" "$YAML_FILE"
+#         sed -i "s#GITHUB_TOKEN_PLACEHOLDER#$GITHUB_TOKEN#g" "$YAML_FILE"
+#         sed -i "s#GITHUB_BRANCH_PLACEHOLDER#$GITHUB_BRANCH#g" "$YAML_FILE"
+#         sed -i "s#PRIVATE_KEY_PATH_PLACEHOLDER#$PRIVATE_KEY_PATH#g" "$YAML_FILE"
+        
+#         echo "3->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+#         cat "build/BESU/running-network-besu.yaml"
+#       continue-on-error: true
+
+#     - name: Check Ansible
+#       run: |
+#         mkdir -p ~/bin
+#         export PATH=$PATH:~/bin
+#         pip3 install openshift=='0.12.0'
+#         ansible-galaxy collection install -r platforms/shared/configuration/requirements.yaml
+#       continue-on-error: true
+
+#     - name: Deploy network
+#       run: |
+#         echo "14=>" && tree build
+#         export KUBECONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"
+
+#         ansible-playbook platforms/shared/configuration/site.yaml \
+#           -i platforms/shared/inventory/ansible_provisioners \
+#           -e @build/BESU/running-network-besu.yaml \
+#           -e 'ansible_python_interpreter=/usr/bin/python3' # -e "reset=true"
+#       continue-on-error: true
+
+#     - name: Output
+#       run: |
+#         export KUBECONFIG="/home/runner/.kube/build_config/decoded_kubeconfig"
+#       continue-on-error: true
+
+#     # - name: Remove SSH Rule from Security Group
+#     #   run: |
+#     #     curl https://ipv4.icanhazip.com/ > localip
+#     #     aws ec2 revoke-security-group-ingress \
+#     #       --group-id "${{ env.AWS_SECURITY_GROUP_ID }}" \
+#     #       --protocol "tcp" \
+#     #       --port "22" \
+#     #       --cidr "$(cat build/localip)/32" \
+#     #       --region "${{ env.AWS_REGION_NAME }}"
