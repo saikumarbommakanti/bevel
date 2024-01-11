@@ -1,0 +1,52 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cfab-net-ca
+  namespace: cfab-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: cfab-net-ca
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-ca-server  
+  values:
+    metadata:
+      namespace: cfab-net
+      images:
+        alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+        ca: ghcr.io/hyperledger/bevel-fabric-ca:1.4.8
+ 
+    server:
+      name: ca
+      tlsstatus: true
+      admin: cfab-admin 
+  
+    storage:
+      storageclassname: cfab-aws-storageclass
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://demo.sau99.dev.aws.blockchaincloudpoc-develop.com
+      authpath: fabric-saicfab-net-auth
+      secretcert: secretsv2/data/crypto/peerOrganizations/cfab-net/ca?ca.cfab-net-cert.pem
+      secretkey: secretsv2/data/crypto/peerOrganizations/cfab-net/ca?cfab-net-CA.key
+      secretadminpass: secretsv2/data/credentials/cfab-net/ca/cfab?user
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          clusteripport: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
