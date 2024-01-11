@@ -307,9 +307,9 @@ network:
               version: "1"   #This has to be replaced with the version of the chaincode
               maindirectory: "cmd"    #The main directory where chaincode is needed to be placed
               repository:
-                username: "saikumarbommakanti"          # Git Service user who has rights to check-in in all branches
-                password: "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"
-                url: "github.com/saikumarbommakanti/bevel-samples" # "github.com/mgCepeda/bevel-samples.git"
+                username: "GIT_USERNAME"          # Git Service user who has rights to check-in in all branches
+                password: "GIT_TOKEN"
+                url: "github.com/GIT_USERNAME/bevel-samples" # "github.com/mgCepeda/bevel-samples.git"
                 branch: develop
                 path: "examples/supplychain-app/fabric/chaincode_rest_server/chaincode/"    #The path to the chaincode 
               arguments: '\"init\",\"\"'       #Arguments to be passed along with the chaincode parameters
