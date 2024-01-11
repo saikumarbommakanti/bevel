@@ -304,7 +304,7 @@ network:
                 username: "GIT_USERNAME"          # Git Service user who has rights to check-in in all branches
                 password: "GIT_TOKEN"
                 url: "github.com/GIT_USERNAME/bevel-samples" # "github.com/mgCepeda/bevel-samples.git"
-                branch: develop
+                branch: main
                 path: "examples/supplychain-app/fabric/chaincode_rest_server/chaincode/"    #The path to the chaincode 
               arguments: '\"init\",\"\"'       #Arguments to be passed along with the chaincode parameters
               endorsements: ""
