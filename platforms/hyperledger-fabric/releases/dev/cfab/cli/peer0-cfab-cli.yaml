@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: peer0-cfab-cli
+  namespace: cfab-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: peer0-cfab-cli
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-cli    
+  values:
+    metadata:
+      namespace: cfab-net
+      images:
+        fabrictools: ghcr.io/hyperledger/bevel-fabric-tools:2.2.2
+        alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    storage:
+      class: cfab-aws-storageclass
+      size: 256Mi
+    vault:
+      role: vault-role
+      address: http://demo.sau99.dev.aws.blockchaincloudpoc-develop.com
+      authpath: fabric-saicfab-net-auth
+      adminsecretprefix: secretsv2/data/crypto/peerOrganizations/cfab-net/users/admin
+      orderersecretprefix: secretsv2/data/crypto/peerOrganizations/cfab-net/orderer
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+      tls: false
+    peer:
+      name: peer0
+      localmspid: cfabMSP
+      tlsstatus: true
+      address: peer0.cfab-net.hf.demo.aws.blockchaincloudpoc.com:8443
+    orderer:
+      address: orderer7.hf.demo.aws.blockchaincloudpoc.com:8443
