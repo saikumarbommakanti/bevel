@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: sfab-net-ca-tools
+  namespace: sfab-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: sfab-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: sfab-net
+      name: ca-tools
+      component_type: orderer
+      org_name: sfab
+      proxy: haproxy
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: sfab-aws-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://demo.sau99.dev.aws.blockchaincloudpoc-develop.com
+      authpath: fabric-saisfab-net-auth
+      secretusers: secretsv2/data/crypto/ordererOrganizations/sfab-net/users
+      secretorderer: secretsv2/data/crypto/ordererOrganizations/sfab-net/orderers
+      secretpeer: secretsv2/data/crypto/ordererOrganizations/sfab-net/peers
+      secretpeerorderertls: secretsv2/data/crypto/ordererOrganizations/sfab-net/orderer/tls
+      secretcert: secretsv2/data/crypto/ordererOrganizations/sfab-net/ca?ca.sfab-net-cert.pem
+      secretkey: secretsv2/data/crypto/ordererOrganizations/sfab-net/ca?sfab-net-CA.key
+      secretcouchdb: secretsv2/data/credentials/sfab-net/couchdb/sfab
+      secretconfigfile: secretsv2/data/crypto/ordererOrganizations/sfab-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
+      component_subject: O=Orderer,L=51.50/-0.13/London,C=GB
+      cert_subject: O=Orderer/L=51.50,-0.13,London/C=GB
+      component_country: UK
+      component_state: London
+      component_location: London
+      ca_url: ca.sfab-net:7054
+
+    orderers:
+      name: orderer7-orderer8-orderer9-
