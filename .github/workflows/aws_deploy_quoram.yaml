@@ -117,6 +117,8 @@ jobs:
           for placeholder in "${!placeholders[@]}"; do
             sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
           done
+
+          cat "$NETWORK_CONF_FILE"
       # Deploy BEVEL's R3-CORDA-ENT Platform
       - name: Deploy BEVEL's R3-CORDA-ENT Platform
         run: |
