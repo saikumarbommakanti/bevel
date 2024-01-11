@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cfab-cacerts-job
+  namespace: cfab-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: cfab-cacerts-job
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-cacerts-gen
+  values:
+    metadata:
+      name: cfab
+      component_name: cfab-net
+      namespace: cfab-net    
+      images:
+       alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    vault:
+      role: vault-role
+      address: http://demo.sau99.dev.aws.blockchaincloudpoc-develop.com
+      authpath: fabric-saicfab-net-auth
+      secretcryptoprefix: secretsv2/data/crypto/peerOrganizations/cfab-net/ca
+      secretcredentialsprefix: secretsv2/data/credentials/cfab-net/ca/cfab
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+      
+    ca:
+      subject: /C=GB/ST=London/L=London/O=Carrier/CN=ca.cfab-net
