@@ -18,6 +18,7 @@ spec:
   values:
     global:
       serviceAccountName: vault-auth
+      nameOverride: {{ component_name }}
       cluster:
         cloudNativeServices: false
         kubernetesUrl: {{ kubernetes_url }}
