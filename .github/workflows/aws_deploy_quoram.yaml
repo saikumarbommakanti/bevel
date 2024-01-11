@@ -26,7 +26,7 @@ name: Deploy fabric to an EKS Cluster
 on:
   push:
     branches:
-      - "quoram4"
+      - "quoram3"
     paths-ignore:
       - 'docs/**'
       - '**/charts/**'
