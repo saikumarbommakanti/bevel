@@ -129,12 +129,6 @@ network:
         context: "CLUSTER_CONTEXT" 
         config_file: "CLUSTER_CONFIG" 
 
-      # Hashicorp Vault server address and root-token. Vault should be unsealed.
-      # Do not check-in root_token
-      # vault:
-      #   url: "http://vault.internal.dev.aws.blockchaincloudpoc-develop.com:20002" # "http://vault.internal.demo.aws.blockchaincloudpoc.com:9001"
-      #   root_token: "s.8rzRdEGISjdOPL0oqZogI4Fb" # "s.Z6gcVC1l62VGnBkKFQCwpjqw"
-      #   secret_path: "secretsv2"
       vault:
         url: "VAULT_ADDR"
         root_token: "VAULT_ROOT_TOKEN"
@@ -144,11 +138,11 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https"
-        git_url: "https://github.com/GIT_USER_NAME/bevel-3.git"
+        git_url: "https://github.com/GIT_USERNAME/bevel-3.git"
         release_dir: "platforms/hyperledger-fabric/releases/dev" # Relative Path in the Git repo for flux sync per environment.
         chart_source: "platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "github.com/GIT_USER_NAME/bevel-3.git" # "github.com/mgCepeda/blockchain-automation-framework.git" # Gitops https URL for git push like "innersource.accenture.com/scm/blockofz/fulcrum.git"
-        username: "GIT_USER_NAME"          # Git Service user who has rights to check-in in all branches
+        git_repo: "github.com/GIT_USERNAME/bevel-3.git" # "github.com/mgCepeda/blockchain-automation-framework.git" # Gitops https URL for git push like "innersource.accenture.com/scm/blockofz/fulcrum.git"
+        username: "GIT_USERNAME"          # Git Service user who has rights to check-in in all branches
         password: "GIT_TOKEN"
         private_key: "PRIVATE_KEY_PATH"
         email: "GIT_EMAIL_ADDR"          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
@@ -242,11 +236,11 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https"
-        git_url: "https://github.com/GIT_USER_NAME/bevel-3.git"
+        git_url: "https://github.com/GIT_USERNAME/bevel-3.git"
         release_dir: "platforms/hyperledger-fabric/releases/dev" # Relative Path in the Git repo for flux sync per environment.
         chart_source: "platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "github.com/GIT_USER_NAME/bevel-3.git" # "github.com/mgCepeda/blockchain-automation-framework.git" # Gitops https URL for git push like "innersource.accenture.com/scm/blockofz/fulcrum.git"
-        username: "GIT_USER_NAME"          # Git Service user who has rights to check-in in all branches
+        git_repo: "github.com/GIT_USERNAME/bevel-3.git" # "github.com/mgCepeda/blockchain-automation-framework.git" # Gitops https URL for git push like "innersource.accenture.com/scm/blockofz/fulcrum.git"
+        username: "GIT_USERNAME"          # Git Service user who has rights to check-in in all branches
         password: "GIT_TOKEN"
         private_key: "PRIVATE_KEY_PATH"
         email: "GIT_EMAIL_ADDR"          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
@@ -307,9 +301,9 @@ network:
               version: "1"   #This has to be replaced with the version of the chaincode
               maindirectory: "cmd"    #The main directory where chaincode is needed to be placed
               repository:
-                username: "GIT_USER_NAME"          # Git Service user who has rights to check-in in all branches
+                username: "GIT_USERNAME"          # Git Service user who has rights to check-in in all branches
                 password: "GIT_TOKEN"
-                url: "github.com/GIT_USER_NAME/bevel-samples" # "github.com/mgCepeda/bevel-samples.git"
+                url: "github.com/GIT_USERNAME/bevel-samples" # "github.com/mgCepeda/bevel-samples.git"
                 branch: develop
                 path: "examples/supplychain-app/fabric/chaincode_rest_server/chaincode/"    #The path to the chaincode 
               arguments: '\"init\",\"\"'       #Arguments to be passed along with the chaincode parameters

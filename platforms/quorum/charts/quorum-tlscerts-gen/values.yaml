@@ -13,7 +13,7 @@
 #############################################################
 # Provide the name of the node
 # Eg. name:
-name: node_1
+name: node-1
 # This section contains the quorum metadata.
 metadata:
   # Provide the namespace for the quorum Certs Generator.
@@ -53,14 +53,14 @@ vault:
   # Eg. role: vault-role
   role: vault-role
   # Provide the authpath configured to be used.
-  authpath: quorumnode_1
+  authpath: quorumnode-1
   # Provide the service account name autheticated to vault.
   # NOTE: Make sure that the service account is already created and autheticated to use the vault.
   # Eg. serviceaccountname: vault-auth
   serviceaccountname: vault-auth
   # Provide the vault path where the certificates are stored
   # Eg. certsecretprefix: secret/cenm-org-name
-  certsecretprefix: secretsv2/node_1
+  certsecretprefix: secretsv2/node-1
   # Number of retries to check contents from vault
   retries: 30
   type: hashicorp

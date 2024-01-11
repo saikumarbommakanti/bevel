@@ -16,7 +16,7 @@
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:
-  # delete build directory
+  #delete build directory
   - name: Remove build directory
     file:
       path: "./build"
@@ -50,7 +50,7 @@
     loop_control:
       loop_var: org
 
-  # Setup script for Vault and OS Package Manager
+  #Setup script for Vault and OS Package Manager
   - name: "Setup script for Vault and OS Package Manager"
     include_role:
       name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/scripts"
@@ -60,6 +60,9 @@
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
+  - name: Stop1 vault for 20 seconds
+    pause:
+      seconds: 20
 
   # Setup Vault-Kubernetes accesses and Regcred for docker registry
   - name: "Setup vault"
@@ -77,6 +80,9 @@
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
+  - name: Stop2 vault for 20 seconds
+    pause:
+      seconds: 20
 
   # Generate Ambassador certificate for nodes
   - name: "Create ambassador certificates for Nodes"
@@ -115,7 +121,7 @@
     loop_control:
       loop_var: org
 
-  # Build istanbul binary and place it in the bin directory
+  #Build istanbul binary and place it in the bin directory
   - name: "Setup istanbul-tools"
     include_role:
       name: setup/istanbul
