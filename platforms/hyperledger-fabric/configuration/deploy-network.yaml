@@ -59,6 +59,7 @@
         kubernetes: "{{ org.k8s }}"
         vault: "{{ org.vault }}"
         gitops: "{{ org.gitops }}"
+        policy_type: "fabric"
       loop: "{{ network['organizations'] }}"
       loop_control:
         loop_var: org
