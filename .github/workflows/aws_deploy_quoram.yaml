@@ -141,5 +141,5 @@ jobs:
           # Deploy the BEVEL's R3-CORDA-ENT DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
             -i platforms/shared/inventory/ansible_provisioners \
-            -e @build/network-fabric.yaml -e "reset=true" \
+            -e @build/network-fabric.yaml \
             -e 'ansible_python_interpreter=/usr/bin/python3'
