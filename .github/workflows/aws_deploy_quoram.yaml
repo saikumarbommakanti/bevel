@@ -60,7 +60,7 @@ jobs:
       GIT_EMAIL_ADDR: "${{ secrets.GIT_EMAIL_ADDR }}"                   # Git email address for Git operations
       GIT_TOKEN: "${{ secrets.GIT_TOKEN }}"                             # Git token with required permissions for authentication
       GIT_BRANCH: "${{ vars.GIT_BRANCH }}"                              # Git branch to be used in the deployment
-      GIT_PRIVATE_SSH_KEY: "${{ secrets.GIT_PRIVATE_SSH_KEY }}"         # Private SSH key for Git authentication in encoded base64 format
+      GIT_PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_KEY_PATH }}"         # Private SSH key for Git authentication in encoded base64 format
       VAULT_ADDR: "${{ secrets.VAULT_ADDR }}"                           # Vault Server DNS name
       VAULT_TOKEN: "${{ secrets.VAULT_TOKEN }}"                         # Token for authentication with Vault
 
