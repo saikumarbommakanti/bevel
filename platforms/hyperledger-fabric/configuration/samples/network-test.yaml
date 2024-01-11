@@ -33,22 +33,22 @@ network:
   orderers:
     - orderer:
       type: orderer
-      name: orderer1
+      name: orderer7
       org_name: sfab #org_name should match one organization definition below in organizations: key            
-      uri: orderer1.EXTERNAL_URL_SUFFIX:8443 # orderer1.hf.demo.aws.blockchaincloudpoc.com:8443   # Can be external or internal URI for orderer which should be reachable by all peers
-      certificate: USER_DIRECTORY/build/orderer1/ca.crt           # Ensure that the directory exists
+      uri: orderer7.EXTERNAL_URL_SUFFIX:8443 # orderer7.hf.demo.aws.blockchaincloudpoc.com:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: USER_DIRECTORY/build/orderer7/ca.crt           # Ensure that the directory exists
     - orderer:
       type: orderer
-      name: orderer2
+      name: orderer8
       org_name: sfab #org_name should match one organization definition below in organizations: key            
-      uri: orderer2.EXTERNAL_URL_SUFFIX:8443 # orderer2.hf.demo.aws.blockchaincloudpoc.com:8443   # Can be external or internal URI for orderer which should be reachable by all peers
-      certificate: USER_DIRECTORY/build/orderer2/ca.crt # Ensure that the directory exists
+      uri: orderer8.EXTERNAL_URL_SUFFIX:8443 # orderer8.hf.demo.aws.blockchaincloudpoc.com:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: USER_DIRECTORY/build/orderer8/ca.crt # Ensure that the directory exists
     - orderer:
       type: orderer
-      name: orderer3
+      name: orderer9
       org_name: sfab
-      uri: orderer3.EXTERNAL_URL_SUFFIX:8443 #  orderer3.hf.demo.aws.blockchaincloudpoc.com:8443
-      certificate: USER_DIRECTORY/build/orderer3/ca.crt 
+      uri: orderer9.EXTERNAL_URL_SUFFIX:8443 #  orderer9.hf.demo.aws.blockchaincloudpoc.com:8443
+      certificate: USER_DIRECTORY/build/orderer9/ca.crt 
   # The channels defined for a network with participating peers in each channel
   channels:
   - channel:
@@ -68,7 +68,7 @@ network:
         name: peer0
         gossipAddress: peer0.cfab-net.EXTERNAL_URL_SUFFIX:8443 # peer0.cfab-net.hf.demo.aws.blockchaincloudpoc.com:8443
         peerAddress: peer0.cfab-net.EXTERNAL_URL_SUFFIX:8443 # peer0.cfab-net.hf.demo.aws.blockchaincloudpoc.com:8443
-      ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:8443 # orderer1.hf.demo.aws.blockchaincloudpoc.com:8443 # code
+      ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:8443 # orderer7.hf.demo.aws.blockchaincloudpoc.com:8443 # code
     # - organization:
     #   name: mmar
     #   type: joiner
@@ -78,7 +78,7 @@ network:
     #     name: peer0
     #     gossipAddress: peer0.mmar-net.hf.demo.aws.blockchaincloudpoc.com:8443
     #     peerAddress: peer0.mmar-net.hf.demo.aws.blockchaincloudpoc.com:8443
-    #   ordererAddress: orderer1.hf.demo.aws.blockchaincloudpoc.com:8443
+    #   ordererAddress: orderer7.hf.demo.aws.blockchaincloudpoc.com:8443
     endorsers:
     - organization:
       name: cfab
@@ -172,26 +172,26 @@ network:
                 
         orderers:
         - orderer:
-          name: orderer1
+          name: orderer7
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:8443 # add
+          ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:8443 # add
         - orderer:
-          name: orderer2
+          name: orderer8
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer2.EXTERNAL_URL_SUFFIX:8443 # add
+          ordererAddress: orderer8.EXTERNAL_URL_SUFFIX:8443 # add
         - orderer:
-          name: orderer3
+          name: orderer9
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer3.EXTERNAL_URL_SUFFIX:8443 # add
+          ordererAddress: orderer9.EXTERNAL_URL_SUFFIX:8443 # add
           
         
     # Specification for the 2nd organization. Each organization maps to a VPC and a separate k8s cluster
