@@ -24,6 +24,13 @@ name: Deploy Hyperledger-Fabric to an EKS Cluster
 
 # Triggers for the workflow
 on:
+  push:
+    branches:
+      - "fab-pr"
+    paths-ignore:
+      - 'docs/**'
+      - '**/charts/**'
+      - '**/releases/**'
   # Manually trigger the workflow through the GitHub Actions UI
   workflow_dispatch:
     # Ignore certain paths to avoid unnecessary triggering
