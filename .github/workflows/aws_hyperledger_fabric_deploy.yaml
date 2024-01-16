@@ -99,7 +99,7 @@ jobs:
             ["DOCKER_URL"]="${{ env.DOCKER_URL }}"
             ["DOCKER_USERNAME"]="${{ env.DOCKER_USERNAME }}"
             ["DOCKER_PASSWORD"]="${{ env.DOCKER_PASSWORD }}"
-            ["USER_DIRECTORY"]="$(pwd)"
+            ["USER_DIRECTORY"]="$(pwd)"  # Set dynamically if needed
             ["EXTERNAL_URL_SUFFIX"]="${{ env.EXTERNAL_URL_SUFFIX }}"
             ["AWS_ACCESS_KEY"]="${{ env.AWS_ACCESS_KEY_ID }}"
             ["AWS_SECRET_KEY"]="${{ env.AWS_SECRET_ACCESS_KEY }}"
@@ -112,12 +112,12 @@ jobs:
             ["GIT_EMAIL_ADDR"]="${{ env.GIT_EMAIL_ADDR }}"
             ["GIT_BRANCH"]="${{ env.GIT_BRANCH }}"
             ["PRIVATE_KEY_PATH"]="/home/runner/private_ssh_key"
-          )
-          
-        # Replace placeholders in the network configuration file
-          for placeholder in "${!placeholders[@]}"; do
+            )
+
+            # Replace placeholders in the network configuration file
+            for placeholder in "${!placeholders[@]}"; do
             sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
-          done
+            done
 
       # Deploy BEVEL's HYPERLEDGER-FABRIC Platform
       - name: Deploy BEVEL's HYPERLEDGER-FABRIC Platform
