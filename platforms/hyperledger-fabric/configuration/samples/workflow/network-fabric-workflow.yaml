@@ -46,22 +46,22 @@ network:
   orderers:
     - orderer:
       type: orderer
-      name: orderer1
+      name: orderer7
       org_name: supplychain               #org_name should match one organization definition below in organizations: key            
-      uri: orderer1.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
-      certificate: USER_DIRECTORY/build/orderer1.crt           # Ensure that the directory exists
+      uri: orderer7.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: USER_DIRECTORY/build/orderer7.crt           # Ensure that the directory exists
     - orderer:
       type: orderer
-      name: orderer2
+      name: orderer8
       org_name: supplychain               #org_name should match one organization definition below in organizations: key            
-      uri: orderer2.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
-      certificate: USER_DIRECTORY/build/orderer2.crt           # Ensure that the directory exists
+      uri: orderer8.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: USER_DIRECTORY/build/orderer8.crt           # Ensure that the directory exists
     - orderer:
       type: orderer
-      name: orderer3
+      name: orderer7
       org_name: supplychain               #org_name should match one organization definition below in organizations: key            
-      uri: orderer3.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
-      certificate: USER_DIRECTORY/build/orderer3.crt           # Ensure that the directory exists
+      uri: orderer7.EXTERNAL_URL_SUFFIX:443   # Must include port, Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: USER_DIRECTORY/build/orderer7.crt           # Ensure that the directory exists
   
   # The channels defined for a network with participating peers in each channel
   channels:
@@ -84,7 +84,7 @@ network:
         name: peer0
         gossipAddress: peer0.carrier-net.EXTERNAL_URL_SUFFIX:443  # Must include port, External or internal URI of the gossip peer
         peerAddress: peer0.carrier-net.EXTERNAL_URL_SUFFIX:443 # Must include port, External URI of the peer
-      ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:443             # Must include port, External or internal URI of the orderer
+      ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443             # Must include port, External or internal URI of the orderer
     # - organization:
     #   name: store
     #   type: joiner        # joiner organization will only join the channel and install chaincode
@@ -94,7 +94,7 @@ network:
     #     name: peer0
     #     gossipAddress: peer0.store-net.EXTERNAL_URL_SUFFIX:443
     #     peerAddress: peer0.store-net.EXTERNAL_URL_SUFFIX:443 # Must include port, External URI of the peer
-    #   ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:443
+    #   ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443
     # - organization:
     #   name: warehouse
     #   type: joiner
@@ -104,7 +104,7 @@ network:
     #     name: peer0
     #     gossipAddress: peer0.warehouse-net.EXTERNAL_URL_SUFFIX:443
     #     peerAddress: peer0.warehouse-net.EXTERNAL_URL_SUFFIX:443 # Must include port, External URI of the peer
-    #   ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:443
+    #   ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443
     # - organization:
     #   name: manufacturer
     #   type: joiner
@@ -114,7 +114,7 @@ network:
     #     name: peer0
     #     gossipAddress: peer0.manufacturer-net.EXTERNAL_URL_SUFFIX:443
     #     peerAddress: peer0.manufacturer-net.EXTERNAL_URL_SUFFIX:443 # Must include port, External URI of the peer
-    #   ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:443
+    #   ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443
     endorsers:
     # Only one peer per org required for endorsement
     - organization:
@@ -217,26 +217,26 @@ network:
         # You can use a single orderer for most production implementations.
         # For RAFT consensus, have odd number (2n+1) of orderers for consensus agreement to have a majority.
         - orderer:
-          name: orderer1
+          name: orderer7
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer1.EXTERNAL_URL_SUFFIX:443
+          ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443
         - orderer:
-          name: orderer2
+          name: orderer8
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer2.EXTERNAL_URL_SUFFIX:443
+          ordererAddress: orderer8.EXTERNAL_URL_SUFFIX:443
         - orderer:
-          name: orderer3
+          name: orderer7
           type: orderer
           consensus: raft
           grpc:
             port: 7050
-          ordererAddress: orderer3.EXTERNAL_URL_SUFFIX:443
+          ordererAddress: orderer7.EXTERNAL_URL_SUFFIX:443
 
     # Specification for the 2nd organization. Each organization maps to a VPC and a separate k8s cluster
     - organization:
