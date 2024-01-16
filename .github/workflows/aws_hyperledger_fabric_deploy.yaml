@@ -24,13 +24,6 @@ name: Deploy Hyperledger-Fabric to an EKS Cluster
 
 # Triggers for the workflow
 on:
-  push:
-    branches:
-      - "fab-pr"
-    paths-ignore:
-      - 'docs/**'
-      - '**/charts/**'
-      - '**/releases/**'
   # Manually trigger the workflow through the GitHub Actions UI
   workflow_dispatch:
     # Ignore certain paths to avoid unnecessary triggering
@@ -99,7 +92,7 @@ jobs:
             ["DOCKER_URL"]="${{ env.DOCKER_URL }}"
             ["DOCKER_USERNAME"]="${{ env.DOCKER_USERNAME }}"
             ["DOCKER_PASSWORD"]="${{ env.DOCKER_PASSWORD }}"
-            ["USER_DIRECTORY"]="$(pwd)"  # Set dynamically if needed
+            ["USER_DIRECTORY"]="$(pwd)"
             ["EXTERNAL_URL_SUFFIX"]="${{ env.EXTERNAL_URL_SUFFIX }}"
             ["AWS_ACCESS_KEY"]="${{ env.AWS_ACCESS_KEY_ID }}"
             ["AWS_SECRET_KEY"]="${{ env.AWS_SECRET_ACCESS_KEY }}"
@@ -113,10 +106,10 @@ jobs:
             ["GIT_BRANCH"]="${{ env.GIT_BRANCH }}"
             ["PRIVATE_KEY_PATH"]="/home/runner/private_ssh_key"
           )
-
+          
           # Replace placeholders in the network configuration file
           for placeholder in "${!placeholders[@]}"; do
-          sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
+            sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
           done
 
       # Deploy BEVEL's HYPERLEDGER-FABRIC Platform
