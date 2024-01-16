@@ -114,7 +114,7 @@ jobs:
             ["PRIVATE_KEY_PATH"]="/home/runner/private_ssh_key"
           )
           
-          # Replace placeholders in the network configuration file
+      # Replace placeholders in the network configuration file
           for placeholder in "${!placeholders[@]}"; do
             sed -i "s#${placeholder}#${placeholders[$placeholder]}#g" "$NETWORK_CONF_FILE"
           done
