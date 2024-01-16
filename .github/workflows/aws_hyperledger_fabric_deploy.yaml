@@ -141,5 +141,5 @@ jobs:
           # Deploy the BEVEL's HYPERLEDGER-FABRIC DLT platform
           ansible-playbook platforms/shared/configuration/site.yaml \
             -i platforms/shared/inventory/ansible_provisioners \
-            -e @build/network-hyperledger-fabric.yaml \
+            -e @build/network-hyperledger-fabric.yaml -e "reset=true" \
             -e 'ansible_python_interpreter=/usr/bin/python3'
