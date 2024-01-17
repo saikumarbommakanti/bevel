@@ -27,7 +27,7 @@ on:
   push:
     branches:
       - "fab-pr"
-  paths-ignore:
+    paths-ignore:
       - 'docs/**'
       - '**/charts/**'
       - '**/releases/**'
