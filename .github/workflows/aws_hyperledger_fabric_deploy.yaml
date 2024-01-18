@@ -26,7 +26,7 @@ name: Deploy Hyperledger-Fabric to an EKS Cluster
 on:
   push:
     branches:
-      - "fab-pr"
+      - ""
     paths-ignore:
       - 'docs/**'
       - '**/charts/**'
