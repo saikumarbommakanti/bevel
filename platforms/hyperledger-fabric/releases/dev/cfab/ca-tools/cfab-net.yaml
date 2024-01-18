@@ -1,0 +1,85 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cfab-net-ca-tools
+  namespace: cfab-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: cfab-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: cfab-net
+      name: ca-tools
+      component_type: peer
+      org_name: cfab
+      proxy: haproxy
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: cfab-bevel-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: fabric-saicfab
+      secretusers: secretsv2/data/cfab/peerOrganizations/cfab-net/users
+      secretorderer: secretsv2/data/cfab/peerOrganizations/cfab-net/orderers
+      secretpeer: secretsv2/data/cfab/peerOrganizations/cfab-net/peers
+      secretpeerorderertls: secretsv2/data/cfab/peerOrganizations/cfab-net/orderer/tls
+      secretcert: secretsv2/data/cfab/peerOrganizations/cfab-net/ca?ca.cfab-net-cert.pem
+      secretkey: secretsv2/data/cfab/peerOrganizations/cfab-net/ca?cfab-net-CA.key
+      secretcouchdb: secretsv2/data/cfab/credentials/cfab-net/couchdb/cfab
+      secretconfigfile: secretsv2/data/cfab/peerOrganizations/cfab-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
+      component_subject: O=Carrier,OU=Carrier,L=51.50/-0.13/London,C=GB
+      cert_subject: O=Carrier/OU=Carrier/L=51.50,-0.13,London/C=GB
+      component_country: GB
+      component_state: London
+      component_location: London
+      ca_url: ca.cfab-net:7054
+
+    orderers:
+      name: orderer7-orderer8-orderer9-
+    orderers_info:
+      - name: orderer7
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUIvakNDQWFTZ0F3SUJBZ0lVYTZDb0UyNVMwMW1Nclk2cUF0Y3RVWHduRlM0d0NnWUlLb1pJemowRUF3SXcKWFRFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUm93R0FZRFZRUUREQkZqWVM1emRYQndiSGwwWlhOMExXNWxkREFlCkZ3MHlOREF4TVRnd05qRTJORFphRncweU5qRXhNRGN3TmpFMk5EWmFNRjB4Q3pBSkJnTlZCQVlUQWtkQ01ROHcKRFFZRFZRUUlEQVpNYjI1a2IyNHhEekFOQmdOVkJBY01Ca3h2Ym1SdmJqRVFNQTRHQTFVRUNnd0hUM0prWlhKbApjakVhTUJnR0ExVUVBd3dSWTJFdWMzVndjR3g1ZEdWemRDMXVaWFF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPClBRTUJCd05DQUFSMWFmTURIMFJhMC9uZVg5NlJYYkdTK2lLVlJFT2g5MlR4dTVhYkNWVUtFellvd3ZETC9oZFQKVmlIRUxCaUdFNTNHcytIbXUvQ3oycHhBZDdkaXQxbVJvMEl3UURBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUE0RwpBMVVkRHdFQi93UUVBd0lCcGpBZEJnTlZIUTRFRmdRVUkwdkU0NEJTd0k0N1pFNUNNdGEwaUdmS1BPUXdDZ1lJCktvWkl6ajBFQXdJRFNBQXdSUUlnRlBIK3dJcThTUm1oQ1dmOU9xZE5TTHh1aDYxTERzeS90UUNyd0FLckMrQUMKSVFENGhKdjVOUUZLSExTYWNOVUVQMFV5cWFFcmo1VG9UcHZHeGN5L2FKZjRGdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0="
+      - name: orderer8
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUIvakNDQWFTZ0F3SUJBZ0lVYTZDb0UyNVMwMW1Nclk2cUF0Y3RVWHduRlM0d0NnWUlLb1pJemowRUF3SXcKWFRFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUm93R0FZRFZRUUREQkZqWVM1emRYQndiSGwwWlhOMExXNWxkREFlCkZ3MHlOREF4TVRnd05qRTJORFphRncweU5qRXhNRGN3TmpFMk5EWmFNRjB4Q3pBSkJnTlZCQVlUQWtkQ01ROHcKRFFZRFZRUUlEQVpNYjI1a2IyNHhEekFOQmdOVkJBY01Ca3h2Ym1SdmJqRVFNQTRHQTFVRUNnd0hUM0prWlhKbApjakVhTUJnR0ExVUVBd3dSWTJFdWMzVndjR3g1ZEdWemRDMXVaWFF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPClBRTUJCd05DQUFSMWFmTURIMFJhMC9uZVg5NlJYYkdTK2lLVlJFT2g5MlR4dTVhYkNWVUtFellvd3ZETC9oZFQKVmlIRUxCaUdFNTNHcytIbXUvQ3oycHhBZDdkaXQxbVJvMEl3UURBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUE0RwpBMVVkRHdFQi93UUVBd0lCcGpBZEJnTlZIUTRFRmdRVUkwdkU0NEJTd0k0N1pFNUNNdGEwaUdmS1BPUXdDZ1lJCktvWkl6ajBFQXdJRFNBQXdSUUlnRlBIK3dJcThTUm1oQ1dmOU9xZE5TTHh1aDYxTERzeS90UUNyd0FLckMrQUMKSVFENGhKdjVOUUZLSExTYWNOVUVQMFV5cWFFcmo1VG9UcHZHeGN5L2FKZjRGdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0="
+      - name: orderer9
+        path: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUIvakNDQWFTZ0F3SUJBZ0lVYTZDb0UyNVMwMW1Nclk2cUF0Y3RVWHduRlM0d0NnWUlLb1pJemowRUF3SXcKWFRFTE1Ba0dBMVVFQmhNQ1IwSXhEekFOQmdOVkJBZ01Ca3h2Ym1SdmJqRVBNQTBHQTFVRUJ3d0dURzl1Wkc5dQpNUkF3RGdZRFZRUUtEQWRQY21SbGNtVnlNUm93R0FZRFZRUUREQkZqWVM1emRYQndiSGwwWlhOMExXNWxkREFlCkZ3MHlOREF4TVRnd05qRTJORFphRncweU5qRXhNRGN3TmpFMk5EWmFNRjB4Q3pBSkJnTlZCQVlUQWtkQ01ROHcKRFFZRFZRUUlEQVpNYjI1a2IyNHhEekFOQmdOVkJBY01Ca3h2Ym1SdmJqRVFNQTRHQTFVRUNnd0hUM0prWlhKbApjakVhTUJnR0ExVUVBd3dSWTJFdWMzVndjR3g1ZEdWemRDMXVaWFF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPClBRTUJCd05DQUFSMWFmTURIMFJhMC9uZVg5NlJYYkdTK2lLVlJFT2g5MlR4dTVhYkNWVUtFellvd3ZETC9oZFQKVmlIRUxCaUdFNTNHcytIbXUvQ3oycHhBZDdkaXQxbVJvMEl3UURBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUE0RwpBMVVkRHdFQi93UUVBd0lCcGpBZEJnTlZIUTRFRmdRVUkwdkU0NEJTd0k0N1pFNUNNdGEwaUdmS1BPUXdDZ1lJCktvWkl6ajBFQXdJRFNBQXdSUUlnRlBIK3dJcThTUm1oQ1dmOU9xZE5TTHh1aDYxTERzeS90UUNyd0FLckMrQUMKSVFENGhKdjVOUUZLSExTYWNOVUVQMFV5cWFFcmo1VG9UcHZHeGN5L2FKZjRGdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0="
+
+    peers:
+      name: peer0,-      
+    peer_count: "1"
+    users: 
+      users_list: "W3sndXNlcic6IE5vbmUsICdpZGVudGl0eSc6ICd1c2VyMScsICdhdHRyaWJ1dGVzJzogW3sna2V5JzogJ2hmLlJldm9rZXInLCAndmFsdWUnOiAndHJ1ZSd9XX0sIHsndXNlcic6IE5vbmUsICdpZGVudGl0eSc6ICd1c2VyMicsICdhdHRyaWJ1dGVzJzogW3sna2V5JzogJ2hmLlJldm9rZXInLCAndmFsdWUnOiAndHJ1ZSd9XX1d"
+      users_identities: user1-user2-
+    checks:
+      refresh_cert_value: False
+      add_peer_value: False
