@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: supplytest-net-ca-tools
+  namespace: supplytest-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: supplytest-net-ca-tools
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-fabric-sai
+        namespace: flux-fabric-sai
+      chart: platforms/hyperledger-fabric/charts/fabric-catools
+  values:
+    metadata:
+      namespace: supplytest-net
+      name: ca-tools
+      component_type: orderer
+      org_name: supplytest
+      proxy: haproxy
+    replicaCount: 1
+
+    image:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      catools: ghcr.io/hyperledger/bevel-fabric-ca-tools:1.2.1
+      pullPolicy: IfNotPresent
+    
+    storage:
+      storageclassname: supplytest-bevel-storageclass
+      storagesize: 512Mi
+    
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: fabric-saisupplytest
+      secretusers: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/users
+      secretorderer: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/orderers
+      secretpeer: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/peers
+      secretpeerorderertls: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/orderer/tls
+      secretcert: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/ca?ca.supplytest-net-cert.pem
+      secretkey: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/ca?supplytest-net-CA.key
+      secretcouchdb: secretsv2/data/supplytest/credentials/supplytest-net/couchdb/supplytest
+      secretconfigfile: secretsv2/data/supplytest/ordererOrganizations/supplytest-net/msp/config
+      serviceaccountname: vault-auth
+      type: hashicorp
+      imagesecretname: regcred
+    
+    healthcheck: 
+      retries: 10
+      sleepTimeAfterError: 2
+
+    
+    org_data:
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
+      component_subject: O=Orderer,L=51.50/-0.13/London,C=GB
+      cert_subject: O=Orderer/L=51.50,-0.13,London/C=GB
+      component_country: UK
+      component_state: London
+      component_location: London
+      ca_url: ca.supplytest-net:7054
+
+    orderers:
+      name: orderer7-orderer8-orderer9-
