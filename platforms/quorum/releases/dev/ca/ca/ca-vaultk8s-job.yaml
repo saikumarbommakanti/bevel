@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ca-vaultk8s-job
+  namespace: ca-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: ca-vaultk8s-job
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/shared/charts/bevel-vault-mgmt
+    sourceRef:
+      kind: GitRepository
+      name: flux-sai
+      namespace: flux-sai
+  values:
+    nameOverride: ca-vaultk8s-job
+    global:
+      serviceAccountName: vault-auth
+      cluster:
+        cloudNativeServices: false
+        kubernetesUrl: https://300125A3D09FFA0A178EC3522C96BBB8.gr7.eu-west-1.eks.amazonaws.com
+      vault:
+        type: hashicorp
+        role: vault-role
+        address: http://vault.dev.aws.blockchaincloudpoc-develop.com:20001
+        authPath: saica
+        network: quorum
+        secretEngine: secretsv2
+        secretPrefix: "data/ca"
+        tls:
+    image:
+      repository: ghcr.io/hyperledger/bevel-alpine
+      tag: latest
+      pullSecret: "regcred"
