@@ -1,0 +1,65 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: carriercatessera
+  namespace: carrier-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: carriercatessera
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-tessera-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-sai
+      namespace: flux-sai
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: carrier-quo
+      labels:
+    images:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      tessera: quorumengineering/tessera:hashicorp-21.7.3
+      busybox: busybox
+      mysql: mysql/mysql-server:5.7
+      pullPolicy: IfNotPresent
+    node:
+      name: ca
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      servicetype: ClusterIP
+      ports:
+        tm: 443
+        db: 3306
+      dbname: demodb
+      mysqluser: demouser
+    vault:
+      address: http://dev-vault-public.dev.aws.blockchaincloudpoc-develop.com
+      secretengine: secretsv2
+      tmsecretpath: carrier/crypto/ca/tm
+      secretprefix: secretsv2/data/carrier/crypto/ca
+      serviceaccountname: vault-auth
+      keyname: quorum
+      role: vault-role
+      authpath: saicarrier
+      type: hashicorp
+    tessera:
+      dburl: "jdbc:mysql://ca-tessera:3306/demodb"
+      dbusername: demouser
+      url: "https://ca.sai29.dev.aws.blockchaincloudpoc-develop.com:443"
+      clienturl: "http://ca-tessera:8888" #TODO: Enable tls strict for q2t
+      othernodes:
+        - url: https://carrier.sai29.dev.aws.blockchaincloudpoc-develop.com
+      tls: "STRICT"
+      trust: "TOFU"
+    proxy:
+      provider: "ambassador"
+      external_url: carrier.sai29.dev.aws.blockchaincloudpoc-develop.com
+      clientport: 8888
+    storage:
+      storageclassname: carrier-bevel-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
