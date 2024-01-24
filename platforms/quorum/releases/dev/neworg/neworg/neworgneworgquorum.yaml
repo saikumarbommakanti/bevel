@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: neworgneworgquorum
+  namespace: neworg-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: neworgneworgquorum
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-member-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-dev
+      namespace: flux-dev
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: neworg-quo
+      labels:
+    images:
+      node: quorumengineering/quorum:21.4.2
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    node:
+      name: neworg
+      status: default
+      consensus: ibft
+      subject: O=Neworg,OU=Neworg,L=51.50/-0.13/London,C=GB
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      keystore: keystore_1
+      servicetype: ClusterIP
+      lock: false
+      ports:
+        rpc: 8546
+        quorum: 21000
+
+    tm:
+      type: tessera
+
+    vault:
+      type: hashicorp
+      address: http://dev-vault-public.dev.aws.blockchaincloudpoc-develop.com
+      secretprefix: secretsv2/data/neworg/crypto/neworg
+      serviceaccountname: vault-auth
+      keyname: quorum
+      tm_keyname: tm
+      role: vault-role
+      authpath: devneworg
+      
+    tessera:
+      url: "https://neworg.sai29.dev.aws.blockchaincloudpoc-develop.com:443"
+      clienturl: "http://neworg-tessera:8888" #TODO: Enable tls strict for q2t
+    genesis: ewogICJjb25maWciOiB7CiAgICAiY2hhaW5JZCI6IDEwLAogICAgImhvbWVzdGVhZEJsb2NrIjogMCwKICAgICJlaXAxNTBCbG9jayI6IDAsCiAgICAiZWlwMTUwSGFzaCI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLAogICAgImVpcDE1NUJsb2NrIjogMCwKICAgICJlaXAxNThCbG9jayI6IDAsCiAgICAiYnl6YW50aXVtQmxvY2siOiAwLAogICAgImNvbnN0YW50aW5vcGxlQmxvY2siOiAwLAogICAgInBldGVyc2J1cmdCbG9jayI6IDAsCiAgICAiaXN0YW5idWxCbG9jayI6IDAsCiAgICAiaXN0YW5idWwiOiB7CiAgICAgICJlcG9jaCI6IDMwMDAwLAogICAgICAicG9saWN5IjogMCwKICAgICAgImNlaWwyTmJ5M0Jsb2NrIjogMAogICAgfSwKICAgICJ0eG5TaXplTGltaXQiOiAxMjgsCiAgICAicWlwNzE0QmxvY2siOiAwLAogICAgImlzTVBTIjogZmFsc2UsCiAgICAiaXNRdW9ydW0iOiB0cnVlLAogICAgIm1heENvZGVTaXplQ29uZmlnIjogWwogICAgICB7CiAgICAgICAgImJsb2NrIjogMCwKICAgICAgICAic2l6ZSI6IDEyOAogICAgICB9CiAgICBdCiAgfSwKICAibm9uY2UiOiAiMHgwIiwKICAidGltZXN0YW1wIjogIjB4NjViMGNkZWQiLAogICJleHRyYURhdGEiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwZjg0NWMwYjg0MTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBjMCIsCiAgImdhc0xpbWl0IjogIjB4ZTAwMDAwMDAiLAogICJkaWZmaWN1bHR5IjogIjB4MSIsCiAgIm1peEhhc2giOiAiMHg2Mzc0Njk2MzYxNmMyMDYyNzk3YTYxNmU3NDY5NmU2NTIwNjY2MTc1NmM3NDIwNzQ2ZjZjNjU3MjYxNmU2MzY1IiwKICAiY29pbmJhc2UiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAiYWxsb2MiOiB7fSwKICAibnVtYmVyIjogIjB4MCIsCiAgImdhc1VzZWQiOiAiMHgwIiwKICAicGFyZW50SGFzaCI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiCn0=
+    staticnodes:
+      [
+    "enode://aabe777cd6322a75e99883490c3c341c55b1a9974e71638d7926d31ec4bccb8335ae2df837a03b028db89bd5da051c83b97905469a9ce41e843b47fa01e7e941@neworg.sai29.dev.aws.blockchaincloudpoc-develop.com:15014?discport=0"
+]
+    proxy:
+      provider: "ambassador"
+      external_url: sai29.dev.aws.blockchaincloudpoc-develop.com
+      quorumport: 15014
+    storage:
+      storageclassname: neworg-bevel-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
