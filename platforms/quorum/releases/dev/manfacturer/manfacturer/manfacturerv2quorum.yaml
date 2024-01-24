@@ -1,0 +1,61 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: manfacturerv2quorum
+  namespace: manfacturer-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: manfacturerv2quorum
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-validator-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-sai
+      namespace: flux-sai
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: manfacturer-quo
+      labels:
+    images:
+      node: quorumengineering/quorum:21.4.2
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+    node:
+      name: v2
+      status: default
+      consensus: ibft
+      subject: O=v2,OU=v2,L=47.38/8.54/Zurich,C=CH
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      keystore: keystore_1
+      servicetype: ClusterIP
+      lock: false
+      ports:
+        rpc: 8546
+        quorum: 21000
+    vault:
+      address: http://dev-vault-public.dev.aws.blockchaincloudpoc-develop.com
+      secretprefix: secretsv2/data/manfacturer/crypto/v2
+      serviceaccountname: vault-auth
+      keyname: quorum
+      role: vault-role
+      authpath: saimanfacturer
+      type: hashicorp
+    genesis: ewogICJjb25maWciOiB7CiAgICAiY2hhaW5JZCI6IDEwLAogICAgImhvbWVzdGVhZEJsb2NrIjogMCwKICAgICJlaXAxNTBCbG9jayI6IDAsCiAgICAiZWlwMTUwSGFzaCI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLAogICAgImVpcDE1NUJsb2NrIjogMCwKICAgICJlaXAxNThCbG9jayI6IDAsCiAgICAiYnl6YW50aXVtQmxvY2siOiAwLAogICAgImNvbnN0YW50aW5vcGxlQmxvY2siOiAwLAogICAgInBldGVyc2J1cmdCbG9jayI6IDAsCiAgICAiaXN0YW5idWxCbG9jayI6IDAsCiAgICAiaXN0YW5idWwiOiB7CiAgICAgICJlcG9jaCI6IDMwMDAwLAogICAgICAicG9saWN5IjogMCwKICAgICAgImNlaWwyTmJ5M0Jsb2NrIjogMAogICAgfSwKICAgICJ0eG5TaXplTGltaXQiOiAxMjgsCiAgICAicWlwNzE0QmxvY2siOiAwLAogICAgImlzTVBTIjogZmFsc2UsCiAgICAiaXNRdW9ydW0iOiB0cnVlLAogICAgIm1heENvZGVTaXplQ29uZmlnIjogWwogICAgICB7CiAgICAgICAgImJsb2NrIjogMCwKICAgICAgICAic2l6ZSI6IDEyOAogICAgICB9CiAgICBdCiAgfSwKICAibm9uY2UiOiAiMHgwIiwKICAidGltZXN0YW1wIjogIjB4NjViMGE0NzAiLAogICJleHRyYURhdGEiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwZjg2ZmVhOTRhN2FmNWMyMzgxZTRkMTA1NjY1ZWQxODgzZjkwZDM1NGFjYjBhYWE1OTRiY2UzZTk4ZWRmYWJlZTg4MTViZWZjOGJhNmZkNzYwMzc3MDM2YWE1Yjg0MTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBjMCIsCiAgImdhc0xpbWl0IjogIjB4ZTAwMDAwMDAiLAogICJkaWZmaWN1bHR5IjogIjB4MSIsCiAgIm1peEhhc2giOiAiMHg2Mzc0Njk2MzYxNmMyMDYyNzk3YTYxNmU3NDY5NmU2NTIwNjY2MTc1NmM3NDIwNzQ2ZjZjNjU3MjYxNmU2MzY1IiwKICAiY29pbmJhc2UiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAiYWxsb2MiOiB7CiAgICAiYTdhZjVjMjM4MWU0ZDEwNTY2NWVkMTg4M2Y5MGQzNTRhY2IwYWFhNSI6IHsKICAgICAgImJhbGFuY2UiOiAiMHg0NDZjM2IxNWY5OTI2Njg3ZDJjNDA1MzRmZGI1NjQwMDAwMDAwMDAwMDAiCiAgICB9LAogICAgImJjZTNlOThlZGZhYmVlODgxNWJlZmM4YmE2ZmQ3NjAzNzcwMzZhYTUiOiB7CiAgICAgICJiYWxhbmNlIjogIjB4NDQ2YzNiMTVmOTkyNjY4N2QyYzQwNTM0ZmRiNTY0MDAwMDAwMDAwMDAwIgogICAgfQogIH0sCiAgIm51bWJlciI6ICIweDAiLAogICJnYXNVc2VkIjogIjB4MCIsCiAgInBhcmVudEhhc2giOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgp9
+    staticnodes: [
+    "enode://8cdcf2472280644e24c945795e5ae6bc985ff288524ef63529f7b8ff8ef93b064e7e989fb627b4a6f7987596c9a42d8e6189596216e5e880746c8eac73492802@ca.sai29.dev.aws.blockchaincloudpoc-develop.com:15010?discport=0",
+    "enode://84181478c10651e692a7379b478f603ef9f41cdd417507d5618c2ca8be69f0aa606484ebdeebfd7debb7aab4c05289a7185d5e1cbb611e42406c1d67c7340423@v1.sai29.dev.aws.blockchaincloudpoc-develop.com:15014?discport=0",
+    "enode://f804cc4a882151200a0ff04f14ad1249dab8f8038981fa7be5d975ec334d64968b649571de062625722e000e12196bb59f28900c5ea1d523baf9d634161cdfd0@ma.sai29.dev.aws.blockchaincloudpoc-develop.com:15020?discport=0",
+    "enode://44dbfc6256169e07c6fe80c53f694d9d04f473aa98c86ae4fa5439ad5ac499d837677d6f29592048137b10cf6f0c5354e9e85933db6b51a71de7da2baac22a21@v2.sai29.dev.aws.blockchaincloudpoc-develop.com:15024?discport=0"
+]
+    proxy:
+      provider: "ambassador"
+      external_url: sai29.dev.aws.blockchaincloudpoc-develop.com
+      quorumport: 15024
+    storage:
+      storageclassname: manfacturer-bevel-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
