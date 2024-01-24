@@ -1,0 +1,65 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: neworgneworgtessera
+  namespace: neworg-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: neworgneworgtessera
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/quorum/charts/quorum-tessera-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-dev
+      namespace: flux-dev
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: neworg-quo
+      labels:
+    images:
+      alpineutils: ghcr.io/hyperledger/bevel-alpine:latest
+      tessera: quorumengineering/tessera:hashicorp-21.7.3
+      busybox: busybox
+      mysql: mysql/mysql-server:5.7
+      pullPolicy: IfNotPresent
+    node:
+      name: neworg
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      servicetype: ClusterIP
+      ports:
+        tm: 443
+        db: 3306
+      dbname: demodb
+      mysqluser: demouser
+    vault:
+      address: http://dev-vault-public.dev.aws.blockchaincloudpoc-develop.com
+      secretengine: secretsv2
+      tmsecretpath: neworg/crypto/neworg/tm
+      secretprefix: secretsv2/data/neworg/crypto/neworg
+      serviceaccountname: vault-auth
+      keyname: quorum
+      role: vault-role
+      authpath: devneworg
+      type: hashicorp
+    tessera:
+      dburl: "jdbc:mysql://neworg-tessera:3306/demodb"
+      dbusername: demouser
+      url: "https://neworg.sai29.dev.aws.blockchaincloudpoc-develop.com:443"
+      clienturl: "http://neworg-tessera:8888" #TODO: Enable tls strict for q2t
+      othernodes:
+        - url: https://carrier.sai29.dev.aws.blockchaincloudpoc-develop.com
+      tls: "STRICT"
+      trust: "TOFU"
+    proxy:
+      provider: "ambassador"
+      external_url: neworg.sai29.dev.aws.blockchaincloudpoc-develop.com
+      clientport: 8888
+    storage:
+      storageclassname: neworg-bevel-storageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
