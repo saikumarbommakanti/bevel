@@ -29,7 +29,7 @@ network:
         from: 15010
         to: 15052
     # ports: [15020,15021]      # For specific ports; needs to be an array or list
-    loadBalancerSourceRanges: # (Optional) Default value is '0.0.0.0/0', this value can be changed to any other IP adres or list (comma-separated without spaces) of IP adresses, this is valid only if proxy='ambassador'
+    loadBalancerSourceRanges: 0.0.0.0/0 # (Optional) Default value is '0.0.0.0/0', this value can be changed to any other IP adres or list (comma-separated without spaces) of IP adresses, this is valid only if proxy='ambassador'
     retry_count: 20                 # Retry count for the checks on Kubernetes cluster
     external_dns: enabled           # Should be enabled if using external-dns for automatic route configuration
     labels:
@@ -86,7 +86,7 @@ network:
   organizations:
     # Specification for the 1st organization. Each organization should map to a VPC and a separate k8s cluster for production deployments
     - organization:
-      name: supplychain
+      name: chainsupply
       type: validator
       # Provide the url suffix that will be added in DNS recordset. Must be different for different clusters
       external_url_suffix: test.besu.blockchaincloudpoc.com
@@ -115,7 +115,7 @@ network:
       gitops:
         git_protocol: "https" # Option for git over https or ssh
         git_url: "https://github.com/<username>/bevel.git"         # Gitops https or ssh url for flux value files
-        branch: "develop"           # Git branch where release is being made
+        branch: "GIT_branch"           # Git branch where release is being made
         release_dir: "platforms/hyperledger-besu/releases/dev" # Relative Path in the Git repo for flux sync per environment.
         chart_source: "platforms/hyperledger-besu/charts"     # Relative Path where the Helm charts are stored in Git repo
         git_repo: "github.com/<username>/bevel.git"   # Gitops git repository URL for git push
@@ -211,7 +211,7 @@ network:
             port: 9545          # Specify the port that Prometheus will use to collect metrics for this node. 
 
     - organization:
-      name: carrier
+      name: carri1
       type: member
       # Provide the url suffix that will be added in DNS recordset. Must be different for different clusters
       external_url_suffix: test.besu.blockchaincloudpoc.com
