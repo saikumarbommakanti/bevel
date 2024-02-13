@@ -46,11 +46,12 @@
 - name: Create storageclass using helm chart
   kubernetes.core.helm:
     name: "{{ sc_name }}" 
-    chart_ref: "{{ playbook_dir }}/../../../platforms/shared/charts/bevel-storageclass"
+    chart_ref: "{{ playbook_dir }}/../../../platforms/shared/charts/bevel-storageclass-chart"
     release_namespace: default
     values_files:
       - "{{ playbook_dir }}/../../../platforms/shared/configuration/build/{{ sc_name }}-storageclass.yaml"
     force: true
+    kubeconfig: "{{ org.k8s.config_file }}"
   when: storageclass_state.resources|length == 0
   
 #############################################################################################
