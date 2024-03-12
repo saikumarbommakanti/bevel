@@ -43,21 +43,21 @@ global:
 ### _Without Proxy or Vault_
 
 ```bash
-helm install init ./corda-init --namespace supplychain-ns --create-namespace --values ./values/noproxy-and-novault/init.yaml
+helm install init ./corda-init --namespace one1-ns --create-namespace --values ./values/noproxy-and-novault/init.yaml
 
 # Install doorman and network-map services
-helm install supplychain ./corda-network-service --namespace supplychain-ns --values ./values/noproxy-and-novault/network-service.yaml
+helm install supplychain ./corda-network-service --namespace one1-ns --values ./values/noproxy-and-novault/network-service.yaml
 # Install a notary service
-helm install notary ./corda-node --namespace supplychain-ns --values ./values/noproxy-and-novault/notary.yaml
+helm install notary ./corda-node --namespace one1-ns --values ./values/noproxy-and-novault/notary.yaml
 
 ```
 ### To setup another node in a different namespace
 
 ```bash
 # Run init for new namespace
-helm install init ./corda-init --namespace manufacturer-ns --create-namespace --values ./values/noproxy-and-novault/init.yaml
+helm install init ./corda-init --namespace two2-ns --create-namespace --values ./values/noproxy-and-novault/init.yaml
 # Install a Corda node
-helm install manufacturer ./corda-node --namespace manufacturer-ns --values ./values/noproxy-and-novault/node.yaml
+helm install manufacturer ./corda-node --namespace two2-ns --values ./values/noproxy-and-novault/node.yaml
 ```
 
 ### _With Ambassador proxy and Vault_
