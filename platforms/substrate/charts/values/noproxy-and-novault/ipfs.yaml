@@ -10,10 +10,10 @@ global:
     provider: azure
     cloudNativeServices: false
   vault:
-    type: kubernetes # kubernetes | hashicorp
+    type: hashicorp # kubernetes | hashicorp
 
 proxy:
-  provider: none # none | ambassador
+  provider: ambassador # none | ambassador
 
 config:
-  nodeHost:
+  nodeHost: member-1-substrate-node

@@ -43,7 +43,7 @@ global:
 
 ## `Without Proxy and Vault`
 
-### 1. Install Genesis Node
+### 1. Install Genesis 
 ```bash
 # Install the genesis node
 helm install genesis ./substrate-genesis --namespace supplychain-subs --create-namespace --values ./values/noproxy-and-novault/genesis.yaml
@@ -64,8 +64,8 @@ node:
   ...
   isBootnode:
     enabled: true
-    bootnodeName: <bootnode-name> # Here it'll be "validator-1" as defined above
-    bootnodeAddr: <bootnode-name>-substrate-node-0-rc-p2p.<bootnode-namespace> # Supporting no-proxy as of now. TODO: enable proxy method.
+    bootnodeName: validator-1
+    bootnodeAddr: validator-1-substrate-node-0-rc-p2p.supplychain-subs
     bootnodePort: 30333
   ...
 ...
@@ -87,13 +87,13 @@ helm install    member-1 ./substrate-node --namespace supplychain-subs --values 
 ```yaml
 config:
   # Specify the name of any running member's node that can be considered as a bootnode for the current IPFS node.
-  nodeHost: <member-node>-substrate-node # Here, it can be modified either as member-1-substrate-node or member-2-substrate-node
+  nodeHost: member-1-substrate-node
 ```
 
 **4.2.** Retrieve the `NODE_ID` from the Kubernetes secret:
 
 ```bash
-NODE_ID=$(kubectl get secret "substrate-node-<member-node>-keys" --namespace supplychain-subs -o jsonpath="{.data['substrate-node-keys']}" | base64 -d | jq -r '.data.node_id')
+NODE_ID=$(kubectl get secret "substrate-node-member-1-keys" --namespace supplychain-subs -o jsonpath="{.data['substrate-node-keys']}" | base64 -d | jq -r '.data.node_id')
 ```
 
 **4.3.** Now, install the IPFS nodes:
@@ -101,9 +101,65 @@ NODE_ID=$(kubectl get secret "substrate-node-<member-node>-keys" --namespace sup
 ```bash
 helm install dscp-ipfs-node-1 ./dscp-ipfs-node --namespace supplychain-subs --values ./values/noproxy-and-novault/ipfs.yaml \
 --set config.ipfsBootNodeAddress="/dns4/dscp-ipfs-node-1-swarm.supplychain-subs/tcp/4001/p2p/$NODE_ID"
+```
 
-helm install dscp-ipfs-node-2 ./dscp-ipfs-node --namespace supplychain-subs --values ./values/noproxy-and-novault/ipfs.yaml \
---set config.ipfsBootNodeAddress="/dns4/dscp-ipfs-node-2-swarm.supplychain-subs/tcp/4001/p2p/$NODE_ID"
+### _With Ambassador proxy and Vault_
+
+### 1. Install Genesis 
+
+Replace the `global.vault.address`, `global.cluster.kubernetesUrl` and `global.proxy.externalUrlSuffix` in all the files in `./values/proxy-and-vault/` folder.
+
+```bash
+# If the namespace does not exist already
+kubectl create namespace supplychain-subs 
+# Create the roottoken secret
+kubectl -n supplychain-subs create secret generic roottoken --from-literal=token=<VAULT_ROOT_TOKEN>
+
+helm install genesis ./substrate-genesis --namespace supplychain-subs --values ./values/proxy-and-vault/genesis.yaml
+```
+### 2. Install Bootnode
+```bash
+helm install validator-1 ./substrate-node --namespace supplychain-subs --values ./values/proxy-and-vault/validator.yaml --set global.proxy.p2p=15051
+```
+### 3. Install Additional Nodes
+
+To deploy additional nodes, update the following section in the `./values/proxy-and-vault/node.yaml` file only once:
+```yaml
+...
+node:
+  ...
+  isBootnode:
+    enabled: true
+    bootnodeName: validator-1
+    bootnodeAddr: validator-1.<yourDomain.com>
+    bootnodePort: 15051
+  ...
+  ...
+...
+```
+
+# Then install the nodes using the following commands:
+```bash
+
+helm install validator-2 ./substrate-node --namespace supplychain-subs --values ./values/proxy-and-vault/validator.yaml --set global.proxy.p2p=15052
+
+helm install validator-3 ./substrate-node --namespace supplychain-subs --values ./values/proxy-and-vault/validator.yaml --set global.proxy.p2p=15053
+
+helm install validator-4 ./substrate-node --namespace supplychain-subs --values ./values/proxy-and-vault/validator.yaml --set global.proxy.p2p=15054
+
+helm install    member-1 ./substrate-node --namespace supplychain-subs --values ./values/proxy-and-vault/node.yaml --set node.role=full
+
+```
+
+# Spin up a IPFS nodes
+
+```bash
+NODE_ID=$(kubectl get secret "substrate-node-member-1-keys" --namespace supplychain-subs -o jsonpath="{.data['substrate-node-keys']}" | base64 -d | jq -r '.data.node_id')
+```
+
+```bash
+helm install dscp-ipfs-node-1 ./dscp-ipfs-node --namespace supplychain-subs --values ./values/proxy-and-vault/ipfs.yaml \
+--set config.ipfsBootNodeAddress="/dns4/dscp-ipfs-node-1-swarm.supplychain-subs/tcp/4001/p2p/$NODE_ID"
 ```
 
 ## Clean-up
@@ -116,6 +172,5 @@ helm uninstall validator-3      --namespace supplychain-subs
 helm uninstall validator-4      --namespace supplychain-subs
 helm uninstall member-1         --namespace supplychain-subs
 helm uninstall dscp-ipfs-node-1 --namespace supplychain-subs
-helm uninstall dscp-ipfs-node-2 --namespace supplychain-subs
 helm uninstall genesis          --namespace supplychain-subs
 ```
