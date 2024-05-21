@@ -19,7 +19,7 @@
     file:
       path: "./build"
       state: absent
-      
+
   - name: "Create namespace"
     include_role: 
       name: create/namespace 
@@ -59,9 +59,9 @@
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
-    when: 
-    - org.type == 'network-service'
-    - org.org_status is not defined or org.org_status == 'new'
+    # when: 
+    # - org.type == 'network-service'
+    # - org.org_status is not defined or org.org_status == 'new'
 
   # create namespace, service account and clusterrolebinding
   # - name: "Create namespace, service accounts and clusterrolebinding"
