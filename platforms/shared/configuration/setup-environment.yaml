@@ -39,13 +39,13 @@
           bin_directory: "{{ bin_install_dir }}"
         with_items: "{{ network.organizations }}"
       when: network.env.type != 'operator'
-    - include_role:
-        name: setup/aws-cli
-      vars:
-        aws_access_key: "{{ item.aws.access_key }}"
-        aws_secret_key: "{{ item.aws.secret_key }}"
-      with_items: "{{ network.organizations }}"
-      when: "item.cloud_provider == 'aws' or item.cloud_provider == 'aws-baremetal'"
+    # - include_role:
+    #     name: setup/aws-cli
+    #   vars:
+    #     aws_access_key: "{{ item.aws.access_key }}"
+    #     aws_secret_key: "{{ item.aws.secret_key }}"
+    #   with_items: "{{ network.organizations }}"
+    #   when: "item.cloud_provider == 'aws' or item.cloud_provider == 'aws-baremetal'"
     - include_role:
         name: setup/aws-auth
       vars:
