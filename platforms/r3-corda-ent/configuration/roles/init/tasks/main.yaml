@@ -32,3 +32,4 @@
     component_name: "init"
     type: "{{ init_type }}"
     kubernetes_url: "{{ kubernetes_server_url.stdout }}"
+
