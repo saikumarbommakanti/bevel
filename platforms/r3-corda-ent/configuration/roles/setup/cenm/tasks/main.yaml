@@ -79,12 +79,12 @@
   include_role:
     name: setup/idman
 
-# Deploy networkmap service
-- name: Deploy networkmap service
-  include_role:
-    name: setup/nmap
+# # Deploy networkmap service
+# - name: Deploy networkmap service
+#   include_role:
+#     name: setup/nmap
 
-# Deploy notary service 
-- name: Deploy notary service
-  include_role:
-    name: setup/notary
+# # Deploy notary service 
+# - name: Deploy notary service
+#   include_role:
+#     name: setup/notary
