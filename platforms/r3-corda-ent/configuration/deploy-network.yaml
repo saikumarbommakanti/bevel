@@ -19,99 +19,142 @@
     file:
       path: "./build"
       state: absent
+      
+  - name: "Create namespace"
+    include_role: 
+      name: create/namespace 
+    vars: 
+      component_name: "{{ org.name }}-ns"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+
+  # Create necessary secrets
+  - name: "Create k8s secrets"
+    include_role:
+      name: create/secrets
+    vars:
+      component_ns: "{{ org.name | lower }}-ns"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+    - org.org_status is not defined or org.org_status == 'new'
+
+  # Execute primary init for the network-service organization
+  - name: "Setup primary init with network-service org"
+    include_role:
+      name: init
+    vars:
+      build_path: "./build"
+      name: "{{ org.name | lower }}"
+      component_ns: "{{ org.name | lower }}-ns"
+      init_type: "primary_init"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "./build/{{ component_ns }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+    - org.type == 'network-service'
+    - org.org_status is not defined or org.org_status == 'new'
 
   # create namespace, service account and clusterrolebinding
-  - name: "Create namespace, service accounts and clusterrolebinding"
-    include_role: 
-      name: create/namespace_serviceaccount
-    vars:
-      component_ns: "{{ org.name | lower }}-ent"
-      organisation: "{{ org.name | lower }}"
-      kubernetes: "{{ org.k8s }}"
-      gitops: "{{ org.gitops }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
+  # - name: "Create namespace, service accounts and clusterrolebinding"
+  #   include_role: 
+  #     name: create/namespace_serviceaccount
+  #   vars:
+  #     component_ns: "{{ org.name | lower }}-ent"
+  #     organisation: "{{ org.name | lower }}"
+  #     kubernetes: "{{ org.k8s }}"
+  #     gitops: "{{ org.gitops }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
 
-  # Create Storageclass that will be used for this deployment
-  - name: Create Storage Class
-    include_role:
-      name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
-    vars:
-      org_name: "{{ org.name | lower }}"
-      sc_name: "{{ org_name }}-bevel-storageclass"
-      region: "{{ org.k8s.region | default('eu-west-1') }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
+  # # Create Storageclass that will be used for this deployment
+  # - name: Create Storage Class
+  #   include_role:
+  #     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
+  #   vars:
+  #     org_name: "{{ org.name | lower }}"
+  #     sc_name: "{{ org_name }}-bevel-storageclass"
+  #     region: "{{ org.k8s.region | default('eu-west-1') }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
 
-  # Setup CENM services for the network
-  - name: "Setup cenm"   
-    include_role: 
-      name: "setup/cenm"
-    vars:
-      services: "{{ org.services }}"
-      organisation: "{{ org.name | lower }}"
-      name: "{{ org.name | lower }}"
-      sc_name: "{{ name }}-bevel-storageclass"
-      component_ns: "{{ org.name | lower }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      policy_type: "r3-corda-ent"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    when: org.type == 'cenm'
+  # # Setup CENM services for the network
+  # - name: "Setup cenm"   
+  #   include_role: 
+  #     name: "setup/cenm"
+  #   vars:
+  #     services: "{{ org.services }}"
+  #     organisation: "{{ org.name | lower }}"
+  #     name: "{{ org.name | lower }}"
+  #     sc_name: "{{ name }}-bevel-storageclass"
+  #     component_ns: "{{ org.name | lower }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     policy_type: "r3-corda-ent"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   when: org.type == 'cenm'
 
-  # Wait for cenm services to respond  
-  - name: Check that CENM uri are reachable
-    uri:
-      url: "{{ item.uri }}/status"
-      validate_certs: no
-    register: this
-    until: this.status == 200
-    loop: "{{ network['network_services'] }}"
-    retries: "{{ network.env.retry_count}}"
-    delay: 50
+  # # Wait for cenm services to respond  
+  # - name: Check that CENM uri are reachable
+  #   uri:
+  #     url: "{{ item.uri }}/status"
+  #     validate_certs: no
+  #   register: this
+  #   until: this.status == 200
+  #   loop: "{{ network['network_services'] }}"
+  #   retries: "{{ network.env.retry_count}}"
+  #   delay: 50
 
-  # Setup Corda Node services for the network
-  - name: Setup Corda Node services
-    include_role:
-      name: setup/node
-    vars:
-      services: "{{ org.services }}"
-      organisation: "{{ org.name | lower }}"
-      name: "{{ org.name | lower }}"
-      sc_name: "{{ name }}-bevel-storageclass"
-      component_ns: "{{ org.name | lower }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      policy_type: "r3-corda-ent"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    when: org.type == 'node'
+  # # Setup Corda Node services for the network
+  # - name: Setup Corda Node services
+  #   include_role:
+  #     name: setup/node
+  #   vars:
+  #     services: "{{ org.services }}"
+  #     organisation: "{{ org.name | lower }}"
+  #     name: "{{ org.name | lower }}"
+  #     sc_name: "{{ name }}-bevel-storageclass"
+  #     component_ns: "{{ org.name | lower }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     policy_type: "r3-corda-ent"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   when: org.type == 'node'
 
-  # Setup Additional Notary services for the network
-  - name: Setup Additional Notary services
-    include_role:
-      name: setup/notary
-    vars:
-      services: "{{ org.services }}"
-      organisation: "{{ org.name | lower }}"
-      name: "{{ org.name | lower }}"
-      sc_name: "{{ name }}-bevel-storageclass"
-      component_ns: "{{ org.name | lower }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      policy_type: "r3-corda-ent"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    when: org.type == 'notary'
+  # # Setup Additional Notary services for the network
+  # - name: Setup Additional Notary services
+  #   include_role:
+  #     name: setup/notary
+  #   vars:
+  #     services: "{{ org.services }}"
+  #     organisation: "{{ org.name | lower }}"
+  #     name: "{{ org.name | lower }}"
+  #     sc_name: "{{ name }}-bevel-storageclass"
+  #     component_ns: "{{ org.name | lower }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     policy_type: "r3-corda-ent"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   when: org.type == 'notary'
 
   # These variables can be overriden from the command line
   vars:
