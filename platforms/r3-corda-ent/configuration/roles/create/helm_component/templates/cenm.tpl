@@ -10,7 +10,7 @@ spec:
   interval: 1m
   chart:
     spec:
-      chart: {{ gitops.chart_source }}/corda-network-service
+      chart: {{ gitops.chart_source }}/cenm
       sourceRef:
         kind: GitRepository
         name: flux-{{ network.env.type }}

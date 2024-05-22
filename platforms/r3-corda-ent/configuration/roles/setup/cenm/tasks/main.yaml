@@ -17,5 +17,3 @@
   vars:
     GIT_DIR: "{{ playbook_dir }}/../../../"
     msg: "[ci skip] Pushing network-service files"
-  tags:
-    - notest
