@@ -5,7 +5,7 @@
   vars:
     component_name: "{{ name }}"
     external_url_suffix: "{{ org.external_url_suffix }}"
-    type: "cenm"
+    type: "{{ init_type }}"
     doorman: "{{ org.services.doorman }}"
     nms: "{{ org.services.nms }}"
 
