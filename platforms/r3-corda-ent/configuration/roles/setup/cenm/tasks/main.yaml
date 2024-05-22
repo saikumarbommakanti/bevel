@@ -3,9 +3,10 @@
   include_role:
     name: create/helm_component
   vars:
-    component_name: "{{ name }}"
     external_url_suffix: "{{ org.external_url_suffix }}"
     type: "{{ init_type }}"
+    component_type: "Namespace"
+    component_name: "{{ component_ns }}"
     doorman: "{{ org.services.doorman }}"
     nms: "{{ org.services.nms }}"
 
