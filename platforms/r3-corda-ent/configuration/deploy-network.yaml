@@ -89,26 +89,26 @@
   #     loop_var: org
 
   # # Setup CENM services for the network
-  - name: "Setup cenm"   
-    include_role: 
-      name: "setup/cenm"
-    vars:
-      component_name: "{{org.name}}-cenm"
-      services: "{{ org.services }}"
-      organisation: "{{ org.name | lower }}"
-      name: "{{ org.name | lower }}"
-      component_ns: "{{ org.name | lower }}-ns"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      policy_type: "r3-corda-ent"
-      init_type: "cenm"
-      charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "./build/{{ component_ns }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    when: org.type == 'cenm'
+  # - name: "Setup cenm"   
+  #   include_role: 
+  #     name: "setup/cenm"
+  #   vars:
+  #     component_name: "{{org.name}}-cenm"
+  #     services: "{{ org.services }}"
+  #     organisation: "{{ org.name | lower }}"
+  #     name: "{{ org.name | lower }}"
+  #     component_ns: "{{ org.name | lower }}-ns"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     policy_type: "r3-corda-ent"
+  #     init_type: "cenm"
+  #     charts_dir: "{{ org.gitops.chart_source }}"
+  #     values_dir: "./build/{{ component_ns }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   when: org.type == 'cenm'
 
   - name: Deploy Corda nodes
     include_role:
