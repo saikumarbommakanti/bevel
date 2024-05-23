@@ -127,7 +127,7 @@
       name: setup/node
     vars:
       name: "{{ org.name | lower }}"
-      node: "{{ org.services.notary }}"
+      # node: "{{ org.services.notary }}"
       component_ns: "{{ org.name | lower }}-ns"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
