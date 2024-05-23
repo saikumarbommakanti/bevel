@@ -10,7 +10,7 @@ spec:
   interval: 1m
   chart:
     spec:
-      chart: {{ gitops.chart_source }}/corda-node
+      chart: {{ gitops.chart_source }}/enterprise-node
       sourceRef:
         kind: GitRepository
         name: flux-{{ network.env.type }}

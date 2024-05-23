@@ -68,4 +68,4 @@ charts:
   external_chaincode: fabric-external-chaincode
   install_external_chaincode_job: fabric-external-chaincode-install
   cenm: cenm
-  node: enterprise-node
+  enterprise-node: enterprise-node
