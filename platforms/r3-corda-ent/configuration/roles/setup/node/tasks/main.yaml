@@ -22,7 +22,7 @@
     name: create/helm_component
   vars:    
     type: "enterprise-node"
-    component_name: "{{ node.name | lower }}"
+    component_name: testing3
     nms_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
     doorman_url: "{{ network | json_query('network_services[?type==`doorman`].uri') | first }}"
   # loop: "{{ org.services.peers }}"
