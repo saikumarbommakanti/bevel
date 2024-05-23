@@ -55,5 +55,4 @@ spec:
       networkMapPort: 443
       doormanDomain: cenm-doorman.test.blockchaincloud.com
       networkMapDomain: cenm-nms.test.blockchaincloud.com
-      networkMapURL: #{{ nms_url | quote }}
-      doormanURL: #{{ doorman_url | quote }}
+
