@@ -3,12 +3,8 @@
   include_role:
     name: create/helm_component
   vars:
-    external_url_suffix: "{{ org.external_url_suffix }}"
     type: "{{ init_type }}"
     component_type: "Namespace"
-    component_name: "{{ component_ns }}"
-    doorman: "{{ org.services.doorman }}"
-    nms: "{{ org.services.nms }}"
 
 # Git Push : Pushes the above generated files to git
 - name: Git Push
@@ -17,3 +13,11 @@
   vars:
     GIT_DIR: "{{ playbook_dir }}/../../../"
     msg: "[ci skip] Pushing network-service files"
+
+- name: Check if the cenm job is completed
+  include_role:
+    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+  vars:
+    component_type: Job
+    namespace: "{{ component_ns }}"
+    kubernetes: "{{ organization.k8s }}"

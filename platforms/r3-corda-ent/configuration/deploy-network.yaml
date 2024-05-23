@@ -93,10 +93,10 @@
     include_role: 
       name: "setup/cenm"
     vars:
+      component_name: "{{org.name}}-cenm"
       services: "{{ org.services }}"
       organisation: "{{ org.name | lower }}"
       name: "{{ org.name | lower }}"
-      sc_name: "{{ name }}-bevel-storageclass"
       component_ns: "{{ org.name | lower }}-ns"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
@@ -109,6 +109,24 @@
     loop_control:
       loop_var: org
     when: org.type == 'cenm'
+
+  - name: Deploy Corda nodes
+    include_role:
+      name: setup/node
+    vars:
+      name: "{{ org.name | lower }}"
+      component_ns: "{{ org.name | lower }}-ns"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      gitops: "{{ org.gitops }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "./build/{{ component_ns }}"
+    loop_control:
+      loop_var: org
+    when: 
+      - org.type == 'node'
+      - org.org_status is not defined or org.org_status == 'new'
+
 
   # # Wait for cenm services to respond  
   # - name: Check that CENM uri are reachable
