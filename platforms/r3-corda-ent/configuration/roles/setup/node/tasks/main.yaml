@@ -25,9 +25,9 @@
     component_name: "{{ node.name | lower }}"
     nms_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
     doorman_url: "{{ network | json_query('network_services[?type==`doorman`].uri') | first }}"
-  loop: "{{ org.services.peers }}"
-  loop_control:
-    loop_var: node
+  # loop: "{{ org.services.peers }}"
+  # loop_control:
+  #   loop_var: node
 
 # Git Push: Push the deployment files for node
 - name: Push node deployment files
