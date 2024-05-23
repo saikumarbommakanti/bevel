@@ -124,9 +124,9 @@
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
-    # when: 
-    #   - org.type == 'node'
-    #   - org.org_status is not defined or org.org_status == 'new'
+    when: 
+      - org.type == 'node'
+      - org.org_status is not defined or org.org_status == 'new'
 
 
   # # Wait for cenm services to respond  
