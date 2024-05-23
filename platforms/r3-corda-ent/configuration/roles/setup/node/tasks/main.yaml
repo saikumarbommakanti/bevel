@@ -8,20 +8,20 @@
 # This role creates the deployment files for node and pushes them to repository
 ##############################################################################################
 
-# - name: "Setup primary init with network-service org"
-#   include_role:
-#     name: init
-#   vars:
-#     build_path: "./build"
-#     init_type: "secondary_init"
-#     values_dir: "./build/{{ component_ns }}"
+- name: "Setup primary init with network-service org"
+  include_role:
+    name: init
+  vars:
+    build_path: "./build"
+    init_type: "secondary_init"
+    values_dir: "./build/{{ component_ns }}"
     
 # Create deployment file for node node
 - name: Create node deployment file
   include_role: 
     name: create/helm_component
   vars:    
-    type: "corda-ent-node"
+    type: "enterprise-node"
     component_name: "{{ node.name | lower }}"
     nms_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
     doorman_url: "{{ network | json_query('network_services[?type==`doorman`].uri') | first }}"
