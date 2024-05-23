@@ -110,23 +110,24 @@
   #     loop_var: org
   #   when: org.type == 'cenm'
 
-  - name: Check that network services uri are reachable
-    uri:
-      url: "{{ item.uri }}"
-      validate_certs: no
-    register: this
-    until: this.status == 200 or this.status == 401
-    loop: "{{ network['network_services'] }}"
-    retries: "{{ network.env.retry_count}}"
-    delay: 2
-    ignore_errors: true
-    when: network.env.proxy != 'none'
+  # - name: Check that network services uri are reachable
+  #   uri:
+  #     url: "{{ item.uri }}"
+  #     validate_certs: no
+  #   register: this
+  #   until: this.status == 200 or this.status == 401
+  #   loop: "{{ network['network_services'] }}"
+  #   retries: "{{ network.env.retry_count}}"
+  #   delay: 2
+  #   ignore_errors: true
+  #   when: network.env.proxy != 'none'
 
   - name: Deploy Corda nodes
     include_role:
       name: setup/node
     vars:
       name: "{{ org.name | lower }}"
+      node: "{{ org.services.notary }}"
       component_ns: "{{ org.name | lower }}-ns"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
