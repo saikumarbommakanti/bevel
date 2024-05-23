@@ -1,2 +1,3 @@
 dlt_templates:
   cenm: cenm.tpl
+  node: node.tpl
