@@ -53,7 +53,7 @@ spec:
       legalName: "O=Node,OU=Node,L=London,C=GB"
       doormanPort: 443
       networkMapPort: 443
-      doormanDomain: cenm-doorman.test.blockchaincloud.com
-      networkMapDomain: cenm-nms.test.blockchaincloud.com
+      doormanDomain: cenm-doorman.{{external_url_suffix }}
+      networkMapDomain: cenm-nms.{{ external_url_suffix }}
       networkMapURL: {{ nms_url | quote }}
       doormanURL: {{ doorman_url | quote }}

@@ -20,95 +20,89 @@
       path: "./build"
       state: absent
 
-  # - name: "Create namespace"
-  #   include_role: 
-  #     name: create/namespace 
-  #   vars: 
-  #     component_name: "{{ org.name }}-ns"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  - name: "Create namespace"
+    include_role: 
+      name: create/namespace 
+    vars: 
+      component_name: "{{ org.name }}-ns"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
   # # Create necessary secrets
-  # - name: "Create k8s secrets"
-  #   include_role:
-  #     name: create/secrets
-  #   vars:
-  #     component_ns: "{{ org.name | lower }}-ns"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: 
-  #   - org.org_status is not defined or org.org_status == 'new'
+  - name: "Create k8s secrets"
+    include_role:
+      name: create/secrets
+    vars:
+      component_ns: "{{ org.name | lower }}-ns"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+    - org.org_status is not defined or org.org_status == 'new'
 
   # Execute primary init for the network-service organization
-  # - name: "Setup primary init with network-service org"
-  #   include_role:
-  #     name: init
-  #   vars:
-  #     build_path: "./build"
-  #     name: "{{ org.name | lower }}"
-  #     component_ns: "{{ org.name | lower }}-ns"
-  #     init_type: "primary_init"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "./build/{{ component_ns }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: 
-  #   - org.type == 'network-service'
-  #   - org.org_status is not defined or org.org_status == 'new'
-
-  # create namespace, service account and clusterrolebinding
-  # - name: "Create namespace, service accounts and clusterrolebinding"
-  #   include_role: 
-  #     name: create/namespace_serviceaccount
-  #   vars:
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     organisation: "{{ org.name | lower }}"
-  #     kubernetes: "{{ org.k8s }}"
-  #     gitops: "{{ org.gitops }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-
-  # # Create Storageclass that will be used for this deployment
-  # - name: Create Storage Class
-  #   include_role:
-  #     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
-  #   vars:
-  #     org_name: "{{ org.name | lower }}"
-  #     sc_name: "{{ org_name }}-bevel-storageclass"
-  #     region: "{{ org.k8s.region | default('eu-west-1') }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  - name: "Setup primary init with network-service org"
+    include_role:
+      name: init
+    vars:
+      build_path: "./build"
+      name: "{{ org.name | lower }}"
+      component_ns: "{{ org.name | lower }}-ns"
+      init_type: "primary_init"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "./build/{{ component_ns }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+    - org.type == 'cenm'
+    - org.org_status is not defined or org.org_status == 'new'
 
   # # Setup CENM services for the network
-  # - name: "Setup cenm"   
-  #   include_role: 
-  #     name: "setup/cenm"
-  #   vars:
-  #     component_name: "{{org.name}}-cenm"
-  #     services: "{{ org.services }}"
-  #     organisation: "{{ org.name | lower }}"
-  #     name: "{{ org.name | lower }}"
-  #     component_ns: "{{ org.name | lower }}-ns"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     policy_type: "r3-corda-ent"
-  #     init_type: "cenm"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "./build/{{ component_ns }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: org.type == 'cenm'
+  - name: "Setup cenm"   
+    include_role: 
+      name: "setup/cenm"
+    vars:
+      component_name: "{{org.name}}-cenm"
+      services: "{{ org.services }}"
+      organisation: "{{ org.name | lower }}"
+      name: "{{ org.name | lower }}"
+      component_ns: "{{ org.name | lower }}-ns"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      gitops: "{{ org.gitops }}"
+      policy_type: "r3-corda-ent"
+      init_type: "cenm"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "./build/{{ component_ns }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: org.type == 'cenm'
+
+  - name: Deploy notary service
+    include_role:
+      name: setup/notary
+    vars:
+      name: "{{ org.name | lower }}"
+      node: "{{ org.services.notary }}"
+      component_ns: "{{ org.name | lower }}-ns"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      gitops: "{{ org.gitops }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "{{playbook_dir}}/../../../{{org.gitops.release_dir}}/{{ component_ns }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+      - org.services.notary is defined
+      - org.org_status is not defined or org.org_status == 'new'
 
   # - name: Check that network services uri are reachable
   #   uri:
@@ -122,21 +116,22 @@
   #   ignore_errors: true
   #   when: network.env.proxy != 'none'
 
-  - name: Deploy Corda nodes
-    include_role:
-      name: setup/node
-    vars:
-      name: "{{ org.name | lower }}"
-      # node: "{{ org.services.notary }}"
-      component_ns: "{{ org.name | lower }}-ns"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "./build/{{ component_ns }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
+  # - name: Deploy Corda nodes
+  #   include_role:
+  #     name: setup/node
+  #   vars:
+  #     name: "{{ org.name | lower }}"
+  #     # node: "{{ org.services.notary }}"
+  #     component_ns: "{{ org.name | lower }}-ns"
+  #     external_url_suffix: {{ org.external_url_suffix }}
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     charts_dir: "{{ org.gitops.chart_source }}"
+  #     values_dir: "./build/{{ component_ns }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
     # when: 
     #   - org.type == 'node'
     #   - org.org_status is not defined or org.org_status == 'new'

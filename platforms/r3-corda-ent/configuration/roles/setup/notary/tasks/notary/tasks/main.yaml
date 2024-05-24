@@ -26,8 +26,8 @@
   vars:    
     type: "corda_notary"
     component_name: "{{ node.name | lower }}"
-    nms_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
-    doorman_url: "{{ network | json_query('network_services[?type==`doorman`].uri') | first }}"
+    nms_url: "{{ network | json_query('network_services[?type==`idman`].uri') | first }}"
+    doorman_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
 
 # Git Push: Push the deployment files for notary node
 - name: Push notary deployment files

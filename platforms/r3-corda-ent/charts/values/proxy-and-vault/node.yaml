@@ -37,8 +37,8 @@ tls:
 
 nodeConf:
   legalName: "O=Node,OU=Node,L=London,C=GB"
-  doormanPort: 443
-  networkMapPort: 443
+  doormanPort: 443 # we are not using anywhere
+  networkMapPort: 443 # we are not using anywhere
   doormanDomain: cenm-doorman.test.blockchaincloud.com
   networkMapDomain: cenm-nms.test.blockchaincloud.com
   networkMapURL: https://cenm-nms.test.blockchaincloud.com
