@@ -1,3 +1,4 @@
 dlt_templates:
   cenm: cenm.tpl
   enterprise-node: enterprise-node.tpl
+  notary: notary.tpl

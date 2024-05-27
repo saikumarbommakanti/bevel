@@ -25,9 +25,9 @@ network:
   creds:
     truststore: password
 
-tls:
-  nameOverride: notary   # should match the release name
-  enabled: true
+# tls:
+#   nameOverride: notary   # should match the release name
+#   enabled: true
 
 nodeConf:
   legalName: "O=Notary,OU=Notary,L=London,C=GB"

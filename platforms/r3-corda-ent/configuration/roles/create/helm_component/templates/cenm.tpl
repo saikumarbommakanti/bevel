@@ -37,13 +37,13 @@ spec:
           truststore: password 
           keystore: password
         identityManager:
-          port: {{ node.idman.port }} # 10000
+          port: {{ idman.port }} # 10000
           revocation:
             port: 5053
           internal:
             port: 5052
         auth:
-          port: {{ idman.port }} # 8081
+          port: {{ auth.port }} # 8081
         gateway:
            port: {{ gateway.ports.servicePort }} # 8080
         zone:
