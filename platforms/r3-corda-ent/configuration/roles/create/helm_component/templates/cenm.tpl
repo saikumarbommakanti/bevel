@@ -43,8 +43,13 @@ spec:
           internal:
             port: 5052
         auth:
-          port: {{ node.auth.port }} # 8081
-
+          port: {{ idman.port }} # 8081
+        gateway:
+           port: {{ gateway.ports.servicePort }} # 8080
+        zone:
+          ports:
+            enm: {{ zone.ports.enm }} # value to be set for enm
+            admin: {{ zone.ports.admin }} # value to be set for admin
           # enmPort: 25000 #zone.
           # adminPort: 12345
         networkmap:

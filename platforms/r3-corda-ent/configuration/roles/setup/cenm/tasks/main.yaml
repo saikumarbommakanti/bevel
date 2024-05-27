@@ -5,6 +5,10 @@
   vars:
     type: "{{ init_type }}"
     component_type: "Namespace"
+    idman: "{{ org.services.idman }}"
+    auth: "{{ org.services.auth }}"
+    gateway: "{{ org.services.gateway }}"
+    zone: "{{ org.services.zone }}"
   # loop: "{{ org.services }}"
   # loop_control:
   #   loop_var: node
