@@ -5,6 +5,7 @@
   vars:
     type: "{{ init_type }}"
     component_type: "Namespace"
+  loop: node
 
 # Git Push : Pushes the above generated files to git
 - name: Git Push
