@@ -28,5 +28,3 @@ settings:
 
 tls:
   enabled: true
-  settings:
-    networkServices: true

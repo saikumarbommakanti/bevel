@@ -60,7 +60,7 @@
     loop_control:
       loop_var: org
     when: 
-    - org.type == 'cenm'
+    - org.type == 'cenm' 
     - org.org_status is not defined or org.org_status == 'new'
 
   # # Setup CENM services for the network
@@ -69,7 +69,7 @@
       name: "setup/cenm"
     vars:
       component_name: "{{org.name}}-cenm"
-      services: "{{ org.services }}"
+      node: "{{ org.services }}"
       organisation: "{{ org.name | lower }}"
       name: "{{ org.name | lower }}"
       component_ns: "{{ org.name | lower }}-ns"

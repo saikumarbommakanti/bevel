@@ -32,13 +32,47 @@ spec:
       proxy:
         provider: {{ network.env.proxy }}
         externalUrlSuffix: {{ org.external_url_suffix }}
-    storage:
-      size: 1Gi
-      dbSize: 5Gi
-      allowedTopologies:
-        enabled: false
+      cenm:
+        sharedCreds:
+          truststore: password 
+          keystore: password
+        identityManager:
+          port: {{ node.idman.port }} # 10000
+          revocation:
+            port: 5053
+          internal:
+            port: 5052
+        auth:
+          port: {{ node.auth.port }} # 8081
+        gateway:
+           port: {{ node.gateway.port }} # 8080
+        zone:
+          ports:
+            enm: {{ node.ports.enm }} # value to be set for enm
+            admin: {{ node.ports.admin }} # value to be set for admin
+          # enmPort: 25000 #zone.
+          # adminPort: 12345
+        networkmap:
+          internal:
+            port: 5050  
+  storage:
+    size: 1Gi
+    dbSize: 5Gi
+    allowedTopologies:
+      enabled: false
     settings:
       removeKeysOnDelete: true
 
     tls:
-      enabled: false
+      enabled: true
+    image:
+{% if network.docker.username is defined %}
+      pullSecret: regcred
+{% endif %}
+      pullPolicy: IfNotPresent
+      pki:
+        repository: corda/enterprise-pkitool
+        tag: 1.5.9-zulu-openjdk8u382
+      hooks:
+        repository: {{ network.docker.url }}/bevel-build
+        tag: jdk8-stable
