@@ -5,7 +5,9 @@
   vars:
     type: "{{ init_type }}"
     component_type: "Namespace"
-  loop: {{ node }}
+  # loop: "{{ org.services }}"
+  # loop_control:
+  #   loop_var: node
 
 # Git Push : Pushes the above generated files to git
 - name: Git Push
