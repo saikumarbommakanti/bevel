@@ -51,6 +51,9 @@ spec:
     network:
       creds:
         truststore: password
+    tls:
+      nameOverride: notary   # should match the release name
+      enabled: false
 
     dataSourceProperties:
       dataSource:
