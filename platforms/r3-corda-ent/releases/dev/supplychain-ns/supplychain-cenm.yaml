@@ -57,7 +57,7 @@ spec:
             port: 5050  
     storage:
       size: 1Gi
-      dbSize: 5Gi
+      dbSize: 6Gi
       allowedTopologies:
         enabled: false
       settings:
