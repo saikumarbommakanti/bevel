@@ -1,4 +1,10 @@
-it a
+dependencies:
+  - name: bevel-storageclass
+    alias: storage
+    repository: "file://../../../shared/charts/bevel-storageclass"
+    tags:
+      - storage
+    version: ~1.0.0
   - name: cenm-auth
     alias: auth
     repository: "file://../cenm-auth"
