@@ -55,13 +55,13 @@ spec:
         networkmap:
           internal:
             port: 5050  
-  storage:
-    size: 1Gi
-    dbSize: 5Gi
-    allowedTopologies:
-      enabled: false
-    settings:
-      removeKeysOnDelete: true
+    storage:
+      size: 1Gi
+      dbSize: 5Gi
+      allowedTopologies:
+        enabled: false
+      settings:
+        removeKeysOnDelete: true
 
     tls:
       enabled: true
