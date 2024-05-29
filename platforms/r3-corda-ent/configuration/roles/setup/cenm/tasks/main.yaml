@@ -27,4 +27,4 @@
   vars:
     component_type: Job
     namespace: "{{ component_ns }}"
-    kubernetes: "{{ organization.k8s }}"
+    kubernetes: "{{ org.k8s }}"
