@@ -31,7 +31,7 @@ spec:
         role: vault-role
       proxy:
         provider: ambassador
-        externalUrlSuffix: test.corda.blockchaincloudpoc.com
+        externalUrlSuffix: corda.blockchaincloudpoc-develop.com
       cenm:
         sharedCreds:
           truststore: password 
