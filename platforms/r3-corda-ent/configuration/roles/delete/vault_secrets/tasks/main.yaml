@@ -82,14 +82,14 @@
     VAULT_TOKEN: "{{ org.vault.root_token }}"
 
 # Delete vault auth for float
-- name: Delete vault-auth path for organizations float vault
-  shell: |    
-    vault kv delete sys/auth/cordaent{{ org.name | lower }}float
-    vault kv delete sys/auth/cordaentfloat{{ org.name | lower }}
-  environment:
-    VAULT_ADDR: "{{ org.services.float.vault.url }}"
-    VAULT_TOKEN: "{{ org.services.float.vault.root_token }}"
-  when: org.type == 'node' and org.firewall.enabled
+# - name: Delete vault-auth path for organizations float vault
+#   shell: |    
+#     vault kv delete sys/auth/cordaent{{ org.name | lower }}float
+#     vault kv delete sys/auth/cordaentfloat{{ org.name | lower }}
+#   environment:
+#     VAULT_ADDR: "{{ org.services.float.vault.url }}"
+#     VAULT_TOKEN: "{{ org.services.float.vault.root_token }}"
+#   when: org.type == 'node' and org.firewall.enabled
 
 # Delete crypto materials from vault for cenm
 - name: Delete Crypto for CENM
