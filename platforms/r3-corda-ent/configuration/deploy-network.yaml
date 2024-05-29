@@ -79,7 +79,7 @@
       policy_type: "r3-corda-ent"
       init_type: "cenm"
       charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "./build/{{ component_ns }}"
+      values_dir: "{{playbook_dir}}/../../../{{org.gitops.release_dir}}/{{ component_ns }}"
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
