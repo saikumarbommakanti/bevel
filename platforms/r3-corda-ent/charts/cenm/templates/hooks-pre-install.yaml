@@ -432,6 +432,7 @@ spec:
               safeWriteSecret cenm /opt/cenm/DATA
 {{- end }}
               echo "Completed ..."
+              sleep 30000
       volumes:
       - name: generated-config
         emptyDir: {}
