@@ -156,7 +156,6 @@ spec:
                         \"subordinatecrl_base64\": \"${SUBORDINATE_CRL}\"
                       }
                   }" > payload.json
-                  sleep 200
                   vaultBevelFunc 'write' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/${key}-certs" 'payload.json'
                   rm payload.json
                   # Also create the k8s secret
@@ -433,18 +432,6 @@ spec:
               safeWriteSecret cenm /opt/cenm/DATA
 {{- end }}
               echo "Completed ..."
-        - name: logger
-          image: busybox
-          command: ["/bin/sh", "-c", |
-            echo "Pod started. Beginning execution..."
-            # Your existing script here
-            # Replace the sleep command at the end with a loop that prints a message
-            while true; do
-              echo "Still running..."
-              sleep 30
-            done
-          ]
-          
       volumes:
       - name: generated-config
         emptyDir: {}
