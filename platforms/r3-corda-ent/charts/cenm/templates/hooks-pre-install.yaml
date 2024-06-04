@@ -66,6 +66,8 @@ spec:
             - -c
           args:
             - |
+            echo testing 123
+            sleep 100
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
@@ -156,6 +158,7 @@ spec:
                         \"subordinatecrl_base64\": \"${SUBORDINATE_CRL}\"
                       }
                   }" > payload.json
+                  sleep 200
                   vaultBevelFunc 'write' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/${key}-certs" 'payload.json'
                   rm payload.json
                   # Also create the k8s secret
@@ -432,6 +435,7 @@ spec:
               safeWriteSecret cenm /opt/cenm/DATA
 {{- end }}
               echo "Completed ..."
+              sleep 500
       volumes:
       - name: generated-config
         emptyDir: {}
