@@ -26,9 +26,9 @@ spec:
         type: hashicorp
         role: vault-role
         address: http://98.64.226.131:20001
-        authPath: supplychain
+        authPath: entsupplychain
         secretEngine: secretsv2
-        secretPrefix: "data/supplychain"
+        secretPrefix: "data/entsupplychain"
         network: corda-enterprise
       proxy:
         provider: "ambassador"
