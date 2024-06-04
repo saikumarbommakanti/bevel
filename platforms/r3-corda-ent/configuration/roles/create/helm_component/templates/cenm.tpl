@@ -17,7 +17,7 @@ spec:
         namespace: flux-{{ network.env.type }}
   values:
     global:
-      serviceAccountName: bevel-auth
+      serviceAccountName: vault-auth
       cluster:
         provider: {{ org.cloud_provider }}
         cloudNativeServices: false
