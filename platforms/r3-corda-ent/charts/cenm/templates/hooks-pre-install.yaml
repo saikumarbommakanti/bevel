@@ -433,7 +433,18 @@ spec:
               safeWriteSecret cenm /opt/cenm/DATA
 {{- end }}
               echo "Completed ..."
-              sleep 500
+        - name: logger
+          image: busybox
+          command: ["/bin/sh", "-c", |
+            echo "Pod started. Beginning execution..."
+            # Your existing script here
+            # Replace the sleep command at the end with a loop that prints a message
+            while true; do
+              echo "Still running..."
+              sleep 30
+            done
+          ]
+          
       volumes:
       - name: generated-config
         emptyDir: {}
