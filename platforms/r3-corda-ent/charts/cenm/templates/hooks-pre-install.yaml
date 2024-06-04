@@ -66,8 +66,6 @@ spec:
             - -c
           args:
             - |
-            echo "testing 123"
-            sleep 100
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
