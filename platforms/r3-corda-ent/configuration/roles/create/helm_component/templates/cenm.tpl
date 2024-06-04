@@ -17,13 +17,13 @@ spec:
         namespace: flux-{{ network.env.type }}
   values:
     global:
-      serviceAccountName: vault-auth
+      serviceAccountName: bevel-auth
       cluster:
         provider: {{ org.cloud_provider }}
         cloudNativeServices: false
       vault:
         type: hashicorp
-        network: corda
+        network: corda-enterprise
         address: {{ vault.url }}
         authPath: {{ network.env.type }}{{ name }}
         secretEngine: {{ vault.secret_path | default("secretsv2") }}
@@ -67,7 +67,7 @@ spec:
       enabled: true
     image:
 {% if network.docker.username is defined %}
-      pullSecret: regcred
+      pullSecret:
 {% endif %}
       pullPolicy: IfNotPresent
       pki:
