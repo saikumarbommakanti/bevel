@@ -37,7 +37,7 @@ charts:
   pki-generator-node: corda-ent-node-pki-gen
   db: corda-ent-h2
   notary-initial-registration: corda-ent-notary-initial-registration
-  notary: corda-ent-notary
+  notary2: corda-ent-notary
   bridge: corda-ent-bridge
   float: corda-ent-float
   node_registration: corda-ent-node-initial-registration
