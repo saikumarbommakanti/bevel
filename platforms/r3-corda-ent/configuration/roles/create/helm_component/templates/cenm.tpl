@@ -1,3 +1,4 @@
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -17,62 +18,29 @@ spec:
         namespace: flux-{{ network.env.type }}
   values:
     global:
-      serviceAccountName: vault-auth
+      serviceAccountName: bevel-auth
       cluster:
-        provider: {{ org.cloud_provider }}
+        provider: azure
         cloudNativeServices: false
       vault:
         type: hashicorp
-        network: corda-enterprise
-        address: {{ vault.url }}
-        authPath: {{ network.env.type }}{{ name }}
-        secretEngine: {{ vault.secret_path | default("secretsv2") }}
-        secretPrefix: "data/{{ network.env.type }}{{ name }}"
         role: vault-role
+        address: http://98.64.226.131:20001
+        authPath: supplychain
+        secretEngine: secretsv2
+        secretPrefix: "data/supplychain"
+        network: corda-enterprise
       proxy:
-        provider: {{ network.env.proxy }}
-        externalUrlSuffix: {{ org.external_url_suffix }}
-      cenm:
-        sharedCreds:
-          truststore: password 
-          keystore: password
-        identityManager:
-          port: {{ idman.port }} # 10000
-          revocation:
-            port: 5053
-          internal:
-            port: 5052
-        auth:
-          port: {{ auth.port }} # 8081
-        gateway:
-           port: {{ gateway.ports.servicePort }} # 8080
-        zone:
-          ports:
-            enm: {{ zone.ports.enm }} # value to be set for enm
-            admin: {{ zone.ports.admin }} # value to be set for admin
-          # enmPort: 25000 #zone.
-          # adminPort: 12345
-        networkmap:
-          internal:
-            port: 5050  
+        provider: "ambassador"
+        externalUrlSuffix: corda.blockchaincloudpoc-develop.com
     storage:
       size: 1Gi
       dbSize: 5Gi
       allowedTopologies:
         enabled: false
-      settings:
-        removeKeysOnDelete: true
+
+    settings:
+      removeKeysOnDelete: true # this will erase keys
 
     tls:
       enabled: true
-    image:
-{% if network.docker.username is defined %}
-      pullSecret:
-{% endif %}
-      pullPolicy: IfNotPresent
-      pki:
-        repository: corda/enterprise-pkitool
-        tag: 1.5.9-zulu-openjdk8u382
-      hooks:
-        repository: {{ network.docker.url }}/bevel-build
-        tag: jdk8-stable
