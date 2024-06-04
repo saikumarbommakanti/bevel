@@ -62,6 +62,10 @@
     when: 
     - org.type == 'cenm' 
     # - org.org_status is not defined or org.org_status == 'new'
+  
+  - name: pause for 2 minutes
+    pause:
+      minutes: 2
 
   # # # Setup CENM services for the network
   - name: "Setup cenm"   
