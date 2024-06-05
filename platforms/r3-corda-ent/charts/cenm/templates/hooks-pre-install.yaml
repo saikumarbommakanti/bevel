@@ -35,6 +35,8 @@ spec:
         - name: cenm-pki
           image: {{ .Values.image.pki.repository }}:{{ .Values.image.pki.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: 0
           volumeMounts:
             - name: generated-config
               mountPath: /home
@@ -70,7 +72,6 @@ spec:
               vaultBevelFunc "init"
               #Read if secret exists in Vault
               vaultBevelFunc 'readJson' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/cenm-certs"
-              tail -f /dev/null
               function safeWriteSecret {
                 key=$1
                 fpath=$2
