@@ -1,6 +1,6 @@
 #helm install init -f values/noproxy-and-novault/init.yaml -n supplychain-ns corda-init
 global:
-  serviceAccountName: bevel-auth
+  serviceAccountName: vault-auth
   vault:
     type: hashicorp
     role: vault-role

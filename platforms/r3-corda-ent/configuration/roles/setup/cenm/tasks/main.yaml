@@ -29,12 +29,12 @@
     namespace: "{{ component_ns }}"
     kubernetes: "{{ org.k8s }}"
 
-- name: "Wait for the NMS to run"
-  include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
-  vars:
-    label_selectors:
-      - app.kubernetes.io/component = certgen
-    component_type: "job"
-    component_name: "cenm"
-    namespace: "{{ component_ns }}"
+# - name: "Wait for the NMS to run"
+#   include_role:
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+#   vars:
+#     label_selectors:
+#       - app.kubernetes.io/component = certgen
+#     component_type: "job"
+#     component_name: "cenm"
+#     namespace: "{{ component_ns }}"
