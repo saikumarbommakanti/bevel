@@ -64,7 +64,6 @@ spec:
             - -c
           args:
             - |
-            sleep 1m
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
@@ -431,6 +430,7 @@ spec:
               safeWriteSecret cenm /opt/cenm/DATA
 {{- end }}
               echo "Completed ..."
+              sleep 2m
       volumes:
       - name: generated-config
         emptyDir: {}
