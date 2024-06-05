@@ -58,7 +58,7 @@ spec:
 {{- if and (ne .Values.global.cluster.provider "minikube") (.Values.global.cluster.cloudNativeServices) }}
               # placeholder for cloudNative deleteSecret function
 {{- else }}
-              deleteSecret cenm-certs
+              # deleteSecret cenm-certs
 {{- end }}
 
 {{- end }}

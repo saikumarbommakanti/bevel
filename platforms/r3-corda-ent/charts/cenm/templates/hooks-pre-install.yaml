@@ -64,13 +64,13 @@ spec:
             - -c
           args:
             - |
-            tail -f /dev/null
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
               vaultBevelFunc "init"
               #Read if secret exists in Vault
               vaultBevelFunc 'readJson' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/cenm-certs"
+              tail -f /dev/null
               function safeWriteSecret {
                 key=$1
                 fpath=$2
