@@ -35,8 +35,6 @@ spec:
         - name: cenm-pki
           image: {{ .Values.image.pki.repository }}:{{ .Values.image.pki.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          securityContext:
-            runAsUser: 0
           volumeMounts:
             - name: generated-config
               mountPath: /home
@@ -66,6 +64,7 @@ spec:
             - -c
           args:
             - |
+            sleep 1m
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
