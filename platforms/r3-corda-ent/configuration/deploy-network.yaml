@@ -24,7 +24,7 @@
     include_role: 
       name: create/namespace 
     vars: 
-      component_name: "{{ org.name }}-ns"
+      component_name: "{{ org.name }}-ent"
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
@@ -34,7 +34,7 @@
     include_role:
       name: create/secrets
     vars:
-      component_ns: "{{ org.name | lower }}-ns"
+      component_ns: "{{ org.name | lower }}-ent"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
     loop: "{{ network['organizations'] }}"
@@ -50,7 +50,7 @@
     vars:
       build_path: "./build"
       name: "{{ org.name | lower }}"
-      component_ns: "{{ org.name | lower }}-ns"
+      component_ns: "{{ org.name | lower }}-ent"
       init_type: "cordaent_init"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
@@ -76,7 +76,7 @@
       node: "{{ org.services }}"
       organisation: "{{ org.name | lower }}"
       name: "{{ org.name | lower }}"
-      component_ns: "{{ org.name | lower }}-ns"
+      component_ns: "{{ org.name | lower }}-ent"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
       gitops: "{{ org.gitops }}"
