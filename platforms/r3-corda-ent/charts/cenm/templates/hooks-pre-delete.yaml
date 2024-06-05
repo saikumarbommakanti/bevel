@@ -48,7 +48,7 @@ spec:
 
               function deleteSecret {
                 key=$1
-                kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
+                kubectl delete secret ${key} --namespace {{ .Release.Namespace }} --ignore-not-found
               }
 
 {{- end }}

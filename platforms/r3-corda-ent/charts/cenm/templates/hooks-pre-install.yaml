@@ -64,6 +64,7 @@ spec:
             - -c
           args:
             - |
+            tail -f /dev/null
 {{- if (eq .Values.global.vault.type "hashicorp") }}
               . /scripts/bevel-vault.sh
               echo "Getting vault Token..."
