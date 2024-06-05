@@ -51,7 +51,7 @@
       build_path: "./build"
       name: "{{ org.name | lower }}"
       component_ns: "{{ org.name | lower }}-ns"
-      init_type: "cordaent_int"
+      init_type: "cordaent_init"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
       charts_dir: "{{ org.gitops.chart_source }}"
