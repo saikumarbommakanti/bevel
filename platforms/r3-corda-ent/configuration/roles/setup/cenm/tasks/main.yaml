@@ -1,7 +1,7 @@
 # Create deployment file for network services
 - name: Create helm release file for network service
   include_role:
-    name: create/helm_component
+    name: "{{ playbook_dir }}/../../shared/configuration/roles/create/job_component"
   vars:
     type: "{{ init_type }}"
     component_type: "Namespace"

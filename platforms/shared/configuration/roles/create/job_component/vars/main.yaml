@@ -10,9 +10,11 @@ job_templates:
   primary_init: primary_init.tpl
   secondary_init: secondary_init.tpl
   cordaent_init: cordaent_init.tpl
+  cenm: entcenm.tpl
 charts:
   primary_genesis: besu-genesis
   secondary_genesis: besu-genesis
   primary_init: corda-init
   secondary_init: corda-init
   cordaent_init: enterprise-init
+  cenm: cenm
