@@ -40,4 +40,4 @@
     name: "{{ playbook_dir }}/../../shared/configuration/roles/git_push"
   vars:
     GIT_DIR: "{{ playbook_dir }}/../../../"
-    msg: "[ci skip] Pushing notary deployment file for {{ node }}"
+    msg: "[ci skip] Pushing notary deployment file for notary"
