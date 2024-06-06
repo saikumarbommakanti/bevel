@@ -34,7 +34,7 @@
     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
   vars:
     label_selectors:
-      - app.kubernetes.io/component = idman
+      - app.kubernetes.io/component = "idman"
     component_type: "pod"
     component_name: "cenm"
     namespace: "{{ component_ns }}"
