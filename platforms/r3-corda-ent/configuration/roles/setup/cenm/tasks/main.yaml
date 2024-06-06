@@ -21,15 +21,15 @@
     GIT_DIR: "{{ playbook_dir }}/../../../"
     msg: "[ci skip] Pushing network-service files"
 
-- name: Check if the cenm job is completed
-  include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
-  vars:
-    component_type: Job
-    namespace: "{{ component_ns }}"
-    kubernetes: "{{ org.k8s }}"
+# - name: Check if the cenm job is completed
+#   include_role:
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+#   vars:
+#     component_type: Job
+#     namespace: "{{ component_ns }}"
+#     kubernetes: "{{ org.k8s }}"
 
-# - name: "Wait for the NMS to run"
+# - name: "Wait for the network services to run"
 #   include_role:
 #     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
 #   vars:
@@ -38,3 +38,12 @@
 #     component_type: "job"
 #     component_name: "cenm"
 #     namespace: "{{ component_ns }}"
+
+
+- name: "Wait for the genesis job to complete"
+  include_role:
+    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+  vars:
+    component_name: "cenm"
+    component_type: Job
+    namespace: "{{ component_ns }}"
