@@ -24,10 +24,10 @@
   include_role: 
     name: create/helm_component
   vars:    
-    type: "enterprise-node"
+    # type: "enterprise-node"
     component_name: "{{ component_ns }}"
-    nms_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
-    doorman_url: "{{ network | json_query('network_services[?type==`doorman`].uri') | first }}"
+    nms_url: "{{ network | json_query('network_services[?type==`idman`].uri') | first }}"
+    doorman_url: "{{ network | json_query('network_services[?type==`networkmap`].uri') | first }}"
     type: notary
   loop: "{{ node }}"
   loop_control: 
