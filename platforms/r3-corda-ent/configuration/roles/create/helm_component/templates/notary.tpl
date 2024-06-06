@@ -93,10 +93,10 @@ spec:
         serviceLegalName: "O=Notary,OU=Notary Service,L=London,C=GB"
       doormanPort: 443
       networkMapPort: 443
-      doormanDomain: cenm-doorman.test.blockchaincloud.com
-      networkMapDomain: cenm-nms.test.blockchaincloud.com
-      networkMapURL: https://cenm-nms.test.blockchaincloud.com
-      doormanURL: https://cenm-doorman.test.blockchaincloud.com
+      doormanDomain: cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapDomain: cenm-nms.corda.blockchaincloudpoc-develop.com
+      networkMapURL: https://cenm-nms.corda.blockchaincloudpoc-develop.com
+      doormanURL: https://cenm-doorman.corda.blockchaincloudpoc-develop.com
     firewall:
       enabled: false
   {% if org.cordapps is defined %}
