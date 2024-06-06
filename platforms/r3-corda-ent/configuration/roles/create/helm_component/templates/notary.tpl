@@ -62,45 +62,45 @@ spec:
         url: "jdbc:h2:file:./h2/node-persistence;DB_CLOSE_ON_EXIT=FALSE;WRITE_DELAY=0;LOCK_TIMEOUT=10000"
         dataSourceClassName: org.h2.jdbcx.JdbcDataSource
 
-  nodeConf:
-    creds:
-      truststore: cordacadevpass
-      keystore: trustpass
-    crlCheckSoftFail: true
-    tlsCertCrlDistPoint: ""
-    tlsCertCrlIssuer: ""
-    devMode: false
-    monitoring:
-      enabled: true
-      port: 8090
-    allowDevCorDapps:
-      enabled: true
-    p2pPort: "{{ node.p2p.port }}" #10002
-    rpc:
-      port: "{{ node.rpc.targetPort }}" #10003
-      adminPort: "{{ node.rpcadmin.targetPort }}" #10005
-      users:
-      - name: node
-        password: nodeP
-        permissions: ALL
-    ssh:
+    nodeConf:
+      creds:
+        truststore: cordacadevpass
+        keystore: trustpass
+      crlCheckSoftFail: true
+      tlsCertCrlDistPoint: ""
+      tlsCertCrlIssuer: ""
+      devMode: false
+      monitoring:
         enabled: true
-        sshdPort: 2222
-    removeKeysOnDelete: false
-    legalName: {{ node.subject|e }} #use peer-node level subject for legalName
-  firewall:
-    enabled: false
-{% if org.cordapps is defined %}
-  cordApps: 
-    #Provide if you want to provide jars in cordApps
-    #Eg. getCordApps: true or false
-    getCordApps: false
-    jars: {{ org.cordapps.jars }}
-{% if org.cordapps.username is defined %}
-    mavenSecret: "maven-secrets" #get this
-{% endif %}
-{% endif %}
-    # Sleep time (in seconds) after an error occured
-    sleepTimeAfterError: 180
-    # path to base dir
-    baseDir: /opt/corda
+        port: 8090
+      allowDevCorDapps:
+        enabled: true
+      p2pPort: "{{ node.p2p.port }}" #10002
+      rpc:
+        port: "{{ node.rpc.targetPort }}" #10003
+        adminPort: "{{ node.rpcadmin.targetPort }}" #10005
+        users:
+        - name: node
+          password: nodeP
+          permissions: ALL
+      ssh:
+          enabled: true
+          sshdPort: 2222
+      removeKeysOnDelete: false
+      legalName: {{ node.subject|e }} #use peer-node level subject for legalName
+    firewall:
+      enabled: false
+  {% if org.cordapps is defined %}
+    cordApps: 
+      #Provide if you want to provide jars in cordApps
+      #Eg. getCordApps: true or false
+      getCordApps: false
+      jars: {{ org.cordapps.jars }}
+  {% if org.cordapps.username is defined %}
+      mavenSecret: "maven-secrets" #get this
+  {% endif %}
+  {% endif %}
+      # Sleep time (in seconds) after an error occured
+      sleepTimeAfterError: 180
+      # path to base dir
+      baseDir: /opt/corda
