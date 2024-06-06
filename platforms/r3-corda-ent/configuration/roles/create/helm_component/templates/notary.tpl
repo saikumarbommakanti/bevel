@@ -88,6 +88,15 @@ spec:
           sshdPort: 2222
       removeKeysOnDelete: false
       legalName: {{ node.subject|e }} #use peer-node level subject for legalName
+      notary:
+        validating: true
+        serviceLegalName: "O=Notary,OU=Notary Service,L=London,C=GB"
+      doormanPort: 443
+      networkMapPort: 443
+      doormanDomain: cenm-doorman.test.blockchaincloud.com
+      networkMapDomain: cenm-nms.test.blockchaincloud.com
+      networkMapURL: https://cenm-nms.test.blockchaincloud.com
+      doormanURL: https://cenm-doorman.test.blockchaincloud.com
     firewall:
       enabled: false
   {% if org.cordapps is defined %}
