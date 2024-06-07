@@ -1,51 +1,49 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: {{ component_name }}
+  name: supplychain-ent
   annotations:
     fluxcd.io/automated: "false"
-  namespace: {{ component_ns }}
+  namespace: supplychain-ent
 spec:
-  releaseName: {{ component_name }}
+  releaseName: supplychain-ent
   interval: 1m
   chart:
     spec:
-      chart: {{ gitops.chart_source }}/enterprise-node
+      chart: platforms/r3-corda-ent/charts/enterprise-node
       sourceRef:
         kind: GitRepository
-        name: flux-{{ network.env.type }}
-        namespace: flux-{{ network.env.type }}
+        name: flux-ent
+        namespace: flux-ent
   values:
     global:
       serviceAccountName: vault-auth
       cluster:
-        provider: {{ org.cloud_provider }}
+        provider: azure
         cloudNativeServices: false
       vault:
         type: hashicorp
         network: corda
         role: vault-role
-        address: {{ vault.url }}
-        authPath: {{ network.env.type }}{{ name }}
-        secretEngine: {{ vault.secret_path | default("secretsv2") }}
-        secretPrefix: "data/{{ network.env.type }}{{ name }}"
+        address: http://98.64.226.131:20001
+        authPath: entsupplychain
+        secretEngine: secretsv2
+        secretPrefix: "data/entsupplychain"
       proxy:
-        provider: {{ network.env.proxy }}
-        externalUrlSuffix: {{ org.external_url_suffix }}
-        p2p: {{ node.p2p.ambassador | default('15010') }}
+        provider: ambassador
+        externalUrlSuffix: corda.blockchaincloudpoc-develop.com
+        p2p: 15010
     storage:
       size: 1Gi
       dbSize: 2Gi
     image:
-{% if network.docker.username is defined %}
       pullSecret: regcred
-{% endif %}
       pullPolicy: IfNotPresent
       node:
         repository: corda/corda-enterprise
         tag: 4.10.3-zulu-openjdk8-alpine
       bevelAlpine:
-        repository:  {{ network.docker.url }}/bevel-alpine
+        repository:  ghcr.io/hyperledger/bevel-alpine
         tag: latest
 
     network:
@@ -75,10 +73,10 @@ spec:
         port: 8090
       allowDevCorDapps:
         enabled: true
-      p2pPort: "{{ node.p2p.port }}" #10002
+      p2pPort: "10002" #10002
       rpc:
-        port: "{{ node.rpc.targetPort }}" #10003
-        adminPort: "{{ node.rpcadmin.targetPort }}" #10005
+        port: "10003" #10003
+        adminPort: "10005" #10005
         users:
         - name: node
           password: nodeP
@@ -87,20 +85,18 @@ spec:
           enabled: true
           sshdPort: 2222
       removeKeysOnDelete: false
-      legalName: {{ node.subject|e }} #use peer-node level subject for legalName
+      legalName: O=Notary,OU=Notary2,L=London,C=GB #use peer-node level subject for legalName
       notary:
         validating: true
         serviceLegalName: "O=Notary,OU=Notary Service,L=London,C=GB"
     firewall:
       enabled: false
-  {% if org.cordapps is defined %}
-    cordApps: 
+      cordApps: 
       #Provide if you want to provide jars in cordApps
       #Eg. getCordApps: true or false
       getCordApps: false
-      jars: {{ org.cordapps.jars }}
-  {% endif %}
-      # Sleep time (in seconds) after an error occured
+      jars: [{'jar': {'url': 'https://maven.pkg.github.com/hyperledger/bevel/com.supplychain.bcc.cordapp-supply-chain/4.9/cordapp-supply-chain-4.9.jar'}}, {'jar': {'url': 'https://maven.pkg.github.com/hyperledger/bevel/com.supplychain.bcc.cordapp-contracts-states/4.9/cordapp-contracts-states-4.9.jar'}}]
+        # Sleep time (in seconds) after an error occured
       sleepTimeAfterError: 180
       # path to base dir
       baseDir: /opt/corda
