@@ -20,10 +20,10 @@
       path: "./build"
       state: absent
 
-  - name: Pull push from ent-1
+  - name: Pull push from gent
     shell: |
-      git pull origin ent-1
-
+      git pull origin gent
+      
   # Create namespaces for organizations
   - name: "Create namespace"
     include_role:
