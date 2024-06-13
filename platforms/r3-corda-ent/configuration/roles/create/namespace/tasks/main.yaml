@@ -4,37 +4,35 @@
 #  SPDX-License-Identifier: Apache-2.0
 ##############################################################################################
 
-# This role creates the deployment files for namespaces for each node
-# Check Namespace exists already
-- name: Check if namespace exists
+#############################################################################################
+# This role creates value files for namespaces of organizations
+#############################################################################################
+
+# Check if namespace created
+- name: Check namespace is created
   include_role:
     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/k8_component"
   vars:
-    component_type: Namespace
-    kubernetes: "{{ org.k8s }}"
+    component_type: "Namespace"
     type: "no_retry"
 
-# Set a local variable
-- name: Set the result of namespace check to a local variable
+# Assign the result of check namespace task to a local variable
+- name: "Set Variable"
   set_fact:
     get_namespace: "{{ result }}"
 
-# Create namespace
-- name: Create namespace for {{ org.name }}
+# Create the value file of Namespace for Organizations
+- name: Create namespaces
   include_role:
     name: create/k8_component
-  vars:
-    component_type: "namespace"
-    helm_lint: "false"
-    release_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}"
+  vars:    
+    component_type: "namespace"    
   when: get_namespace.resources|length == 0
 
-# Git Push: Push the created deployment files to repository
-- name: "Push the created deployment files to repository"
+# Git Push : Push the above generated files to git directory 
+- name: Git Push
   include_role: 
     name: "{{ playbook_dir }}/../../shared/configuration/roles/git_push"
-  tags:
-    - notest
   vars:
     GIT_DIR: "{{ playbook_dir }}/../../../"
     gitops: "{{ org.gitops }}"

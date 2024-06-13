@@ -2,7 +2,7 @@
 #helm install supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
 #helm upgrade supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
 global:
-  serviceAccountName: bevel-auth
+  serviceAccountName: vault-auth
   cluster:
     provider: azure
     cloudNativeServices: false

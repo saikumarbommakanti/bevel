@@ -2,20 +2,21 @@
 #helm install notary -f values/noproxy-and-novault/notary.yaml -n supplychain-ns corda-node 
 #helm upgrade notary -f values/noproxy-and-novault/notary.yaml -n supplychain-ns corda-node
 global:
-  serviceAccountName: bevel-auth
+  serviceAccountName: vault-auth
   cluster:
     provider: azure
     cloudNativeServices: false
   vault:
     type: hashicorp
     role: vault-role
-    address: http://vault.url:8200
+    address: http://98.64.226.131:20001
     authPath: supplychain
     secretEngine: secretsv2
     secretPrefix: "data/supplychain"
+    network: corda-enterprise
   proxy:
     provider: "ambassador"
-    externalUrlSuffix: test.blockchaincloud.com
+    externalUrlSuffix: corda.blockchaincloudpoc-develop.com
 image:
   notary:
     repository: corda/corda-enterprise
@@ -25,9 +26,9 @@ network:
   creds:
     truststore: password
 
-# tls:
-#   nameOverride: notary   # should match the release name
-#   enabled: true
+tls:
+  nameOverride: notary   # should match the release name
+  enabled: true
 
 nodeConf:
   legalName: "O=Notary,OU=Notary,L=London,C=GB"
@@ -36,7 +37,7 @@ nodeConf:
     serviceLegalName: "O=Notary,OU=Notary Service,L=London,C=GB"
   doormanPort: 443
   networkMapPort: 443
-  doormanDomain: cenm-doorman.test.blockchaincloud.com
-  networkMapDomain: cenm-nms.test.blockchaincloud.com
-  networkMapURL: https://cenm-nms.test.blockchaincloud.com
-  doormanURL: https://cenm-doorman.test.blockchaincloud.com
+  doormanDomain: cenm-doorman.corda.blockchaincloudpoc-develop.com
+  networkMapDomain: cenm-nms.corda.blockchaincloudpoc-develop.com
+  networkMapURL: https://cenm-nms.corda.blockchaincloudpoc-develop.com
+  doormanURL: https://cenm-doorman.corda.blockchaincloudpoc-develop.com

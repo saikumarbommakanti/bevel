@@ -34,27 +34,30 @@ spec:
         externalUrlSuffix: {{ org.external_url_suffix }}
       cenm:
         sharedCreds:
-          truststore: password 
-          keystore: password
+          truststore: {{ org.credentials.truststore }}
+          keystore: {{ org.credentials.keystore }}
         identityManager:
-          port: {{ idman.port }} # 10000
+          port: {{ idman.ports.external }}
           revocation:
             port: 5053
           internal:
             port: 5052
         auth:
           port: {{ auth.port }} # 8081
+          subject: {{ auth.subject }}
         gateway:
-           port: {{ gateway.ports.servicePort }} # 8080
+           port: {{ gateway.port  }} # 8080
+           subject: {{ gateway.subject }}
         zone:
-          ports:
-            enm: {{ zone.ports.enm }} # value to be set for enm
-            admin: {{ zone.ports.admin }} # value to be set for admin
+          enm: {{ zone.ports.enm }} # value to be set for enm
+          admin: {{ zone.ports.admin }} # value to be set for admin
           # enmPort: 25000 #zone.
           # adminPort: 12345
         networkmap:
-          internal:
-            port: 5050  
+          subject: {{ networkmap.subject }}
+          internal: {{ networkmap.ports.internal }}
+          external: {{ networkmap.ports.external }}
+          admin_listener: {{ networkmap.ports.admin_listener }}
     storage:
       size: 1Gi
       dbSize: 5Gi

@@ -15,194 +15,98 @@
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:
   # Delete build directory before start of play, can be commented if you do not want to delete it.
-  # - name: Remove build directory
-  #   file:
-  #     path: "./build"
-  #     state: absent
+  - name: Remove build directory
+    file:
+      path: "./build"
+      state: absent
 
-  # - name: "Create namespace"
-  #   include_role: 
-  #     name: create/namespace 
-  #   vars: 
-  #     component_name: "{{ org.name }}-ent"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  - name: Pull push from ent-1
+    shell: |
+      git pull origin ent-1
 
-  # # # Create necessary secrets
-  # - name: "Create k8s secrets"
-  #   include_role:
-  #     name: create/secrets
-  #   vars:
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: 
-  #   - org.org_status is not defined or org.org_status == 'new'
+  # Create namespaces for organizations
+  - name: "Create namespace"
+    include_role:
+      name: create/namespace
+    vars:
+      component_name: "{{ org.name | lower }}-ent"
+      component_type_name: "{{ org.type | lower }}"
+      kubernetes: "{{ org.k8s }}"
+      release_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org.name | lower }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
-  # # # Execute primary init for the network-service organization
-  # - name: "Setup primary init with network-service org"
-  #   include_role:
-  #     name: init
-  #   vars:
-  #     build_path: "./build"
-  #     name: "{{ org.name | lower }}"
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     init_type: "cordaent_init"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "./build/{{ component_ns }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: 
-  #   - org.type == 'cenm' 
-  #   # - org.org_status is not defined or org.org_status == 'new'
-  
-  # - name: pause for 2 minutes
-  #   pause:
-  #     minutes: 2
+  # Create necessary Kubernetes secrets for each organization
+  - name: "Create k8s secrets"
+    include_role:
+      name: create/secrets
+    vars:
+      component_ns: "{{ org.name | lower }}-ent"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
-  # # # # Setup CENM services for the network
-  # - name: "Setup cenm"   
-  #   include_role: 
-  #     name: "setup/cenm"
-  #   vars:
-  #     component_name: "{{org.name}}-cenm"
-  #     node: "{{ org.services }}"
-  #     organisation: "{{ org.name | lower }}"
-  #     name: "{{ org.name | lower }}"
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     policy_type: "r3-corda-ent"
-  #     init_type: "cenm"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "{{playbook_dir}}/../../../{{org.gitops.release_dir}}/{{ component_ns }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: org.type == 'cenm'
+  # Setup Init
+  - name: "Setup Init"
+    include_role:
+      name: setup/new_init
+    vars:
+      org_name: "{{ org.name | lower }}"
+      component_name: "{{ org_name }}-init"
+      component_ns: "{{ org_name }}-ent"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+      charts_dir: "{{ org.gitops.chart_source }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
-  # Wait for network services to respond  
-  # - name: Check that network services uri are reachable
-  #   uri:
-  #     url: "{{ item.uri }}"
-  #     validate_certs: no
-  #   register: this
-  #   until: this.status == 200 or this.status == 401
-  #   loop: "{{ network['network_services'] }}"
-  #   retries: "{{ network.env.retry_count}}"
-  #   delay: 50
-  #   ignore_errors: true
-  #   when: network.env.proxy != 'none'
+  # Setup CENM
+  - name: "Setup cenm"   
+    include_role: 
+      name: "setup/new_cenm"
+    vars:
+      org: "{{ network['organizations'] | first }}"
+      org_name: "{{ org.name | lower }}"
+      org_services: "{{ org.services }}"
+      component_name: "{{ org_name }}-cenm"
+      component_ns: "{{ org_name }}-ent"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      external_url_suffix: "{{ org.external_url_suffix }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+
+  - name: Stop for 1 mins
+    pause:
+      minutes: 1
 
   # Deploy notaries
   - name: Deploy notary service
     include_role:
-      name: setup/notary
+      name: setup/new_notary
     vars:
-      name: "{{ org.name | lower }}"
+      org_name: "{{ org.name | lower }}"
+      component_name: "{{ org_name }}-notary"
+      component_ns: "{{ org_name }}-ent"
+      cloud_provider: "{{ org.cloud_provider }}"
+      external_url_suffix: "{{ org.external_url_suffix }}"
       node: "{{ org.services.notaries }}"
-      component_ns: "{{ org.name | lower }}-ent"
       kubernetes: "{{ org.k8s }}"
       vault: "{{ org.vault }}"
       gitops: "{{ org.gitops }}"
       charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "{{playbook_dir}}/../../../{{org.gitops.release_dir}}/{{ component_ns }}"
+      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}"
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
     when: 
       - org.services.notaries is defined
-    #   - org.org_status is not defined or org.org_status == 'new'
-
-  # - name: Check that network services uri are reachable
-  #   uri:
-  #     url: "{{ item.uri }}"
-  #     validate_certs: no
-  #   register: this
-  #   until: this.status == 200 or this.status == 401
-  #   loop: "{{ network['network_services'] }}"
-  #   retries: "{{ network.env.retry_count}}"
-  #   delay: 2
-  #   ignore_errors: true
-  #   when: network.env.proxy != 'none'
-
-  # - name: Deploy Corda nodes
-  #   include_role:
-  #     name: setup/node
-  #   vars:
-  #     name: "{{ org.name | lower }}"
-  #     # node: "{{ org.services.notary }}"
-  #     component_ns: "{{ org.name | lower }}-ns"
-  #     external_url_suffix: {{ org.external_url_suffix }}
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "./build/{{ component_ns }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-    # when: 
-    #   - org.type == 'node'
-    #   - org.org_status is not defined or org.org_status == 'new'
-
-
-  # # Wait for cenm services to respond  
-  # - name: Check that CENM uri are reachable
-  #   uri:
-  #     url: "{{ item.uri }}/status"
-  #     validate_certs: no
-  #   register: this
-  #   until: this.status == 200
-  #   loop: "{{ network['network_services'] }}"
-  #   retries: "{{ network.env.retry_count}}"
-  #   delay: 50
-
-  # # Setup Corda Node services for the network
-  # - name: Setup Corda Node services
-  #   include_role:
-  #     name: setup/node
-  #   vars:
-  #     services: "{{ org.services }}"
-  #     organisation: "{{ org.name | lower }}"
-  #     name: "{{ org.name | lower }}"
-  #     sc_name: "{{ name }}-bevel-storageclass"
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     policy_type: "r3-corda-ent"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: org.type == 'node'
-
-  # # Setup Additional Notary services for the network
-  # - name: Setup Additional Notary services
-  #   include_role:
-  #     name: setup/notary
-  #   vars:
-  #     services: "{{ org.services }}"
-  #     organisation: "{{ org.name | lower }}"
-  #     name: "{{ org.name | lower }}"
-  #     sc_name: "{{ name }}-bevel-storageclass"
-  #     component_ns: "{{ org.name | lower }}-ent"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     policy_type: "r3-corda-ent"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
-  #   when: org.type == 'notary'
+    tags: notary
 
   # These variables can be overriden from the command line
   vars:
