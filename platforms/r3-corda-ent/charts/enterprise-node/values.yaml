@@ -103,3 +103,13 @@ cordApps:
 sleepTimeAfterError: 180
 # path to base dir
 baseDir: /opt/corda
+
+# ADD HERE AS WELL
+# nodeConf:
+#   legalName: "O=Node,OU=Node,L=London,C=GB"
+#   doormanPort: 443
+#   networkMapPort: 443
+#   doormanDomain: cenm-doorman.test.blockchaincloud.com
+#   networkMapDomain: cenm-nms.test.blockchaincloud.com
+#   networkMapURL: https://cenm-nms.test.blockchaincloud.com
+#   doormanURL: https://cenm-doorman.test.blockchaincloud.com

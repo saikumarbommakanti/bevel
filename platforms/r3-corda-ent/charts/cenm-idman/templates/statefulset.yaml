@@ -36,7 +36,7 @@ spec:
     - metadata:
         name: idman-h2
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -44,7 +44,7 @@ spec:
     - metadata:
         name: idman-etc
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -52,7 +52,7 @@ spec:
     - metadata:
         name: idman-logs
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:

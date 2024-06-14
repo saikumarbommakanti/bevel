@@ -48,7 +48,13 @@ spec:
 
               function deleteSecret {
                 key=$1
-                kubectl delete secret ${key} --namespace {{ .Release.Namespace }} --ignore-not-found
+                # kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
+                if kubectl get secret "${key}" --namespace "{{ .Release.Namespace }}" &> /dev/null; then
+                    kubectl delete secret "${key}" --namespace "{{ .Release.Namespace }}"
+                    echo "Secret '${key}' deleted."
+                else
+                    echo "Secret '${key}' does not exist."
+                fi
               }
 
 {{- end }}
@@ -58,7 +64,7 @@ spec:
 {{- if and (ne .Values.global.cluster.provider "minikube") (.Values.global.cluster.cloudNativeServices) }}
               # placeholder for cloudNative deleteSecret function
 {{- else }}
-              # deleteSecret cenm-certs
+              deleteSecret cenm-certs
 {{- end }}
 
 {{- end }}

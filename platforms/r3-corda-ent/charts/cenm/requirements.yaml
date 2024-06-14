@@ -1,6 +1,6 @@
 dependencies:
   - name: bevel-storageclass
-    alias: storage
+    alias: storage-test # storage (OLD) # storage-test (NEW)
     repository: "file://../../../shared/charts/bevel-storageclass"
     tags:
       - storage

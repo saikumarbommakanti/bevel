@@ -1,15 +1,15 @@
-#helm install init -f values/noproxy-and-novault/init.yaml -n supplychain-ns corda-init
+# helm install init -f values/noproxy-and-novault/init.yaml -n supplychain-ns corda-init
 global:
   serviceAccountName: vault-auth
   vault:
     type: hashicorp
     role: vault-role
     address: http://98.64.226.131:20001
-    authPath: supplychain
+    authPath: test
     secretEngine: secretsv2
-    secretPrefix: "data/supplychain"
+    secretPrefix: "data/test"
     network: corda-enterprise
   cluster:
-    provider: azure
+    provider: aws
     cloudNativeServices: false
     kubernetesUrl: "https://devcluster-devresourcegroup-d1d33f-kncld871.hcp.westeurope.azmk8s.io:443"

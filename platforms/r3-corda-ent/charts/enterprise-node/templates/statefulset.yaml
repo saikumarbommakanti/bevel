@@ -36,7 +36,7 @@ spec:
     - metadata:
         name: node-h2
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }} # storage-{{ .Release.Name }} (OLD) # storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -45,7 +45,7 @@ spec:
     - metadata:
         name: notary-nodeinfo
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }} # storage-{{ .Release.Name }} (OLD) # storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -54,7 +54,7 @@ spec:
     - metadata:
         name: node-cordapps
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }} # storage-{{ .Release.Name }} (OLD) # storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -62,7 +62,7 @@ spec:
     - metadata:
         name: node-logs
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }} # storage-{{ .Release.Name }} (OLD) # storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -101,12 +101,27 @@ spec:
           echo "Getting vault Token..."
           vaultBevelFunc "init"
           # Read if secret exists in Vault
+          
+          echo "VAULT_SECRET_ENGINE: $VAULT_SECRET_ENGINE"
+          echo "VAULT_SECRET_PREFIX: $VAULT_SECRET_PREFIX"
+          echo "=====================> PATH: ${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/{{ .Release.Name }}-certs"
           vaultBevelFunc 'readJson' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/{{ .Release.Name }}-certs"
+          echo "SECRETS_AVAILABLE: $SECRETS_AVAILABLE"
           if [ "$SECRETS_AVAILABLE" == "yes" ]
           then
+            echo "Inside IF --------------------------------------------------------------------"
             NODE_KEYSTORE=$(echo ${VAULT_SECRET} | jq -r '.["nodekeystore_base64"]')
             SSL_KEYSTORE=$(echo ${VAULT_SECRET} | jq -r '.["sslkeystore_base64"]')
             TRUSTSTORE=$(echo ${VAULT_SECRET} | jq -r '.["truststore_base64"]')
+            ###############################################################################################
+            echo "IF---------------------------------------------START"
+            echo "NODE_KEYSTORE: ${NODE_KEYSTORE}"
+            echo "---------------------------------------------"
+            echo "SSL_KEYSTORE: ${SSL_KEYSTORE}"
+            echo "---------------------------------------------"
+            echo "TRUSTSTORE: ${TRUSTSTORE}"
+            echo "IF---------------------------------------------END"
+            ###############################################################################################
             echo "saving the cert contents to file"
             echo $NODE_KEYSTORE | base64 -d > /opt/corda/certificates/nodekeystore.jks
             echo $SSL_KEYSTORE | base64 -d > /opt/corda/certificates/sslkeystore.jks
@@ -116,9 +131,19 @@ spec:
           kubectl get secret {{ .Release.Name }}-certs --namespace {{ .Release.Namespace }} -o json > /opt/corda/certificates/tmp 2>&1
           if [ $? -eq 0 ]
           then
+            echo "Inside ELSE --------------------------------------------------------------------"
             NODE_KEYSTORE=$(cat /opt/corda/certificates/tmp | jq -r '.data."nodekeystore.jks"')
             SSL_KEYSTORE=$(cat /opt/corda/certificates/tmp | jq -r '.data."sslkeystore.jks"')
             TRUSTSTORE=$(cat /opt/corda/certificates/tmp | jq -r '.data."truststore.jks"')
+            ###############################################################################################
+            echo "ELSE---------------------------------------------START"
+            echo "NODE_KEYSTORE: ${NODE_KEYSTORE}"
+            echo "---------------------------------------------"
+            echo "SSL_KEYSTORE: ${SSL_KEYSTORE}"
+            echo "---------------------------------------------"
+            echo "TRUSTSTORE: ${TRUSTSTORE}"
+            echo "ELSE---------------------------------------------END"
+            ###############################################################################################
             rm -f /opt/corda/certificates/tmp
             echo "saving the cert contents to file"
             echo $NODE_KEYSTORE | base64 -d > /opt/corda/certificates/nodekeystore.jks
@@ -206,6 +231,14 @@ spec:
                 SSL_KEYSTORE=$(echo ${VAULT_SECRET} | jq -r '.["sslkeystore_base64"]')
                 TRUSTSTORE=$(echo ${VAULT_SECRET} | jq -r '.["truststore_base64"]')
 
+                echo "IF---------------------------------------------START"
+                echo "NODE_KEYSTORE: ${NODE_KEYSTORE}"
+                echo "---------------------------------------------"
+                echo "SSL_KEYSTORE: ${SSL_KEYSTORE}"
+                echo "---------------------------------------------"
+                echo "TRUSTSTORE: ${TRUSTSTORE}"
+                echo "IF---------------------------------------------END"
+
                 echo "creating tmp files for the cert"
                 echo $NODE_KEYSTORE | base64 -d > ${fpath}/nodekeystore.jks
                 echo $SSL_KEYSTORE | base64 -d > ${fpath}/sslkeystore.jks
@@ -222,6 +255,14 @@ spec:
               NODE_KEYSTORE=$(cat ${fpath}/nodekeystore.jks | base64 -w0)
               SSL_KEYSTORE=$(cat ${fpath}/sslkeystore.jks | base64 -w0)
               TRUSTSTORE=$(cat ${fpath}/truststore.jks | base64 -w0)
+
+                echo "ELSE---------------------------------------------START"
+                echo "NODE_KEYSTORE: ${NODE_KEYSTORE}"
+                echo "---------------------------------------------"
+                echo "SSL_KEYSTORE: ${SSL_KEYSTORE}"
+                echo "---------------------------------------------"
+                echo "TRUSTSTORE: ${TRUSTSTORE}"
+                echo "ELSE---------------------------------------------END"
         
               # create a JSON file for the data related to node crypto
               echo "
@@ -288,6 +329,9 @@ spec:
         {{- else }}
           safeWriteSecret {{ .Release.Name }} /opt/corda/certificates
           {{- if .Values.nodeConf.notary }}
+            echo "LS /opt/corda/additional-node-infos------------------------------------------------------------------START"
+            ls /opt/corda/additional-node-infos
+            echo "LS /opt/corda/additional-node-infos------------------------------------------------------------------END"
             safeWriteNotaryNodeInfo notary /opt/corda/additional-node-infos
           {{- end }}
         {{- end }}
