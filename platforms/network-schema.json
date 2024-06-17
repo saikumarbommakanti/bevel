@@ -970,7 +970,7 @@
       "type": "object",
       "properties": {
         "keystore": {
-          "type": "object",
+          "type": "string",
           "properties": {
             "keystore": {
               "type": "string"
@@ -1002,7 +1002,7 @@
           "additionalProperties": false
         },
         "truststore": {
-          "type": "object",
+          "type": "string",
           "properties": {
             "truststore": {
               "type": "string"
@@ -1016,8 +1016,7 @@
           },
           "required": [
             "truststore",
-            "rootca",
-            "ssl"
+            "rootca"
           ],
           "additionalProperties": false
         },
@@ -1052,8 +1051,7 @@
       },
       "required": [
         "keystore",
-        "truststore",
-        "ssl"
+        "truststore"
       ],
       "additionalProperties": false
     },

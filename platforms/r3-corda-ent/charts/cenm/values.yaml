@@ -10,7 +10,7 @@
 global:
   serviceAccountName: vault-auth
   cluster:
-    provider: aws  # choose from: minikube | aws | azure | gcp
+    provider: azure  # choose from: minikube | aws | azure | gcp
     cloudNativeServices: false # set to true to use Cloud Native Services (SecretsManager and IAM for AWS; KeyVault & Managed Identities for Azure)
   vault:
     type: hashicorp
@@ -72,6 +72,7 @@ image:
 settings:
   removeKeysOnDelete: false
 
+# Include the entire subjects into the tpl ---------------------------------------------------
 subjects:
   # Mention the subject for auth
   # Eg. auth: "CN=Test TLS Auth Service Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"

@@ -37,7 +37,7 @@ spec:
     - metadata:
         name: auth-h2
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
@@ -45,7 +45,7 @@ spec:
     - metadata:
         name: auth-logs
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:

@@ -9,6 +9,7 @@
   file:
     path: "./build/ambassador"
     state: directory
+    mode: '0755'
 
 # Set the proxy namespace
 - name: Set proxy namespace
