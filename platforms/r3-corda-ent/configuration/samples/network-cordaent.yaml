@@ -28,7 +28,7 @@ network:
     external_dns: enabled           # Should be enabled if using external-dns for automatic route configuration
   
   # Docker registry details where images are stored. This will be used to create k8s secrets
-  # Please ensure all required images are built and stored in this registry. 
+  # Please ensure all required images are built and stored in this registry.
   # Do not check-in docker_password.
   docker:
     url: "adopblockchaincloud0502.azurecr.io"
@@ -48,7 +48,7 @@ network:
       type: networkmap
       uri: https://networkmap.test.corda.blockchaincloudpoc.com
       certificate: home_dir/platforms/r3-corda-ent/configuration/build/ambassador/networkmap/ambassador.pem
-      truststore: home_dir/platforms/r3-corda-ent/configuration/build/networkroottruststore.jks #Certificate should be encoded in base64 format
+      truststore: home_dir/platforms/r3-corda-ent/configuration/build/networkroottruststore.jks # Certificate should be encoded in base64 format
       truststore_pass: rootpassword
   
   # Allows specification of one or many organizations that will be connecting to a network.
@@ -147,7 +147,7 @@ network:
           name: gateway
           subject: "CN=Test TLS Gateway Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
           type: cenm-gateway
-          ports: 
+          ports: #
             servicePort: 8080
             ambassadorPort: 15008
         idman:

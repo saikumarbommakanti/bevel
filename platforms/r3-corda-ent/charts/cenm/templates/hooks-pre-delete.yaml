@@ -48,7 +48,13 @@ spec:
 
               function deleteSecret {
                 key=$1
-                kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
+                # kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
+                if kubectl get secret "${key}" --namespace "{{ .Release.Namespace }}" &> /dev/null; then
+                    kubectl delete secret "${key}" --namespace "{{ .Release.Namespace }}"
+                    echo "Secret '${key}' deleted."
+                else
+                    echo "Secret '${key}' does not exist."
+                fi
               }
 
 {{- end }}

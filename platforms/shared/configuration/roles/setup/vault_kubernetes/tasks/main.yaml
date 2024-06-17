@@ -45,38 +45,38 @@
   vars:
     path: "{{ playbook_dir }}/build"
 
-#############################################################################################
-# This tasks gets the kubernetes server url
-- name: Get the kubernetes server url
-  shell: |
-    KUBECONFIG={{ kubernetes.config_file }} kubectl config view --minify | grep server | cut -f 2- -d ":" | tr -d " "
-  register: kubernetes_server_url
+# #############################################################################################
+# # This tasks gets the kubernetes server url
+# - name: Get the kubernetes server url
+#   shell: |
+#     KUBECONFIG={{ kubernetes.config_file }} kubectl config view --minify | grep server | cut -f 2- -d ":" | tr -d " "
+#   register: kubernetes_server_url
 
-#####################################################################################################################
-# This tasks generate vault_kubernetes helmrelease file
-- name: "Create value file for vault_kubernetes"
-  include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/create/shared_helm_component"
-  vars:  
-    type: "vault_k8s_mgmt"
-    charts_dir: "platforms/shared/charts"
-    kubernetes_url: "{{ kubernetes_server_url.stdout }}"
-    values_dir: "{{ playbook_dir }}/../../../{{ gitops.release_dir }}/{{ org_name | default(name) }}"
+# #####################################################################################################################
+# # This tasks generate vault_kubernetes helmrelease file
+# - name: "Create value file for vault_kubernetes"
+#   include_role:
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/create/shared_helm_component"
+#   vars:  
+#     type: "vault_k8s_mgmt"
+#     charts_dir: "platforms/shared/charts"
+#     kubernetes_url: "{{ kubernetes_server_url.stdout }}"
+#     values_dir: "{{ playbook_dir }}/../../../{{ gitops.release_dir }}/{{ org_name | default(name) }}"
 
-# Git Push : Pushes the above generated files to git directory 
-- name: Git Push
-  include_role: 
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/git_push"
-  vars:
-    GIT_DIR: "{{ playbook_dir }}/../../../"
-    msg: "[ci skip] Pushing vault_kubernetes files"
-   
-# Check if vault_kubernetes is completed
-- name: Check if vault_kubernetes job is completed
-  include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
-  vars:
-    component_type: Job
-    namespace: "{{ component_ns }}"
-  tags:
-  - notest
+# # Git Push : Pushes the above generated files to git directory 
+# - name: Git Push
+#   include_role: 
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/git_push"
+#   vars:
+#     GIT_DIR: "{{ playbook_dir }}/../../../"
+#     msg: "[ci skip] Pushing vault_kubernetes files"
+
+# # Check if vault_kubernetes is completed
+# - name: Check if vault_kubernetes job is completed
+#   include_role:
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+#   vars:
+#     component_type: Job
+#     namespace: "{{ component_ns }}"
+#   tags:
+#   - notest

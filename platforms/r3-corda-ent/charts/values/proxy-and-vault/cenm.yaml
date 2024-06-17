@@ -1,22 +1,22 @@
 ---
-#helm install supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
-#helm upgrade supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
+# helm install supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
+# helm upgrade supplychain -f values/noproxy-and-novault/network-service.yaml -n supplychain-ns corda-network-service
 global:
-  serviceAccountName: bevel-auth
+  serviceAccountName: vault-auth
   cluster:
-    provider: aws
+    provider: azure
     cloudNativeServices: false
   vault:
     type: hashicorp
     role: vault-role
-    address: http://vault.url:8200
-    authPath: supplychain
+    address: http://98.64.226.131:20001
+    authPath: test
     secretEngine: secretsv2
-    secretPrefix: "data/supplychain"
+    secretPrefix: "data/test"
     network: corda-enterprise
   proxy:
     provider: "ambassador"
-    externalUrlSuffix: test.blockchaincloud.com
+    externalUrlSuffix: corda.blockchaincloudpoc-develop.com
 storage:
   size: 1Gi
   dbSize: 5Gi
