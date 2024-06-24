@@ -44,7 +44,6 @@ spec:
           if [ -f /data/db/admin-user.lock ]; then
           #file /data/db/admin-user.lock created and checked to ensure mongod is fully up for adding new db user in postStart hook.
             echo "KUBERNETES LOG $HOSTNAME- Starting Mongo Daemon"
-          sleep 5m
 
             # ensure wiredTigerCacheSize is set within the size of the containers memory limit, Setting up with tag --sslAllowConnectionsWithoutCertificates only client validates the server to ensure that it receives data from the intended server. 
               if [ "$HOSTNAME" = "{{ $.Values.nodeName }}" ]; then
