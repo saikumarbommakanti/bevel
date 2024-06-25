@@ -223,8 +223,6 @@ spec:
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end  }}
-          resources:
-            {{- toYaml .Values.config.pod.resources | nindent 12 }}
         {{- if .Values.config.logsContainersEnabled }}
         - name: logs-gateway
           securityContext:
