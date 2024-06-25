@@ -28,7 +28,7 @@ docker_images:
     idman-1.2: corda/enterprise-identitymanager:1.2-zulu-openjdk8u242
     networkmap-1.2: corda/enterprise-networkmap:1.2-zulu-openjdk8u242
     # list of various nodes supporting version 1.5
-    pki-1.5: corda/enterprise-pki:1.5.1-zulu-openjdk8u242
+    pki-1.5: corda/enterprise-pkitool:1.5.9-zulu-openjdk8u382
     signer-1.5: corda/enterprise-signer:1.5.1-zulu-openjdk8u242
     idman-1.5: corda/enterprise-identitymanager:1.5.1-zulu-openjdk8u242
     networkmap-1.5: corda/enterprise-networkmap:1.5.1-zulu-openjdk8u242
