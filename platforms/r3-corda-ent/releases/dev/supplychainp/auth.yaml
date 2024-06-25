@@ -1,0 +1,74 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: auth
+  namespace: supplychainp-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: auth
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/r3-corda-ent/charts/cenm-auth
+    sourceRef:
+      kind: GitRepository
+      name: flux-en
+      namespace: flux-en
+  values:
+    metadata:
+      namespace: supplychainp-ent
+      labels: {}
+    prefix: supplychainp
+    nodeName: auth
+    image:
+      initContainerName: ghcr.io/hyperledger/alpine-utils:1.0
+      authContainerName: corda/enterprise-auth:1.5.1-zulu-openjdk8u242
+      imagePullSecrets:
+        - name: regcred
+      pullPolicy: IfNotPresent
+    storage:
+      name: supplychainp-bevel-storageclass
+    vault:
+      address: http://98.64.226.131:20001
+      role: vault-role
+      authPath: ensupplychainp
+      serviceAccountName: vault-auth
+      certSecretPrefix: secretsv3/data/supplychainp
+
+    database:
+      driverClassName: "org.h2.Driver"
+      jdbcDriver: ""
+      url: "jdbc:h2:file:./h2/auth-persistence;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=10000;WRITE_DELAY=0;AUTO_SERVER_PORT=0"
+      user: "auth-db-user"
+      password: "auth-db-password"
+      runMigration: "true"
+
+    config:
+      volume:
+        baseDir: /opt/cenm
+      replicas: 1
+
+      pvc:
+        annotations: {}
+        volumeSizeAuthEtc: 1Gi
+        volumeSizeAuthH2: 5Gi
+        volumeSizeAuthLogs: 5Gi
+      deployment:
+        annotations: {}
+      pod:
+        resources:
+          limits: 514Mi
+          requests: 514Mi
+
+    sleepTimeAfterError: 300
+    logsContainerEnabled: true
+
+    nameOverride: ""
+    fullnameOverride: ""
+
+    service:
+      type: ClusterIP
+      port: 8081
+
+    authSubject: "CN=Test TLS Auth Service Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
