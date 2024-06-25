@@ -53,12 +53,6 @@ spec:
       pvc:
         volumeSizeGatewayEtc: 1Gi
         volumeSizeGatewayLogs: 5Gi
-      pod:
-        resources:
-          limits:
-            memory: 4Gi
-          requests:
-            memory: 4Gi
       replicas: 1
     service:
       type: ClusterIP
