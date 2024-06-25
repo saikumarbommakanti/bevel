@@ -21,7 +21,7 @@ spec:
       namespace: {{ component_ns }}
     image:
       initContainerName: {{ network.docker.url }}/{{ init_container_image }}
-      pkiContainerName: corda/enterprise-pkitool:1.5.9-zulu-openjdk8u382
+      pkiContainerName: {{ main_container_image }}
       imagePullSecret: regcred
       pullPolicy: IfNotPresent
     acceptLicense: YES

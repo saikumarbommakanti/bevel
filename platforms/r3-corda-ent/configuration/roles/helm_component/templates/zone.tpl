@@ -22,7 +22,7 @@ spec:
       prefix: {{ org.name }}
     image:
       initContainer: {{ network.docker.url }}/{{ init_container_image }}
-      zoneContainer: {{ network.docker.url }}/{{ main_container_image }}
+      zoneContainer: {{ main_container_image }}
       pullPolicy: IfNotPresent
       imagePullSecrets:
         - name: "regcred"

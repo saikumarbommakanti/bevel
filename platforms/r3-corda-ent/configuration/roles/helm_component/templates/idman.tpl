@@ -23,7 +23,7 @@ spec:
       namespace: {{ component_ns }}
     image:
       initContainer: {{ network.docker.url }}/{{ init_container_image }}
-      idmanContainer: {{ network.docker.url }}/{{ main_container_image }}
+      idmanContainer: {{ main_container_image }}
       enterpriseCliContainer: {{ docker_images.cenm["enterpriseCli-1.5"] }}
       pullPolicy: IfNotPresent
       imagePullSecrets:
