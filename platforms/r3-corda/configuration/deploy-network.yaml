@@ -13,47 +13,47 @@
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:    
-  # # Delete build directory
-  # - name: Remove build directory
-  #   file:
-  #     path: "./build"
-  #     state: absent
+  # Delete build directory
+  - name: Remove build directory
+    file:
+      path: "./build"
+      state: absent
 
-  # # create namespace
-  # - name: "Create namespace"
-  #   include_role: 
-  #     name: create/namespace 
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  # create namespace
+  - name: "Create namespace"
+    include_role: 
+      name: create/namespace 
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
-  # # Create Storageclass
-  # - name: Create StorageClass
-  #   include_role:
-  #     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
-  #   vars:
-  #     org_name: "{{ org.name | lower }}"
-  #     sc_name: "{{ org_name }}-bevel-storageclass" 
-  #     region: "{{ org.k8s.region | default('eu-west-1') }}"
-  #   loop: "{{ network['organizations'] }}"
-  #   loop_control:
-  #     loop_var: org
+  # Create Storageclass
+  - name: Create StorageClass
+    include_role:
+      name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/setup/storageclass"
+    vars:
+      org_name: "{{ org.name | lower }}"
+      sc_name: "{{ org_name }}-bevel-storageclass" 
+      region: "{{ org.k8s.region | default('eu-west-1') }}"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
 
-  # # Setup Vault-Kubernetes accesses
-  # - name: "Setup vault Kubernetes accesses"
-  #   include_role:
-  #     name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/vault_kubernetes"
-  #   vars:
-  #     name: "{{ item.name | lower }}"
-  #     org_name: "{{ item.name | lower }}"
-  #     component_ns: "{{ item.name | lower }}-ns"
-  #     component_name: "{{ item.name | lower }}-vaultk8s-job"
-  #     component_auth: "{{ network.env.type }}{{ name }}"
-  #     component_type: "organization"
-  #     kubernetes: "{{ item.k8s }}"
-  #     vault: "{{ item.vault }}"
-  #     gitops: "{{ item.gitops }}"
-  #   loop: "{{ network['organizations'] }}"
+  # Setup Vault-Kubernetes accesses
+  - name: "Setup vault Kubernetes accesses"
+    include_role:
+      name: "{{ playbook_dir }}/../../shared/configuration/roles/setup/vault_kubernetes"
+    vars:
+      name: "{{ item.name | lower }}"
+      org_name: "{{ item.name | lower }}"
+      component_ns: "{{ item.name | lower }}-ns"
+      component_name: "{{ item.name | lower }}-vaultk8s-job"
+      component_auth: "{{ network.env.type }}{{ name }}"
+      component_type: "organization"
+      kubernetes: "{{ item.k8s }}"
+      vault: "{{ item.vault }}"
+      gitops: "{{ item.gitops }}"
+    loop: "{{ network['organizations'] }}"
 
   # Deploy Doorman node
   - name: Deploy Doorman service node
