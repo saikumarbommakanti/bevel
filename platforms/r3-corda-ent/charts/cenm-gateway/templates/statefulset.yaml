@@ -37,7 +37,7 @@ spec:
     - metadata:
         name: gateway-logs
       spec:
-        storageClassName: storage-{{ .Release.Name }}
+        storageClassName: storage-test-{{ .Release.Name }}
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:  
