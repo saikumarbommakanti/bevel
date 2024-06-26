@@ -21,7 +21,7 @@
   shell: |
     vault kv get -field={{ network.env.type }}GenesisBlock {{ item.vault.secret_path | default('secretsv2') }}/{{ item.name | lower }}/ordererOrganizations/{{ item.name | lower }}-net > {{ channel_name }}.genesis.block.base64
     mkdir -p ./build/channel-artifacts
-    mv {{ channel_name}}.genesis.block.base64 ./build/channel-artifacts/
+    mv {{ sys_channel_name}}.genesis.block.base64 ./build/channel-artifacts/
   environment:
     VAULT_ADDR: "{{ vault.url }}"
     VAULT_TOKEN: "{{ vault.root_token }}"
@@ -68,7 +68,7 @@
     component_name: "{{ orderer.name }}-{{ org_name }}"
     type: "orderers"
     consensus: "{{component_services.consensus}}"
-    genesis: "{{ lookup('file', '{{ build_path }}/channel-artifacts/{{ channel_name}}.genesis.block.base64') }}"
+    genesis: "{{ lookup('file', '{{ build_path }}/channel-artifacts/{{ sys_channel_name }}.genesis.block.base64') }}"
   loop: "{{ component_services.orderers }}"
   loop_control:
     loop_var: orderer

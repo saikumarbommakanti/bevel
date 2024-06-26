@@ -74,7 +74,7 @@ These parameters are refered to as same in each parent or child chart
 | `image.pullSecret`    | Provide the docker secret name in the namespace  | `""`            |
 | `image.pullPolicy`  | Pull policy to be used for the Docker images    | `IfNotPresent`    |
 
-### TLS
+### Settings
 
 | Name   | Description  | Default Value |
 |--------|---------|-------------|
