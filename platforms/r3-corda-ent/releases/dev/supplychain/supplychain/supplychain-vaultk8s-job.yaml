@@ -13,8 +13,8 @@ spec:
     chart: platforms/shared/charts/bevel-vault-mgmt
     sourceRef:
       kind: GitRepository
-      name: flux-cordd
-      namespace: flux-cordd
+      name: flux-corddadd
+      namespace: flux-corddadd
   values:
     nameOverride: supplychain-vaultk8s-job
     global:
@@ -26,7 +26,7 @@ spec:
         type: hashicorp
         role: vault-role
         address: http://98.64.226.131:20001
-        authPath: corddsupplychain
+        authPath: corddaddsupplychain
         network: corda-enterprise
         secretEngine: secretsv3
         secretPrefix: "data/supplychain"
