@@ -22,7 +22,7 @@ spec:
       labels:
     image:
       initContainerName: {{ network.docker.url }}/{{ init_container_image }}
-      nodeContainerName: {{ network.docker.url }}/{{ main_container_image }}
+      nodeContainerName: {{ main_container_image }}
       imagepullsecret: regcred
       pullPolicy: IfNotPresent
     acceptLicence: true

@@ -25,7 +25,7 @@ spec:
     replicas: 1
     image:
       initContainerName: {{ network.docker.url }}/{{ init_container_image }}
-      mainContainerName: {{ network.docker.url }}/{{ main_container_image }}
+      mainContainerName: {{ main_container_image }}
       imagePullSecret: regcred
       pullPolicy: IfNotPresent
     vault:

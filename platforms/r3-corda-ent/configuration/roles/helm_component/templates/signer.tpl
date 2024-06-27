@@ -21,7 +21,7 @@ spec:
       namespace: {{ component_ns }}
     image:
       initContainer: {{ network.docker.url }}/{{ init_container_image }}
-      signerContainer: {{ network.docker.url }}/{{ main_container_image }}
+      signerContainer: {{ main_container_image }}
       pullPolicy: IfNotPresent
       imagePullSecrets:
         - name: "regcred"

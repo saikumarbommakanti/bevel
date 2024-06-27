@@ -26,7 +26,7 @@ spec:
       memory: 512Mi
     image:
       initContainer: {{ network.docker.url }}/{{ init_container_image }}
-      nmapContainer: {{ network.docker.url }}/{{ main_container_image }}
+      nmapContainer: {{ main_container_image }}
       enterpriseCliContainer: {{ docker_images.cenm["enterpriseCli-1.5"] }}
       pullPolicy: IfNotPresent
       imagePullSecrets:
