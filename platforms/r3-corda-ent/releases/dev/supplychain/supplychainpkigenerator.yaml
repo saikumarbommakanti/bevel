@@ -21,7 +21,7 @@ spec:
       namespace: supplychain-ent
     image:
       initContainerName: ghcr.io/hyperledger/alpine-utils:1.0
-      pkiContainerName: corda/enterprise-pki:1.5.1-zulu-openjdk8u242
+      pkiContainerName: corda/enterprise-pki:1.5.9-zulu-openjdk8u382
       imagePullSecret: regcred
       pullPolicy: IfNotPresent
     acceptLicense: YES
