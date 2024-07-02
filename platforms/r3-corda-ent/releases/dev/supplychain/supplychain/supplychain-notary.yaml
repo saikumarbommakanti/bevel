@@ -1,0 +1,100 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: supplychain-notary
+  namespace: supplychain-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: supplychain-notary
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/r3-corda-ent/charts/enterprise-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-corh
+      namespace: flux-corh
+  values:
+    global:
+      serviceAccountName: vault-auth
+      cluster:
+        provider: "azure"
+        cloudNativeServices: false
+        kubernetesUrl: "https://devcluster-devresourcegroup-d1d33f-kncld871.hcp.westeurope.azmk8s.io:443"
+      vault:
+        type: hashicorp
+        role: vault-role
+        network: corda-enterprise
+        address: "http://98.64.226.131:20001"
+        authPath: "supplychain"
+        secretEngine: secretsv2
+        secretPrefix: "data/supplychain"
+      proxy:
+        provider: ambassador
+        externalUrlSuffix: corda.blockchaincloudpoc-develop.com
+    image:
+      notary:
+        repository: corda/corda-enterprise
+        tag: 4.10.3-zulu-openjdk8-alpine
+    network:
+      creds:
+        truststore: password
+    tls:
+      nameOverride: notary-2   # should match the release name
+      enabled: true
+    sleepTimeAfterError: 180
+    storage:
+      size: 1Gi
+      dbSize: 5Gi
+      allowedTopologies:
+        enabled: false
+    baseDir: /opt/corda
+    dataSourceProperties:
+      dataSource:
+        user: node-db-user
+        password: node-db-password
+        url: "jdbc:h2:file:./h2/node-persistence;DB_CLOSE_ON_EXIT=FALSE;WRITE_DELAY=0;LOCK_TIMEOUT=10000"
+        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+    nodeConf:
+      legalName: O=Notary2,OU=Notary2,L=London,C=GB
+      devMode: false
+      creds:
+        truststore: cordacadevpass
+        keystore: trustpass
+      crlCheckSoftFail: true
+      tlsCertCrlDistPoint: ""
+      tlsCertCrlIssuer: ""
+      monitoring:
+        enabled: true
+        port: 8090
+      allowDevCorDapps:
+        enabled: true
+      p2pPort: 10002
+      rpc:
+        port: 10003
+        adminPort: 10005
+        users:
+        - name: node
+          password: nodeP
+          permissions: ALL
+      ssh:
+        enabled: true
+        sshdPort: 2222
+      removeKeysOnDelete: false
+      firewall:
+        enabled: false
+      notary:
+        serviceLegalName: O=Notary2 Service,OU=Notary2,L=London,C=GB
+        validating: True
+      doormanPort: 443
+      networkMapPort: 443
+      doormanDomain: supplychain-cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapDomain: supplychain-cenm-nms.corda.blockchaincloudpoc-develop.com
+      doormanURL: https://supplychain-cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapURL: https://supplychain-cenm-nms.corda.blockchaincloudpoc-develop.com
+    cordapps:
+      getcordapps: true
+      jars:
+        - url: https://maven.pkg.github.com/hyperledger/bevel/com.supplychain.bcc.cordapp-supply-chain/4.9/cordapp-supply-chain-4.9.jar
+        - url: https://maven.pkg.github.com/hyperledger/bevel/com.supplychain.bcc.cordapp-contracts-states/4.9/cordapp-contracts-states-4.9.jar
