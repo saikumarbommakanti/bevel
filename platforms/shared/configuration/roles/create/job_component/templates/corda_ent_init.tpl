@@ -10,7 +10,7 @@ global:
     network: corda-enterprise
     address: "{{ vault.url }}"
     authPath: "{{ org_name }}"
-    secretEngine: secretsv3
+    secretEngine: secretsv2
     secretPrefix: "data/{{ org_name }}"
 proxy:
   provider: ambassador

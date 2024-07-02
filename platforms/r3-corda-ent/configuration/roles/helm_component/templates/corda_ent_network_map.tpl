@@ -26,7 +26,7 @@ spec:
         role: vault-role
         address: 
         authPath: "{{ org_name }}"
-        secretEngine: secretsv3
+        secretEngine: secretsv2
         secretPrefix: "data/{{ org_name }}"
       proxy:
         provider: "ambassador"
