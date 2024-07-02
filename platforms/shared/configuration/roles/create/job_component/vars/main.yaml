@@ -31,5 +31,5 @@ bevel_alpine_version: latest
 fabric_tools_image: bevel-fabric-tools
 indy_genesis: indy-genesis
 indy_endorser: indy-register-identity
-corda_ent_init: enterprise-init
+corda_ent_init: corda_ent_init.tpl
 corda_ent_cenm: cenm
