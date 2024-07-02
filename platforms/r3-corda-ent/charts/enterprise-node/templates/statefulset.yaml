@@ -10,6 +10,7 @@ metadata:
   name: {{ template "node.fullname" . }}
   namespace: {{ .Release.Namespace }}  
   labels:
+    app: "{{ .Release.Name }}"
     app: {{ include "node.fullname" . }}
     app.kubernetes.io/name: node-statefulset
     app.kubernetes.io/component: node
@@ -70,6 +71,7 @@ spec:
   template:
     metadata:
       labels:
+        app: "{{ .Release.Name }}"
         app: {{ include "node.fullname" . }}
         app.kubernetes.io/name: node-statefulset
         app.kubernetes.io/component: node
