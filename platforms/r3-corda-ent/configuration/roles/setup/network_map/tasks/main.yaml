@@ -45,5 +45,5 @@
   include_role:
     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
   vars:
-    component_type: Job
+    component_type: pod
     namespace: "{{ component_ns }}"
