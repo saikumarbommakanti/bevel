@@ -17,7 +17,7 @@
 # Install init node
 - name: "Install init node"
   include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/create/helm_component"
+    name: "{{ playbook_dir }}/../../shared/configuration/roles/create/job_component"
   vars: 
     type: "corda_ent_cenm"
     cloud_provider: "{{ org.cloud_provider | lower }}"
