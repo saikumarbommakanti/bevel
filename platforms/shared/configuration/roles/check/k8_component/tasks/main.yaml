@@ -10,7 +10,7 @@
 # 35 seconds between each try
 
 # Check if component created without retry
-- name: Check  is created
+- name: Check {{ component_type }} {{ component_name }} is created
   k8s_info:
     kind: "{{ component_type }}"
     name: "{{ component_name }}"
