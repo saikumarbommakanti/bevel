@@ -26,7 +26,7 @@
       name: create/namespace
     vars:
       component_name: "{{ org.name | lower }}-ent"
-      component_type: "{{ org.type | lower }}"
+      component_type_name: "{{ org.type | lower }}"
       kubernetes: "{{ org.k8s }}"
       release_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org.name | lower }}"
     loop: "{{ network['organizations'] }}"
