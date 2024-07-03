@@ -4,6 +4,14 @@
 #  SPDX-License-Identifier: Apache-2.0
 ##############################################################################################
 
+- name: "Wait for namespace creation for {{ name }}"
+  include_role:
+    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/k8_component"
+  vars:
+    component_type: "Namespace"
+    component_name: "{{ component_ns }}"
+    type: "retry"
+
 # Gather Kubernetes cluster information
 - name: Gather Kubernetes cluster information
   community.kubernetes.k8s_cluster_info:
