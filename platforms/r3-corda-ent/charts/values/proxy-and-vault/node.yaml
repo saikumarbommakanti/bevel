@@ -4,19 +4,19 @@
 global:
   serviceAccountName: bevel-auth
   cluster:
-    provider: aws
+    provider: azure
     cloudNativeServices: false
   vault:
     type: hashicorp
     role: vault-role
-    address: http://vault.url:8200
+    address: http://98.64.226.131:20001
     authPath: supplychain
     secretEngine: secretsv2
     secretPrefix: "data/supplychain"
     network: corda-enterprise
   proxy:
     provider: "ambassador"
-    externalUrlSuffix: test.blockchaincloud.com
+    externalUrlSuffix: corda.blockchaincloudpoc-develop.com
 
 storage:
   size: "1Gi"
@@ -39,7 +39,7 @@ nodeConf:
   legalName: "O=Node,OU=Node,L=London,C=GB"
   doormanPort: 443
   networkMapPort: 443
-  doormanDomain: cenm-doorman.test.blockchaincloud.com
-  networkMapDomain: cenm-nms.test.blockchaincloud.com
-  networkMapURL: https://cenm-nms.test.blockchaincloud.com
-  doormanURL: https://cenm-doorman.test.blockchaincloud.com
+  doormanDomain: cenm-doorman.corda.blockchaincloudpoc-develop.com
+  networkMapDomain: cenm-nms.corda.blockchaincloudpoc-develop.com
+  networkMapURL: https://cenm-nms.corda.blockchaincloudpoc-develop.com
+  doormanURL: https://cenm-doorman.corda.blockchaincloudpoc-develop.com

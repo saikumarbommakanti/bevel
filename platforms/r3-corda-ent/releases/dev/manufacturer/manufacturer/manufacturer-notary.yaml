@@ -1,0 +1,56 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: manufacturer-notary
+  namespace: manufacturer-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: manufacturer-notary
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/r3-corda-ent/charts/enterprise-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-corh
+      namespace: flux-corh
+  values:
+    global:
+      serviceAccountName: vault-auth
+      cluster:
+        provider: "azure"
+        cloudNativeServices: false
+        kubernetesUrl: "https://devcluster-devresourcegroup-d1d33f-kncld871.hcp.westeurope.azmk8s.io:443"
+      vault:
+        type: hashicorp
+        role: vault-role
+        network: corda-enterprise
+        address: "http://98.64.226.131:20001"
+        authPath: "manufacturer"
+        secretEngine: secretsv2
+        secretPrefix: "data/manufacturer"
+      proxy:
+        provider: ambassador
+        externalUrlSuffix: corda.blockchaincloudpoc-develop.com
+    image:
+      node:
+        repository: corda/corda-enterprise
+        tag: 4.10.3-zulu-openjdk8-alpine
+    network:
+      creds:
+        truststore: password
+    tls:
+      nameOverride: manufacturer   # should match the release name
+      enabled: true
+    storage:
+      size: 1Gi
+      dbSize: 5Gi
+    nodeConf:
+      legalName: O=Manufacturer,OU=Manufacturer,L=47.38/8.54/Zurich,C=CH
+      doormanPort: 443
+      networkMapPort: 443
+      doormanDomain: cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapDomain: cenm-nms.corda.blockchaincloudpoc-develop.com
+      doormanURL: https://cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapURL: https://cenm-nms.corda.blockchaincloudpoc-develop.com
