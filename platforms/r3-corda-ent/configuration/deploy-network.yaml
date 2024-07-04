@@ -136,7 +136,7 @@
       vault: "{{ org.vault }}"
       gitops: "{{ org.gitops }}"
       charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}"
+      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ component_ns }}"
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
