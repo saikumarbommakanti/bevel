@@ -13,7 +13,7 @@
     name: setup/init
   vars:
     build_path: "./build"
-    init_type: "secondary_init"
+    init_type: "corda_ent_secondary_init"
     values_dir: "./build/{{ component_ns }}"
 
 # Wait for namespace creation
