@@ -21,6 +21,5 @@
     name: "{{ playbook_dir }}/../../shared/configuration/roles/create/job_component"
   vars: 
     cloud_provider: "{{ org.cloud_provider | lower }}"
-    secondaryInit: false
     component_name: "init"
     type: "{{ init_type }}"
