@@ -12,6 +12,6 @@ global:
   cluster:
     provider: {{ org.cloud_provider }}
     cloudNativeServices: false
-    kubernetesUrl: {{ kubernetes_url }}
+    kubernetesUrl: {{ kubernetesUrl }}
 settings:
   secondaryInit: true
