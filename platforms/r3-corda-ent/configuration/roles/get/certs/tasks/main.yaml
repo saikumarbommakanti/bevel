@@ -32,7 +32,7 @@
 
 - name: Save certs locally for secondary init
   shell: |
-    echo {{ cenm_data.network-root-truststore.jks }} > {{ files_loc }}/network-root-truststore.jks
+    echo {{ cenm_data.resources[0].data['network-root-truststore.jks'] }} > {{ files_loc }}/network-root-truststore.jks
     echo {{ doorman_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/doorman.crt
     echo {{ nms_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/nms.crt
   vars:

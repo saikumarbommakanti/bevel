@@ -10,7 +10,7 @@
 
 - name: "Setup primary init with network-service org"
   include_role:
-    name: init
+    name: setup/init
   vars:
     build_path: "./build"
     init_type: "secondary_init"
