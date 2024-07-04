@@ -47,3 +47,8 @@
   vars:
     component_type: pod
     namespace: "{{ component_ns }}"
+
+# Get the doorman and nms certs
+- name: Get doorman and nms certs
+  include_role: 
+    name: get/certs

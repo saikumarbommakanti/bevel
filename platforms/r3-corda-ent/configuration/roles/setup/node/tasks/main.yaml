@@ -8,6 +8,14 @@
 # This role sets up all Corda node services
 ##############################################################################################
 
+- name: "Setup primary init with network-service org"
+  include_role:
+    name: init
+  vars:
+    build_path: "./build"
+    init_type: "secondary_init"
+    values_dir: "./build/{{ component_ns }}"
+
 # Wait for namespace creation
 - name: Gather Kubernetes cluster information
   community.kubernetes.k8s_cluster_info:
