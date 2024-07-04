@@ -36,4 +36,4 @@
     echo {{ doorman_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/doorman.crt
     echo {{ nms_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/nms.crt
   vars:
-    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/corda-init/files"
+    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/init/files"
