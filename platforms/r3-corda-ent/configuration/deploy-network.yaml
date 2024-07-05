@@ -52,13 +52,14 @@
     include_role:
       name: setup/init
     vars:
+      build_path: "./build"
       org_name: "{{ org.name | lower }}"
       component_name: "{{ org_name }}-init"
       component_ns: "{{ org_name }}-ent"
       kubernetes: "{{ org.k8s }}"
       init_type: "corda_ent_init"
       vault: "{{ org.vault }}"
-      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+      values_dir: "./build/{{ component_ns }}"
       charts_dir: "{{ org.gitops.chart_source }}"
     loop: "{{ network['organizations'] }}"
     loop_control:
