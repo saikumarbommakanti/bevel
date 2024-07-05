@@ -32,9 +32,9 @@
     loop: "{{ network['organizations'] }}"
     loop_control:
       loop_var: org
-    when: 
-    - org.type == 'cenm'
-    - org.org_status is not defined or org.org_status == 'new'
+    # when: 
+    # - org.type == 'cenm'
+    # - org.org_status is not defined or org.org_status == 'new'
   # Create necessary Kubernetes secrets for each organization
   - name: "Create k8s secrets"
     include_role:
