@@ -99,6 +99,7 @@ spec:
           echo "Implement hashicorp releayed method"
           . /scripts/bevel-vault.sh
           echo "Getting vault Token..."
+          sleep 2m
           vaultBevelFunc "init"
           # Read if secret exists in Vault
           vaultBevelFunc 'readJson' "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/{{ .Release.Name }}-certs"
