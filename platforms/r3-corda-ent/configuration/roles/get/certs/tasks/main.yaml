@@ -52,6 +52,10 @@
   vars:
     files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
+- name: Echo component_ns variable
+  ansible.builtin.shell: echo "{{ component_ns }}"
+
+
 - name: Create cenm-certs Secret
   community.kubernetes.k8s:
     state: present
