@@ -23,12 +23,12 @@
 # Delete crypto materials from vault
 - name: Delete Crypto for nodes
   shell: |
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-certs
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-registrationcerts
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-tlscerts
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-certs
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-registrationcerts
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-tlscerts
   environment:
-    VAULT_ADDR: "{{ item.vault.url }}"
-    VAULT_TOKEN: "{{ item.vault.root_token }}"
+    VAULT_ADDR: "{{ org.vault.url }}"
+    VAULT_TOKEN: "{{ org.vault.root_token }}"
   loop: "{{ services.peers }}"
   loop_control:
     loop_var: peer
@@ -37,12 +37,12 @@
 
 - name: Delete Crypto for notary
   shell: |
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-certs
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-registrationcerts
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-tlscerts
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-certs
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-registrationcerts
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{{ org_name }}/{{ org_name }}-{{ org.type }}-tlscerts
   environment:
-    VAULT_ADDR: "{{ item.vault.url }}"
-    VAULT_TOKEN: "{{ item.vault.root_token }}"
+    VAULT_ADDR: "{{ org.vault.url }}"
+    VAULT_TOKEN: "{{ org.vault.root_token }}"
   vars: 
     peer: "{{ services.notary }}"
   when: services.notary is defined
@@ -50,10 +50,10 @@
 
 - name: Delete Crypto for network service
   shell: |
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-certs
-    vault kv delete {{ item.vault.secret_path | default('secretsv2') }}/{{ org.name | lower }}/{{ org.name | lower }}-{{ org.type }}-tlscerts
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-certs
+    vault kv delete {{ org.vault.secret_path | default('secretsv2') }}/{{ org_name }}/{{ org_name }}-{{ org.type }}-tlscerts
   environment:
-    VAULT_ADDR: "{{ item.vault.url }}"
-    VAULT_TOKEN: "{{ item.vault.root_token }}"
+    VAULT_ADDR: "{{ org.vault.url }}"
+    VAULT_TOKEN: "{{ org.vault.root_token }}"
   ignore_errors: true
   when: component_type == 'node'
