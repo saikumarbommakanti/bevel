@@ -74,7 +74,7 @@
         name: doorman-tls-certs
         namespace: "{{ component_ns }}"
       data:
-        tls.crt: "{{ lookup('file', files_loc + '/doorman/tls.crt') | b64encode }}"
+        tls.crt: "{{ lookup('file', files_loc + '/doorman/doorman.crt') | b64encode }}"
 
 - name: Create nms-tls-certs Secret
   community.kubernetes.k8s:
@@ -86,4 +86,4 @@
         name: nms-tls-certs
         namespace: "{{ component_ns }}"
       data:
-        tls.crt: "{{ lookup('file', files_loc + '/nms/tls.crt') | b64encode }}"
+        tls.crt: "{{ lookup('file', files_loc + '/nms/nms.crt') | b64encode }}"
