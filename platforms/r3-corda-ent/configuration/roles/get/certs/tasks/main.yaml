@@ -62,7 +62,7 @@
         name: cenm-certs
         namespace: "{{ component_ns }}"
       data:
-        network-root-truststore.jks: "{{ lookup('file', './enterprise-node/build/network-root-truststore.jks') }}"
+        network-root-truststore.jks: "{{ lookup('file', files_loc + '/network-root-truststore.jks') | b64encode }}"
 
 - name: Create doorman-tls-certs Secret
   community.kubernetes.k8s:
