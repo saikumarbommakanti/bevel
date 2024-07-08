@@ -52,8 +52,9 @@
   vars:
     files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
-- name: Echo component_ns variable
-  ansible.builtin.shell: echo "{{ component_ns }}"
+- name: Display component_ns value
+  ansible.builtin.debug:
+    msg: "The value of component_ns is: {{ component_ns }}"
 
 
 - name: Create cenm-certs Secret
