@@ -30,6 +30,16 @@
     namespace: "{{ component_ns }}"
   register: nms_data
 
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - ./enterprise-node/build
+    - ./enterprise-node/build/doorman
+    - ./enterprise-node/build/nms
+
 - name: Save certs locally for secondary init
   shell: |
     echo {{ cenm_data.resources[0].data['network-root-truststore.jks'] }} > {{ files_loc }}/network-root-truststore.jks
@@ -46,7 +56,7 @@
       kind: Secret
       metadata:
         name: cenm-certs
-        namespace: manufacturer-ent
+        namespace: "{{ component_ns }}"
       data:
         network-root-truststore.jks: "{{ lookup('file', './enterprise-node/build/network-root-truststore.jks') }}"
 
@@ -58,7 +68,7 @@
       kind: Secret
       metadata:
         name: doorman-tls-certs
-        namespace: manufacturer-ent
+        namespace: "{{ component_ns }}"
       data:
         tls.crt: "{{ lookup('file', './enterprise-node/build/doorman/tls.crt') }}"
 
@@ -70,6 +80,6 @@
       kind: Secret
       metadata:
         name: nms-tls-certs
-        namespace: manufacturer-ent
+        namespace: "{{ component_ns }}"
       data:
         tls.crt: "{{ lookup('file', './enterprise-node/build/nms/tls.crt') }}"
