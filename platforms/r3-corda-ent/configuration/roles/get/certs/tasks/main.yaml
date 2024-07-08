@@ -32,15 +32,13 @@
 
 - name: Create directories
   ansible.builtin.file:
-    path: "{{ dir }}"
+    path: "{{ item }}"
     state: directory
     mode: '0755'
     loop:
       - "{{ charts_dir }}/enterprise-node/build"
       - "{{ charts_dir }}/enterprise-node/build/doorman"
       - "{{ charts_dir }}/enterprise-node/build/nms"
-  loop_control:
-    loop_var: dir
 
 - name: Save certs locally for secondary init
   shell: |
