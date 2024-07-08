@@ -40,7 +40,7 @@
     - ./enterprise-node/build/doorman
     - ./enterprise-node/build/nms
   loop_control:
-  loop_var: dir
+    loop_var: dir
 
 - name: Save certs locally for secondary init
   shell: |
