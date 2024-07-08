@@ -36,4 +36,40 @@
     echo {{ doorman_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/doorman.crt
     echo {{ nms_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/nms.crt
   vars:
-    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-init/files"
+    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build"
+
+- name: Create cenm-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: cenm-certs
+        namespace: manufacturer-ent
+      data:
+        network-root-truststore.jks: "{{ lookup('file', './enterprise-node/build/network-root-truststore.jks') }}"
+
+- name: Create doorman-tls-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: doorman-tls-certs
+        namespace: manufacturer-ent
+      data:
+        tls.crt: "{{ lookup('file', './enterprise-node/build/doorman/tls.crt') }}"
+
+- name: Create nms-tls-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: nms-tls-certs
+        namespace: manufacturer-ent
+      data:
+        tls.crt: "{{ lookup('file', './enterprise-node/build/nms/tls.crt') }}"
