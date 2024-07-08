@@ -104,22 +104,22 @@
   #     - org.services.notaries is defined
 
   # # Setup NETWORK_MAP
-  # - name: "Setup network_map"   
-  #   include_role: 
-  #     name: "setup/network_map"
-  #   vars:
-  #     org: "{{ network['organizations'] | first }}"
-  #     org_name: "{{ org.name | lower }}"
-  #     cloud_provider: "{{ org.cloud_provider | lower }}"
-  #     org_services: "{{ org.services }}"
-  #     component_name: "{{ org_name }}-nm"
-  #     component_ns: "{{ org_name }}-ent"
-  #     kubernetes: "{{ org.k8s }}"
-  #     vault: "{{ org.vault }}"
-  #     gitops: "{{ org.gitops }}"
-  #     external_url_suffix: "{{ org.external_url_suffix }}"
-  #     charts_dir: "{{ org.gitops.chart_source }}"
-  #     values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+  - name: "Setup network_map"   
+    include_role: 
+      name: "setup/network_map"
+    vars:
+      org: "{{ network['organizations'] | first }}"
+      org_name: "{{ org.name | lower }}"
+      cloud_provider: "{{ org.cloud_provider | lower }}"
+      org_services: "{{ org.services }}"
+      component_name: "{{ org_name }}-nm"
+      component_ns: "{{ org_name }}-ent"
+      kubernetes: "{{ org.k8s }}"
+      vault: "{{ org.vault }}"
+      gitops: "{{ org.gitops }}"
+      external_url_suffix: "{{ org.external_url_suffix }}"
+      charts_dir: "{{ org.gitops.chart_source }}"
+      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
 
     
     # Deploy all other nodes
