@@ -15,93 +15,93 @@
   no_log: "{{ no_ansible_log | default(false) }}"
   tasks:
   # Delete build directory before start of play, can be commented if you do not want to delete it.
-  - name: Remove build directory
-    file:
-      path: "./build"
-      state: absent
+  # - name: Remove build directory
+  #   file:
+  #     path: "./build"
+  #     state: absent
 
-  # Create namespaces for organizations
-  - name: "Create namespace"
-    include_role:
-      name: create/namespace
-    vars:
-      component_name: "{{ org.name | lower }}-ent"
-      component_type_name: "{{ org.type | lower }}"
-      kubernetes: "{{ org.k8s }}"
-      release_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org.name | lower }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    # when: 
-    # - org.type == 'cenm'
-    # - org.org_status is not defined or org.org_status == 'new'
-  # Create necessary Kubernetes secrets for each organization
-  - name: "Create k8s secrets"
-    include_role:
-      name: create/secrets
-    vars:
-      component_ns: "{{ org.name | lower }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
+  # # Create namespaces for organizations
+  # - name: "Create namespace"
+  #   include_role:
+  #     name: create/namespace
+  #   vars:
+  #     component_name: "{{ org.name | lower }}-ent"
+  #     component_type_name: "{{ org.type | lower }}"
+  #     kubernetes: "{{ org.k8s }}"
+  #     release_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org.name | lower }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   # when: 
+  #   # - org.type == 'cenm'
+  #   # - org.org_status is not defined or org.org_status == 'new'
+  # # Create necessary Kubernetes secrets for each organization
+  # - name: "Create k8s secrets"
+  #   include_role:
+  #     name: create/secrets
+  #   vars:
+  #     component_ns: "{{ org.name | lower }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
 
-  # # Setup Init
-  - name: "Setup Init"
-    include_role:
-      name: setup/init
-    vars:
-      build_path: "./build"
-      org_name: "{{ org.name | lower }}"
-      component_name: "{{ org_name }}-init"
-      component_ns: "{{ org_name }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      init_type: "corda_ent_init"
-      vault: "{{ org.vault }}"
-      values_dir: "./build/{{ component_ns }}"
-      charts_dir: "{{ org.gitops.chart_source }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
+  # # # Setup Init
+  # - name: "Setup Init"
+  #   include_role:
+  #     name: setup/init
+  #   vars:
+  #     build_path: "./build"
+  #     org_name: "{{ org.name | lower }}"
+  #     component_name: "{{ org_name }}-init"
+  #     component_ns: "{{ org_name }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     init_type: "corda_ent_init"
+  #     vault: "{{ org.vault }}"
+  #     values_dir: "./build/{{ component_ns }}"
+  #     charts_dir: "{{ org.gitops.chart_source }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
 
-  # Setup CENM
-  - name: "Setup cenm"   
-    include_role: 
-      name: "setup/cenm"
-    vars:
-      org: "{{ network['organizations'] | first }}"
-      org_name: "{{ org.name | lower }}"
-      org_services: "{{ org.services }}"
-      component_name: "{{ org_name }}-cenm"
-      component_ns: "{{ org_name }}-ent"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      external_url_suffix: "{{ org.external_url_suffix }}"
-      charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+  # # Setup CENM
+  # - name: "Setup cenm"   
+  #   include_role: 
+  #     name: "setup/cenm"
+  #   vars:
+  #     org: "{{ network['organizations'] | first }}"
+  #     org_name: "{{ org.name | lower }}"
+  #     org_services: "{{ org.services }}"
+  #     component_name: "{{ org_name }}-cenm"
+  #     component_ns: "{{ org_name }}-ent"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     external_url_suffix: "{{ org.external_url_suffix }}"
+  #     charts_dir: "{{ org.gitops.chart_source }}"
+  #     values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
 
-  # Deploy notaries
-  - name: Deploy notary service
-    include_role:
-      name: setup/notary
-    vars:
-      org_name: "{{ org.name | lower }}"
-      component_name: "{{ org_name }}-notary"
-      component_ns: "{{ org_name }}-ent"
-      cloud_provider: "{{ org.cloud_provider }}"
-      external_url_suffix: "{{ org.external_url_suffix }}"
-      node: "{{ org.services.notaries }}"
-      kubernetes: "{{ org.k8s }}"
-      vault: "{{ org.vault }}"
-      gitops: "{{ org.gitops }}"
-      charts_dir: "{{ org.gitops.chart_source }}"
-      values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}"
-    loop: "{{ network['organizations'] }}"
-    loop_control:
-      loop_var: org
-    when: 
-      - org.services.notaries is defined
+  # # Deploy notaries
+  # - name: Deploy notary service
+  #   include_role:
+  #     name: setup/notary
+  #   vars:
+  #     org_name: "{{ org.name | lower }}"
+  #     component_name: "{{ org_name }}-notary"
+  #     component_ns: "{{ org_name }}-ent"
+  #     cloud_provider: "{{ org.cloud_provider }}"
+  #     external_url_suffix: "{{ org.external_url_suffix }}"
+  #     node: "{{ org.services.notaries }}"
+  #     kubernetes: "{{ org.k8s }}"
+  #     vault: "{{ org.vault }}"
+  #     gitops: "{{ org.gitops }}"
+  #     charts_dir: "{{ org.gitops.chart_source }}"
+  #     values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}"
+  #   loop: "{{ network['organizations'] }}"
+  #   loop_control:
+  #     loop_var: org
+  #   when: 
+  #     - org.services.notaries is defined
 
   # # Setup NETWORK_MAP
   - name: "Setup network_map"   

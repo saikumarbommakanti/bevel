@@ -39,6 +39,8 @@
     - "{{ files_loc }}"
     - "{{ files_loc }}/doorman"
     - "{{ files_loc }}/nms"
+  vars:
+    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
 - name: Save certs locally for secondary init
   shell: |
