@@ -8,6 +8,46 @@
 # This role sets up all Corda node services
 ##############################################################################################
 
+- name: Set files location variable
+  set_fact:
+    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/enterprise-node/build"
+
+- name: Create cenm-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: cenm-certs
+        namespace: "{{ component_ns }}"
+      data:
+        network-root-truststore.jks: "{{ lookup('file', files_loc + '/network-root-truststore.jks') | b64encode }}"
+
+- name: Create doorman-tls-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: doorman-tls-certs
+        namespace: "{{ component_ns }}"
+      data:
+        tls.crt: "{{ lookup('file', files_loc + '/doorman/doorman.crt') | b64encode }}"
+
+- name: Create nms-tls-certs Secret
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: nms-tls-certs
+        namespace: "{{ component_ns }}"
+      data:
+        tls.crt: "{{ lookup('file', files_loc + '/nms/nms.crt') | b64encode }}"
+
 - name: "Setup primary init with network-service org"
   include_role:
     name: setup/init

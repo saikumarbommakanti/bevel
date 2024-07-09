@@ -30,10 +30,6 @@
     namespace: "{{ component_ns }}"
   register: nms_data
 
-- name: Set files location variable
-  set_fact:
-    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/enterprise-node/build"
-
 - name: Create directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -52,43 +48,3 @@
   vars:
     files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
-- name: Display component_ns value
-  ansible.builtin.debug:
-    msg: "The value of component_ns is: {{ component_ns }}"
-
-
-- name: Create cenm-certs Secret
-  community.kubernetes.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: cenm-certs
-        namespace: "{{ component_ns }}"
-      data:
-        network-root-truststore.jks: "{{ lookup('file', files_loc + '/network-root-truststore.jks') | b64encode }}"
-
-- name: Create doorman-tls-certs Secret
-  community.kubernetes.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: doorman-tls-certs
-        namespace: "{{ component_ns }}"
-      data:
-        tls.crt: "{{ lookup('file', files_loc + '/doorman/doorman.crt') | b64encode }}"
-
-- name: Create nms-tls-certs Secret
-  community.kubernetes.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: nms-tls-certs
-        namespace: "{{ component_ns }}"
-      data:
-        tls.crt: "{{ lookup('file', files_loc + '/nms/nms.crt') | b64encode }}"
