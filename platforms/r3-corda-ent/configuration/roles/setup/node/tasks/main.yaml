@@ -8,6 +8,13 @@
 # This role sets up all Corda node services
 ##############################################################################################
 
+- name: Get doorman and nms certs
+  include_role: 
+    name: get/certs
+  vars:
+    component_ns: "{{ network.organizations[0] }}" 
+  # when: #if  network.organizations[0].type is cenm 
+
 - name: "Setup primary init with network-service org"
   include_role:
     name: setup/init
