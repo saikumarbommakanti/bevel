@@ -69,22 +69,21 @@
       namespace: "{{ component_ns }}"
   register: nms_data
 
-- name: Save all decoded secrets locally
-  ansible.builtin.block:
-    - name: Save cenm-certs secret locally
-      ansible.builtin.copy:
-        content: "{{ cenm_data.resources[0].data['network-root-truststore.jks'] | b64decode }}"
-        dest: "{{ files_loc }}/network-root-truststore.jks"
 
-    - name: Save doorman-tls-certs secret locally
-      ansible.builtin.copy:
-        content: "{{ doorman_tls_data.resources[0].data['tls.crt'] | b64decode }}"
-        dest: "{{ files_loc }}/doorman/doorman.crt"
+- name: Save cenm-certs secret locally
+  ansible.builtin.copy:
+    content: "{{ cenm_data.resources[0].data['network-root-truststore.jks'] | b64decode }}"
+    dest: "{{ files_loc }}/network-root-truststore.jks"
 
-    - name: Save nms-tls-certs secret locally
-      ansible.builtin.copy:
-        content: "{{ nms_tls_data.resources[0].data['tls.crt'] | b64decode }}"
-        dest: "{{ files_loc }}/nms/nms.crt"
+- name: Save doorman-tls-certs secret locally
+  ansible.builtin.copy:
+    content: "{{ doorman_tls_data.resources[0].data['tls.crt'] | b64decode }}"
+    dest: "{{ files_loc }}/doorman/doorman.crt"
+
+- name: Save nms-tls-certs secret locally
+  ansible.builtin.copy:
+    content: "{{ nms_tls_data.resources[0].data['tls.crt'] | b64decode }}"
+    dest: "{{ files_loc }}/nms/nms.crt"
 
 # - name: Decode and save secrets locally
 #   ansible.builtin.block:
