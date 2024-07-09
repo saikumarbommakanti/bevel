@@ -3,32 +3,10 @@
 #
 #  SPDX-License-Identifier: Apache-2.0
 ##############################################################################################
-# Get the cenm certs from network-service org
-# - name: Get cenm cert from current org
-#   kubernetes.core.k8s_info:
-#     kubeconfig: "{{ kubernetes.config_file }}"
-#     kind: Secret
-#     name: "cenm-certs"
-#     namespace: "{{ component_ns }}"
-#   register: cenm_data
 
-# # Get the doorman cert from network-service org
-# - name: Get doorman cert from current org
-#   kubernetes.core.k8s_info:
-#     kubeconfig: "{{ kubernetes.config_file }}"
-#     kind: Secret
-#     name: "doorman-tls-certs"
-#     namespace: "{{ component_ns }}"
-#   register: doorman_data
-
-# # Get the networkmap cert from network-service org
-# - name: Get nms cert from current org
-#   kubernetes.core.k8s_info:
-#     kubeconfig: "{{ kubernetes.config_file }}"
-#     kind: Secret
-#     name: "nms-tls-certs"
-#     namespace: "{{ component_ns }}"
-#   register: nms_data
+- name: Set fact for files location
+  ansible.builtin.set_fact:
+    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/enterprise-node/build/"
 
 - name: Create directories
   ansible.builtin.file:
@@ -39,36 +17,33 @@
     - "{{ files_loc }}"
     - "{{ files_loc }}/doorman"
     - "{{ files_loc }}/nms"
-  vars:
-    files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
-- name: Retrieve cenm-certs secret from Kubernetes
-  community.kubernetes.k8s_info:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      name: cenm-certs
-      namespace: "{{ component_ns }}"
+# Get the cenm certs from network-service org
+- name: Get cenm cert from current org
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ kubernetes.config_file }}"
+    kind: Secret
+    name: "cenm-certs"
+    namespace: "{{ component_ns }}"
   register: cenm_data
 
-- name: Retrieve doorman-tls-certs secret from Kubernetes
-  community.kubernetes.k8s_info:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      name: doorman-tls-certs
-      namespace: "{{ component_ns }}"
+# Get the doorman cert from network-service org
+- name: Get doorman cert from current org
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ kubernetes.config_file }}"
+    kind: Secret
+    name: "doorman-tls-certs"
+    namespace: "{{ component_ns }}"
   register: doorman_data
 
-- name: Retrieve nms-tls-certs secret from Kubernetes
-  community.kubernetes.k8s_info:
-    definition:
-      apiVersion: v1
-      kind: Secret
-      name: nms-tls-certs
-      namespace: "{{ component_ns }}"
+# Get the networkmap cert from network-service org
+- name: Get nms cert from current org
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ kubernetes.config_file }}"
+    kind: Secret
+    name: "nms-tls-certs"
+    namespace: "{{ component_ns }}"
   register: nms_data
-
 
 - name: Save cenm-certs secret locally
   ansible.builtin.copy:
@@ -77,40 +52,11 @@
 
 - name: Save doorman-tls-certs secret locally
   ansible.builtin.copy:
-    content: "{{ doorman_tls_data.resources[0].data['tls.crt'] | b64decode }}"
+    content: "{{ doorman_data.resources[0].data['tls.crt'] | b64decode }}"
     dest: "{{ files_loc }}/doorman/doorman.crt"
 
 - name: Save nms-tls-certs secret locally
   ansible.builtin.copy:
-    content: "{{ nms_tls_data.resources[0].data['tls.crt'] | b64decode }}"
+    content: "{{ nms_data.resources[0].data['tls.crt'] | b64decode }}"
     dest: "{{ files_loc }}/nms/nms.crt"
-
-# - name: Decode and save secrets locally
-#   ansible.builtin.block:
-#     - name: Decode secrets
-#       ansible.builtin.set_fact:
-#         cenm_decoded_data: "{{ cenm_data.resources[0].data['network-root-truststore.jks'] | b64decode }}"
-#         doorman_tls_decoded_data: "{{ doorman_tls_data.resources[0].data['tls.crt'] | b64decode }}"
-#         nms_tls_decoded_data: "{{ nms_tls_data.resources[0].data['tls.crt'] | b64decode }}"
-
-# - name: Save all decoded secrets
-#   ansible.builtin.blockinfile:
-#     path: "{{ files_loc }}/decoded_secrets.txt"
-#     block: |
-#       --- network-root-truststore.jks ---
-#       {{ cenm_data.resources[0].data['network-root-truststore.jks'] | b64decode }}
-#       --- doorman.crt ---
-#       {{ doorman_tls_data.resources[0].data['tls.crt'] | b64decode }}
-#       --- nms.crt ---
-#       {{ nms_tls_data.resources[0].data['tls.crt'] | b64decode }}
-#     when: cenm_data is defined and doorman_tls_data is defined and nms_tls_data is defined
-
-
-# - name: Save certs locally for secondary init
-#   shell: |
-#     echo {{ cenm_data.resources[0].data['network-root-truststore.jks'] }} > {{ files_loc }}/network-root-truststore.jks
-#     echo {{ doorman_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/doorman/doorman.crt
-#     echo {{ nms_data.resources[0].data['tls.crt'] }} > {{ files_loc }}/nms/nms.crt
-#   vars:
-#     files_loc: "{{playbook_dir}}/../../../{{ charts_dir }}/enterprise-node/build/"
 
