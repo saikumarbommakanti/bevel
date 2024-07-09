@@ -26,7 +26,11 @@
     name: "cenm-certs"
     namespace: "{{ component_ns }}"
   register: cenm_data
-
+- debug:
+    msg: "{{ cenm_data }}"
+- name: Print the value of component_ns
+  debug:
+    msg: "component_ns={{ component_ns }}"
 # Get the doorman cert from network-service org
 - name: Get doorman cert from current org
   kubernetes.core.k8s_info:
