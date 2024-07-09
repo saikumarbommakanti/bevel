@@ -48,9 +48,10 @@
     component_type: pod
     namespace: "{{ component_ns }}"
 
-# Get the doorman and nms certs
-- name: Get doorman and nms certs
-  include_role: 
-    name: get/certs
-    # ignore for the first organization
-    #2.  
+# shold be at the scope of deploy network yaml file 
+# # Get the doorman and nms certs
+# - name: Get doorman and nms certs
+#   include_role: 
+#     name: get/certs
+#     # ignore for the first organization
+#     #2.  
