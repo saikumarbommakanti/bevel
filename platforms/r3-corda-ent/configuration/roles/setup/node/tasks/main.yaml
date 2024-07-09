@@ -14,7 +14,7 @@
   vars:
     component_ns: "{{ component_ns }}" 
   when: org.type=='cenm' 
-
+  
 - name: "Setup primary init with network-service org"
   include_role:
     name: setup/init
