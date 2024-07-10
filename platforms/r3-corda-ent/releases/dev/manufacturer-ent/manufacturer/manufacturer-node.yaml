@@ -50,7 +50,7 @@ spec:
       legalName: O=Manufacturer,OU=Manufacturer,L=47.38/8.54/Zurich,C=CH
       doormanPort: 443
       networkMapPort: 443
-      doormanDomain: manufacturer-cenm-doorman.corda.blockchaincloudpoc-develop.com
-      networkMapDomain: manufacturer-cenm-nms.corda.blockchaincloudpoc-develop.com
-      doormanURL: https://manufacturer-cenm-doorman.corda.blockchaincloudpoc-develop.com
-      networkMapURL: https://manufacturer-cenm-nms.corda.blockchaincloudpoc-develop.com
+      doormanDomain: supplychain-cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapDomain: supplychain-cenm-nms.corda.blockchaincloudpoc-develop.com
+      doormanURL: https://supplychain-cenm-doorman.corda.blockchaincloudpoc-develop.com
+      networkMapURL: https://supplychain-cenm-nms.corda.blockchaincloudpoc-develop.com
