@@ -57,10 +57,10 @@
 - name: Save doorman-tls-certs secret locally
   ansible.builtin.copy:
     content: "{{ doorman_data.resources[0].data['tls.crt'] | b64decode }}"
-    dest: "{{ files_loc }}/doorman/doorman.crt"
+    dest: "{{ files_loc }}/doorman/tls.crt"
 
 - name: Save nms-tls-certs secret locally
   ansible.builtin.copy:
     content: "{{ nms_data.resources[0].data['tls.crt'] | b64decode }}"
-    dest: "{{ files_loc }}/nms/nms.crt"
+    dest: "{{ files_loc }}/nms/tls.crt"
 
