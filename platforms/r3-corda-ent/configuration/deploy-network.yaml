@@ -80,6 +80,11 @@
       external_url_suffix: "{{ org.external_url_suffix }}"
       charts_dir: "{{ org.gitops.chart_source }}"
       values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}/build"
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+      - org.type == 'cenm'
 
   # Deploy notaries
   - name: Deploy notary service
@@ -101,7 +106,9 @@
     loop_control:
       loop_var: org
     when: 
+      - org.type == 'cenm'
       - org.services.notaries is defined
+      
 
   # # Setup NETWORK_MAP
   - name: "Setup network_map"   
@@ -120,8 +127,12 @@
       external_url_suffix: "{{ org.external_url_suffix }}"
       charts_dir: "{{ org.gitops.chart_source }}"
       values_dir: "{{ playbook_dir }}/../../../{{ org.gitops.release_dir }}/{{ org_name }}"
-      #check org type for cenm only 
-    
+    loop: "{{ network['organizations'] }}"
+    loop_control:
+      loop_var: org
+    when: 
+      - org.type == 'cenm'   
+ 
     # Deploy all other nodes
   - name: Deploy Corda nodes
     include_role:

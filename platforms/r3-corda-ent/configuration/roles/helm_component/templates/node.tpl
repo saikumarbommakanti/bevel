@@ -50,7 +50,7 @@ spec:
       legalName: {{ subject }}
       doormanPort: 443
       networkMapPort: 443
-      doormanDomain: cenm-doorman.{{ external_url_suffix }}
-      networkMapDomain: cenm-nms.{{ external_url_suffix }}
-      doormanURL: https://cenm-doorman.{{ external_url_suffix }}
-      networkMapURL: https://cenm-nms.{{ external_url_suffix }}
+      doormanDomain: {{ org_name }}-cenm-doorman.{{ external_url_suffix }}
+      networkMapDomain: {{ org_name }}-cenm-nms.{{ external_url_suffix }}
+      doormanURL: https://{{ org_name }}-cenm-doorman.{{ external_url_suffix }}
+      networkMapURL: https://{{ org_name }}-cenm-nms.{{ external_url_suffix }}
