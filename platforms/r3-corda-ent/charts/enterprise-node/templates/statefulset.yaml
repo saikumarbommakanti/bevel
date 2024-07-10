@@ -154,6 +154,7 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
         - |-
+          sleep 3m
           bin/node-initial-registration.sh
         volumeMounts:
         - name: node-conf
