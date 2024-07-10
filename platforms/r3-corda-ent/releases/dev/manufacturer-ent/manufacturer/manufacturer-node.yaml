@@ -47,7 +47,7 @@ spec:
       size: 1Gi
       dbSize: 5Gi
     nodeConf:
-      legalName: O=Manufacturer,OU=Manufacturer,L=47.38/8.54/Zurich,C=CH
+      legalName: "O=Node,OU=Node,L=London,C=GB"
       doormanPort: 443
       networkMapPort: 443
       doormanDomain: cenm-doorman.corda.blockchaincloudpoc-develop.com
