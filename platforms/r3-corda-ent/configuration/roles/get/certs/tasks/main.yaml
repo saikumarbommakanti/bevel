@@ -6,7 +6,7 @@
 
 - name: Set fact for files location
   ansible.builtin.set_fact:
-    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/enterprise-node/build/"
+    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/enterprise-node/build"
 
 - name: Create directories
   ansible.builtin.file:

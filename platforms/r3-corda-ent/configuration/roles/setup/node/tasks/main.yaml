@@ -12,8 +12,10 @@
   include_role: 
     name: get/certs
   vars:
-    component_ns: "{{ component_ns }}" 
-  when: org.type=='cenm' 
+    component_ns: "{{ network.organizations[0].name }}-ent"
+  # when: org.type=='cenm'
+  
+- debug: 
   
 - name: "Setup primary init with network-service org"
   include_role:
