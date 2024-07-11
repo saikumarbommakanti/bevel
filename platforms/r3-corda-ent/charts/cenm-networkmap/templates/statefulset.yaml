@@ -10,6 +10,7 @@ metadata:
   name: {{ template "networkmap.fullname" . }}
   namespace: {{ .Release.Namespace }}  
   labels:
+    app: "{{ .Release.Name }}-nm"
     app: {{ include "networkmap.fullname" . }}
     app.kubernetes.io/name: networkmap-statefulset
     app.kubernetes.io/component: networkmap
@@ -24,6 +25,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
+      app: "{{ .Release.Name }}-nm"
       app: {{ include "networkmap.fullname" . }}
       app.kubernetes.io/name: networkmap-statefulset
       app.kubernetes.io/component: networkmap
@@ -68,6 +70,7 @@ spec:
   template:
     metadata:
       labels:
+        app: "{{ .Release.Name }}-nm"
         app: {{ include "networkmap.fullname" . }}
         app.kubernetes.io/name: networkmap-statefulset
         app.kubernetes.io/component: networkmap
