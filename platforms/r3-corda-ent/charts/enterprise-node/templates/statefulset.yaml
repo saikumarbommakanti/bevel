@@ -154,8 +154,10 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
         - |-
-          sleep 3m
           bin/node-initial-registration.sh
+          ls certificates/
+          ls additional-node-infos
+          echo "---"
         volumeMounts:
         - name: node-conf
           mountPath: /opt/corda/etc/node.conf
