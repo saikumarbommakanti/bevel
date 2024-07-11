@@ -46,7 +46,6 @@
     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
   vars:
     component_type: Pod
-    component_name: "cenm-networkmap-supplychainq-nm-0"
     label_selectors:
       - app = {{ component_name }}
     namespace: "{{ component_ns }}"
