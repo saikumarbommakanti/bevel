@@ -94,6 +94,7 @@ spec:
         args:
         - |-
           # Remove the old network-paramenters files
+          sleep 2m
           rm -f /opt/cenm/etc/network-parameters-initial.conf
           # Create the network-paramenters file
           file="/opt/cenm/etc/network-parameters-initial.conf"

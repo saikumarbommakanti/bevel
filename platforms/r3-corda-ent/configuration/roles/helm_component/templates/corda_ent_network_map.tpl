@@ -72,3 +72,8 @@ spec:
     
     adminListener:
       port: {{ network_map_admin_listener_port }}
+    tls:
+    enabled: true
+    settings:
+      networkServices: true
+      
