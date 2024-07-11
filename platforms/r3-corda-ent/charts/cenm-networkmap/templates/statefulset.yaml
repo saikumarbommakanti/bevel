@@ -94,7 +94,6 @@ spec:
         args:
         - |-
           # Remove the old network-paramenters files
-          sleep 2m
           rm -f /opt/cenm/etc/network-parameters-initial.conf
           # Create the network-paramenters file
           file="/opt/cenm/etc/network-parameters-initial.conf"
@@ -120,7 +119,7 @@ spec:
           cd /opt/cenm
           bin/getZoneToken.sh
           # Keep the container running for network related manual ops
-          # tail -f /dev/null
+          tail -f /dev/null
         volumeMounts:
         - name: networkmap-etc
           mountPath: /opt/cenm/etc

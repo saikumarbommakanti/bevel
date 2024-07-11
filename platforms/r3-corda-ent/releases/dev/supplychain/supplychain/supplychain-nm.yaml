@@ -72,8 +72,4 @@ spec:
     
     adminListener:
       port: 6000
-    tls:
-    enabled: true
-    settings:
-      networkServices: true
       
