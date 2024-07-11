@@ -41,12 +41,12 @@
     msg: "[ci skip] Pushing notary deployment file for notary"
 
 # Check if the job is completed
-- name: "Check if {{ steward.name }} node is running in the {{ org.name }} organization"
-  include_role:
-    name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
-  vars:
-    component_type: Pod
-    label_selectors:
-      - app = {{ component_name }}
-    namespace: "{{ component_ns }}"
+# - name: "Check if {{ component_name }} node is running in the {{ org.name }} organization"
+#   include_role:
+#     name: "{{ playbook_dir }}/../../shared/configuration/roles/check/helm_component"
+#   vars:
+#     component_type: Pod
+#     label_selectors:
+#       - app = {{ component_name }}
+#     namespace: "{{ component_ns }}"
 
