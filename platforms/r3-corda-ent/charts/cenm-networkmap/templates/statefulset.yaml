@@ -120,7 +120,7 @@ spec:
           cd /opt/cenm
           bin/getZoneToken.sh
           # Keep the container running for network related manual ops
-          tail -f /dev/null
+          # tail -f /dev/null
         volumeMounts:
         - name: networkmap-etc
           mountPath: /opt/cenm/etc
