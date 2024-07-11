@@ -47,6 +47,6 @@
   vars:
     component_type: Pod
     label_selectors:
-      - app = {{ component_name }}
+      - app = "cenm-networkmap-supplychainq-nm-0"
     namespace: "{{ component_ns }}"
 
